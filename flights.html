@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Search and compare cheap flights worldwide. Find the best airline deals with Voyger flight booking." />
+  <title>Flights – Voyger</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar scrolled" id="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <a href="index.html" class="logo"><div class="logo-icon">✈️</div>Voyger</a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="destination.html" class="nav-link">Destinations</a></li>
+        <li><a href="trip-planner.html" class="nav-link">Plan Trip</a></li>
+        <li><a href="hotels.html" class="nav-link">Hotels</a></li>
+        <li><a href="flights.html" class="nav-link active">Flights</a></li>
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle">🌙</button>
+        <a href="profile.html" class="btn btn-primary btn-sm">My Profile</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="destination.html" class="nav-link">🌍 Destinations</a>
+  <a href="hotels.html" class="nav-link">🏨 Hotels</a>
+  <a href="flights.html" class="nav-link">✈️ Flights</a>
+</div>
+
+<!-- FLIGHT SEARCH HERO -->
+<div style="background: linear-gradient(to bottom, rgba(10,22,40,0.6) 0%, rgba(10,22,40,0.9) 100%), url('https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?q=80&w=2000') center/cover no-repeat; padding:calc(80px + 2.5rem) 0 3rem; position:relative; overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(0,188,212,0.15),transparent),radial-gradient(circle at 80% 20%,rgba(79,195,247,0.1),transparent);pointer-events:none;"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <div class="badge badge-teal" style="margin:0 auto 1rem;display:inline-flex;">✈️ Flights</div>
+      <h1 style="color:white;font-family:var(--font-display);">Find the Best <span style="background:linear-gradient(135deg,var(--teal-400),var(--sky-400));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Flight Deals</span></h1>
+    </div>
+
+    <!-- Trip Type Selector -->
+    <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:2rem;" id="trip-type">
+      <button class="tag active" onclick="setTripType(this,'roundtrip')">🔄 Round Trip</button>
+      <button class="tag" onclick="setTripType(this,'oneway')">➡️ One Way</button>
+      <button class="tag" onclick="setTripType(this,'multi')">🗺️ Multi-City</button>
+    </div>
+
+    <!-- Search Form -->
+    <div class="flight-search-box">
+      <div style="display:grid;grid-template-columns:1fr auto 1fr 1fr 1fr auto;gap:1rem;align-items:end;">
+        <div class="input-group">
+          <label class="input-label">🛫 From</label>
+          <input type="text" class="input destination-input" placeholder="City or airport" id="from-city" value="New York (JFK)" />
+        </div>
+
+        <!-- Swap button -->
+        <button class="btn btn-ghost btn-sm" onclick="swapCities()" style="width:40px;height:40px;border-radius:50%;padding:0;flex-shrink:0;border:2px solid var(--teal-500);" title="Swap cities">⇄</button>
+
+        <div class="input-group">
+          <label class="input-label">🛬 To</label>
+          <input type="text" class="input destination-input" placeholder="City or airport" id="to-city" value="Paris (CDG)" />
+        </div>
+        <div class="input-group">
+          <label class="input-label">📅 Departure</label>
+          <input type="date" class="input" id="dep-date" />
+        </div>
+        <div class="input-group" id="return-date-group">
+          <label class="input-label">📅 Return</label>
+          <input type="date" class="input" id="ret-date" />
+        </div>
+        <div class="input-group">
+          <label class="input-label">👥 Passengers</label>
+          <select class="input">
+            <option>1 Passenger</option>
+            <option selected>2 Passengers</option>
+            <option>3 Passengers</option>
+            <option>4+ Passengers</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:center;margin-top:1rem;flex-wrap:wrap;">
+        <label class="checkbox-custom"><input type="checkbox" id="direct-only"><div class="checkbox-box"></div>Direct flights only</label>
+        <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>Flexible dates (±3 days)</label>
+        <select class="input" style="width:auto;padding:0.5rem 1rem;">
+          <option>Economy</option>
+          <option>Premium Economy</option>
+          <option>Business</option>
+          <option>First Class</option>
+        </select>
+        <button class="btn btn-primary" style="margin-left:auto;padding:0.75rem 2rem;" onclick="searchFlights()">🔍 Search Flights</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POPULAR ROUTES -->
+<div style="background:var(--bg-secondary);border-bottom:1px solid var(--border-color);padding:1.25rem 0;overflow-x:auto;">
+  <div class="container">
+    <div style="display:flex;gap:0.75rem;align-items:center;white-space:nowrap;">
+      <span style="font-size:0.8rem;color:var(--text-muted);flex-shrink:0;">🔥 Popular:</span>
+      <button class="tag" onclick="setRoute('New York (JFK)','London (LHR)')">NYC→LHR from $389</button>
+      <button class="tag" onclick="setRoute('London (LHR)','Dubai (DXB)')">LHR→DXB from $299</button>
+      <button class="tag" onclick="setRoute('New York (JFK)','Tokyo (NRT)')">NYC→TYO from $799</button>
+      <button class="tag" onclick="setRoute('New York (JFK)','Bali (DPS)')">NYC→DPS from $699</button>
+      <button class="tag" onclick="setRoute('Paris (CDG)','Maldives (MLE)')">CDG→MLE from $649</button>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="padding-top:2rem;padding-bottom:3rem;">
+  <div style="display:grid;grid-template-columns:240px 1fr;gap:2rem;">
+    
+    <!-- FILTER SIDEBAR -->
+    <div class="filter-panel">
+      <h5 style="color:var(--text-primary);margin-bottom:1.5rem;">🔧 Filter Results</h5>
+
+      <!-- Price -->
+      <div class="filter-section">
+        <div class="filter-title">💰 Max Price (Round Trip)</div>
+        <input type="range" class="range-slider" min="200" max="3000" value="1500" oninput="this.nextElementSibling.textContent='$'+this.value" />
+        <div style="text-align:center;margin-top:0.5rem;font-size:0.8rem;color:var(--teal-500);font-weight:600;">$1,500</div>
+      </div>
+
+      <!-- Stops -->
+      <div class="filter-section">
+        <div class="filter-title">🛑 Stops</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>Direct (0 stops)</label>
+          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>1 Stop</label>
+          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>2+ Stops</label>
+        </div>
+      </div>
+
+      <!-- Airlines -->
+      <div class="filter-section">
+        <div class="filter-title">✈️ Airlines</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>Air France</label>
+          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>Delta Airlines</label>
+          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>Emirates</label>
+          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>British Airways</label>
+          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>Lufthansa</label>
+          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>United Airlines</label>
+        </div>
+      </div>
+
+      <!-- Departure Time -->
+      <div class="filter-section">
+        <div class="filter-title">🕐 Departure Time</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>🌅 Morning (6am–12pm)</label>
+          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>☀️ Afternoon (12pm–6pm)</label>
+          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>🌙 Evening (6pm–12am)</label>
+          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>🌑 Night (12am–6am)</label>
+        </div>
+      </div>
+
+      <!-- Cabin -->
+      <div class="filter-section">
+        <div class="filter-title">🪑 Cabin Class</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>Economy</label>
+          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>Premium Economy</label>
+          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>Business</label>
+          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>First Class</label>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;" onclick="TravelApp.showToast('Filters applied!','success')">Apply Filters</button>
+    </div>
+
+    <!-- FLIGHTS LIST -->
+    <div>
+      <!-- Results Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <h4 style="color:var(--text-primary);" id="flight-route-title">New York (JFK) → Paris (CDG)</h4>
+          <p style="font-size:0.875rem;color:var(--text-muted);">6 flights found · July 15, 2025 · 2 Passengers</p>
+        </div>
+        <select class="input" style="width:auto;padding:0.5rem 1rem;" onchange="TravelApp.showToast('Sorting flights','info')">
+          <option>💰 Price: Lowest</option>
+          <option>⏱️ Duration: Shortest</option>
+          <option>🕐 Departure: Earliest</option>
+          <option>⭐ Best Match</option>
+        </select>
+      </div>
+
+      <!-- Price Timeline -->
+      <div class="glass-card" style="padding:1.5rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.05em;">💹 Price Calendar — Click a date to see flights</div>
+        <div style="display:flex;gap:0.5rem;overflow-x:auto;">
+          <div class="price-date" onclick="selectDate(this,'Jul 13')">
+            <div style="font-size:0.7rem;color:var(--text-muted);">Jul 13</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--text-primary);">$689</div>
+          </div>
+          <div class="price-date" onclick="selectDate(this,'Jul 14')">
+            <div style="font-size:0.7rem;color:var(--text-muted);">Jul 14</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--text-primary);">$712</div>
+          </div>
+          <div class="price-date active" onclick="selectDate(this,'Jul 15')">
+            <div style="font-size:0.7rem;color:var(--teal-400);">Jul 15</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--teal-400);">$649</div>
+            <div style="font-size:0.65rem;color:var(--teal-500);">Best</div>
+          </div>
+          <div class="price-date" onclick="selectDate(this,'Jul 16')">
+            <div style="font-size:0.7rem;color:var(--text-muted);">Jul 16</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--text-primary);">$735</div>
+          </div>
+          <div class="price-date" onclick="selectDate(this,'Jul 17')">
+            <div style="font-size:0.7rem;color:var(--text-muted);">Jul 17</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--text-primary);">$698</div>
+          </div>
+          <div class="price-date" onclick="selectDate(this,'Jul 18')">
+            <div style="font-size:0.7rem;color:var(--text-muted);">Jul 18</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--text-primary);">$780</div>
+          </div>
+          <div class="price-date" onclick="selectDate(this,'Jul 19')">
+            <div style="font-size:0.7rem;color:var(--text-muted);">Jul 19</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--error);">$892</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FLIGHT CARDS -->
+      <div id="flights-list">
+
+        <!-- Flight 1 -->
+        <div class="flight-card" onclick="selectFlight(this)" id="flight-1">
+          <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+            <div class="flight-airline">
+              <div class="airline-logo">AF</div>
+              <div>
+                <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">Air France</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);">AF 007 · Economy</div>
+              </div>
+            </div>
+
+            <div class="flight-route" style="flex:1;">
+              <div style="text-align:center;">
+                <div class="flight-time">08:15</div>
+                <div class="flight-code">JFK</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);">New York</div>
+              </div>
+
+              <div class="flight-path" style="flex:1;">
+                <div class="flight-duration">7h 40m</div>
+                <div class="flight-line">
+                  <div class="flight-plane">✈️</div>
+                </div>
+                <div class="flight-stops" style="color:var(--success);font-weight:600;">Direct</div>
+              </div>
+
+              <div style="text-align:center;">
+                <div class="flight-time">22:55</div>
+                <div class="flight-code">CDG</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);">Paris</div>
+              </div>
+            </div>
+
+            <div class="flight-price-col">
+              <div style="font-size:0.7rem;color:var(--text-muted);">per person</div>
+              <div class="flight-price">$649</div>
+              <div style="font-size:0.7rem;color:var(--text-muted);">Total: $1,298</div>
+              <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+                <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openFlightModal('Air France','AF 007','08:15','22:55','JFK','CDG','7h 40m','Direct','$649')">Details</button>
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();TravelApp.showToast('Booking Air France!','success')">Book</button>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-color);font-size:0.75rem;color:var(--text-muted);">
+            <span>🧳 23kg bag included</span>
+            <span>🍽️ Meal included</span>
+            <span>✅ Free cancellation 24h</span>
+            <span>💺 Seat selection: $25</span>
+          </div>
+        </div>
+
+        <!-- Flight 2 -->
+        <div class="flight-card" onclick="selectFlight(this)" id="flight-2">
+          <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+            <div class="flight-airline">
+              <div class="airline-logo" style="background:linear-gradient(135deg,#C41E3A,#8B0000);">DL</div>
+              <div>
+                <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">Delta Airlines</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);">DL 264 · Economy+</div>
+              </div>
+            </div>
+
+            <div class="flight-route" style="flex:1;">
+              <div style="text-align:center;">
+                <div class="flight-time">10:30</div>
+                <div class="flight-code">JFK</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);">New York</div>
+              </div>
+              <div class="flight-path" style="flex:1;">
+                <div class="flight-duration">8h 15m</div>
+                <div class="flight-line"><div class="flight-plane">✈️</div></div>
+                <div class="flight-stops" style="color:var(--success);font-weight:600;">Direct</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="flight-time">01:45<span style="font-size:0.65rem;color:var(--warning);">+1</span></div>
+                <div class="flight-code">CDG</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);">Paris</div>
+              </div>
+            </div>
+
+            <div class="flight-price-col">
+              <div style="font-size:0.7rem;color:var(--text-muted);">per person</div>
+              <div class="flight-price">$589</div>
+              <div style="font-size:0.7rem;color:var(--text-muted);">Total: $1,178</div>
+              <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+                <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openFlightModal('Delta Airlines','DL 264','10:30','01:45','JFK','CDG','8h 15m','Direct','$589')">Details</button>
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();TravelApp.showToast('Booking Delta!','success')">Book</button>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-color);font-size:0.75rem;color:var(--text-muted);">
+            <span>🧳 23kg bag: $40</span>
+            <span>🍽️ Meal included</span>
+            <span>💺 Comfort seat included</span>
+          </div>
+        </div>
+
+        <!-- Flight 3 - With stop -->
+        <div class="flight-card" onclick="selectFlight(this)" id="flight-3">
+          <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+            <div class="flight-airline">
+              <div class="airline-logo" style="background:linear-gradient(135deg,#005EB8,#003087);">BA</div>
+              <div>
+                <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">British Airways</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);">BA 178 + 321 · Economy</div>
+              </div>
+            </div>
+
+            <div class="flight-route" style="flex:1;">
+              <div style="text-align:center;">
+                <div class="flight-time">14:20</div>
+                <div class="flight-code">JFK</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);">New York</div>
+              </div>
+              <div class="flight-path" style="flex:1;">
+                <div class="flight-duration">10h 50m</div>
+                <div class="flight-line"><div class="flight-plane">✈️</div></div>
+                <div class="flight-stops" style="color:var(--warning);font-weight:600;">1 Stop · LHR (2h layover)</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="flight-time">09:10<span style="font-size:0.65rem;color:var(--warning);">+1</span></div>
+                <div class="flight-code">CDG</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);">Paris</div>
+              </div>
+            </div>
+
+            <div class="flight-price-col">
+              <div style="font-size:0.7rem;text-decoration:line-through;color:var(--text-muted);">$720</div>
+              <div class="flight-price" style="color:var(--success);">$498</div>
+              <div style="font-size:0.7rem;color:var(--text-muted);">Total: $996</div>
+              <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+                <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openFlightModal('British Airways','BA 178','14:20','09:10','JFK','CDG','10h 50m','1 Stop (LHR)','$498')">Details</button>
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();TravelApp.showToast('Booking BA!','success')">Book</button>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-color);font-size:0.75rem;color:var(--text-muted);">
+            <span>🧳 23kg bag: $50</span>
+            <span>🍽️ Snack only</span>
+            <span>⚠️ Tight connection at LHR</span>
+          </div>
+        </div>
+
+        <!-- Flight 4 - Business -->
+        <div class="flight-card" onclick="selectFlight(this)" id="flight-4">
+          <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+            <div class="flight-airline">
+              <div class="airline-logo" style="background:linear-gradient(135deg,#006233,#003a1c);">EK</div>
+              <div>
+                <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">Emirates</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);">EK 201 · Business Class</div>
+              </div>
+            </div>
+
+            <div class="flight-route" style="flex:1;">
+              <div style="text-align:center;">
+                <div class="flight-time">22:00</div>
+                <div class="flight-code">JFK</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);">New York</div>
+              </div>
+              <div class="flight-path" style="flex:1;">
+                <div class="flight-duration">7h 55m</div>
+                <div class="flight-line"><div class="flight-plane">✈️</div></div>
+                <div class="flight-stops" style="color:var(--success);font-weight:600;">Direct</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="flight-time">11:55<span style="font-size:0.65rem;color:var(--warning);">+1</span></div>
+                <div class="flight-code">CDG</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);">Paris</div>
+              </div>
+            </div>
+
+            <div class="flight-price-col">
+              <div style="font-size:0.7rem;color:var(--text-muted);">per person</div>
+              <div class="flight-price" style="color:var(--warning);">$2,199</div>
+              <div style="font-size:0.7rem;color:var(--text-muted);">Total: $4,398</div>
+              <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+                <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openFlightModal('Emirates','EK 201','22:00','11:55','JFK','CDG','7h 55m','Direct','$2,199')">Details</button>
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();TravelApp.showToast('Booking Emirates Business!','success')">Book</button>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-color);font-size:0.75rem;color:var(--text-muted);">
+            <span>🧳 32kg bag x2 included</span>
+            <span>🍽️ Gourmet dining</span>
+            <span>🛏️ Lie-flat bed</span>
+            <span>🍸 Champagne included</span>
+            <span>🚗 Chauffeur transfer</span>
+          </div>
+        </div>
+
+      </div><!-- /flights-list -->
+    </div>
+  </div>
+</div>
+
+<!-- FLIGHT DETAIL MODAL -->
+<div class="modal-overlay" id="flight-detail-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h4 id="modal-flight-title">Flight Details</h4>
+      <button class="btn btn-ghost btn-sm" data-modal-close="flight-detail-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--gradient-hero);border-radius:1rem;padding:2rem;margin-bottom:1.5rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+          <div style="text-align:center;">
+            <div style="font-size:2rem;font-weight:800;color:white;" id="modal-dep-time">08:15</div>
+            <div style="color:var(--teal-300);font-weight:700;" id="modal-dep-code">JFK</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">New York</div>
+          </div>
+          <div style="flex:1;text-align:center;">
+            <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);" id="modal-duration">7h 40m</div>
+            <div style="border-top:2px solid rgba(255,255,255,0.3);margin:0.5rem 0;position:relative;"><span style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:1.25rem;">✈️</span></div>
+            <div style="font-size:0.75rem;color:var(--teal-300);font-weight:600;" id="modal-stops">Direct</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:2rem;font-weight:800;color:white;" id="modal-arr-time">22:55</div>
+            <div style="color:var(--teal-300);font-weight:700;" id="modal-arr-code">CDG</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Paris</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div class="stat-card" style="text-align:center;"><div class="stat-value" style="font-size:1.5rem;" id="modal-flight-price">$649</div><div class="stat-label">Per Person</div></div>
+        <div class="stat-card" style="text-align:center;"><div class="stat-value" style="font-size:1.5rem;">23kg</div><div class="stat-label">Baggage</div></div>
+        <div class="stat-card" style="text-align:center;"><div class="stat-value" style="font-size:1.5rem;color:var(--success);">Free</div><div class="stat-label">Cancellation</div></div>
+      </div>
+      <div style="padding:1rem;border-radius:0.75rem;background:rgba(0,188,212,0.08);border:1px solid rgba(0,188,212,0.2);">
+        <div style="font-size:0.8rem;font-weight:700;color:var(--teal-500);margin-bottom:0.75rem;">Fare Includes</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;font-size:0.8rem;color:var(--text-secondary);">
+          <span>✅ 1x Carry-on bag</span>
+          <span>✅ 1x Checked bag (23kg)</span>
+          <span>✅ In-flight meal</span>
+          <span>✅ Entertainment</span>
+          <span>✅ Free seat selection</span>
+          <span>✅ 24h free cancellation</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-modal-close="flight-detail-modal">Close</button>
+      <button class="btn btn-primary" onclick="TravelApp.showToast('Proceeding to checkout!','success');closeModal('flight-detail-modal')">Select This Flight →</button>
+    </div>
+  </div>
+</div>
+
+<button class="back-to-top" id="back-to-top">↑</button>
+
+<style>
+.price-date {
+  min-width:70px;padding:0.75rem;border-radius:0.75rem;text-align:center;cursor:pointer;
+  background:var(--bg-card);border:1px solid var(--border-color);transition:all 0.2s;
+}
+.price-date:hover { border-color:var(--teal-500);background:rgba(0,188,212,0.05); }
+.price-date.active { border-color:var(--teal-500);background:rgba(0,188,212,0.1); }
+[data-theme="dark"] .price-date { background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1); }
+</style>
+
+<script src="js/main.js"></script>
+<script>
+function searchFlights() {
+  const from = document.getElementById('from-city').value;
+  const to = document.getElementById('to-city').value;
+  if (!from || !to) { TravelApp.showToast('Please enter origin and destination', 'warning'); return; }
+  document.getElementById('flight-route-title').textContent = `${from} → ${to}`;
+  TravelApp.showToast(`Searching flights from ${from} to ${to}...`, 'info');
+}
+
+function swapCities() {
+  const from = document.getElementById('from-city');
+  const to = document.getElementById('to-city');
+  [from.value, to.value] = [to.value, from.value];
+}
+
+function setRoute(from, to) {
+  document.getElementById('from-city').value = from;
+  document.getElementById('to-city').value = to;
+  document.getElementById('flight-route-title').textContent = `${from} → ${to}`;
+  TravelApp.showToast(`Route set: ${from} → ${to}`, 'info');
+}
+
+function setTripType(el, type) {
+  document.querySelectorAll('#trip-type .tag').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const retGroup = document.getElementById('return-date-group');
+  if (type === 'oneway') retGroup.style.display = 'none';
+  else retGroup.style.display = '';
+}
+
+function selectFlight(card) {
+  document.querySelectorAll('.flight-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  TravelApp.showToast('Flight selected! Continue to select return flight.', 'success');
+}
+
+function selectDate(el, date) {
+  document.querySelectorAll('.price-date').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+  TravelApp.showToast(`Showing flights for ${date}`, 'info');
+}
+
+function openFlightModal(airline, flightNo, dep, arr, from, to, dur, stops, price) {
+  document.getElementById('modal-flight-title').textContent = `✈️ ${airline} ${flightNo}`;
+  document.getElementById('modal-dep-time').textContent = dep;
+  document.getElementById('modal-arr-time').textContent = arr;
+  document.getElementById('modal-dep-code').textContent = from;
+  document.getElementById('modal-arr-code').textContent = to;
+  document.getElementById('modal-duration').textContent = dur;
+  document.getElementById('modal-stops').textContent = stops;
+  document.getElementById('modal-flight-price').textContent = price;
+  openModal('flight-detail-modal');
+}
+
+// Set today's dates
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('dep-date').value = today;
+const ret = new Date(); ret.setDate(ret.getDate() + 7);
+document.getElementById('ret-date').value = ret.toISOString().split('T')[0];
+</script>
+</body>
+</html>

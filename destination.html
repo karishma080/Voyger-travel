@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explore stunning travel destinations with detailed guides, galleries, weather info, and local attractions." />
+  <title>Destinations – Voyger</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar scrolled" id="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">✈️</div>
+        Voyger
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="destination.html" class="nav-link active">Destinations</a></li>
+        <li><a href="trip-planner.html" class="nav-link">Plan Trip</a></li>
+        <li><a href="hotels.html" class="nav-link">Hotels</a></li>
+        <li><a href="flights.html" class="nav-link">Flights</a></li>
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle">🌙</button>
+        <a href="profile.html" class="btn btn-primary btn-sm">My Profile</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="destination.html" class="nav-link">🌍 Destinations</a>
+  <a href="trip-planner.html" class="nav-link">📅 Plan Trip</a>
+  <a href="hotels.html" class="nav-link">🏨 Hotels</a>
+  <a href="flights.html" class="nav-link">✈️ Flights</a>
+  <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+  <a href="profile.html" class="nav-link">👤 Profile</a>
+</div>
+
+<!-- DESTINATION HERO -->
+<section class="destination-hero" id="dest-hero">
+  <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&q=80" alt="Paris" class="destination-hero-img" id="hero-img" />
+  <div class="destination-hero-overlay">
+    <div class="container">
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <span class="badge badge-teal">🌍 Western Europe</span>
+        <span class="badge badge-success">✅ Visa Free for EU</span>
+        <span class="badge badge-warning">⭐ Top Rated</span>
+      </div>
+      <h1 style="color:white;font-family:var(--font-display);margin-bottom:0.5rem;" id="dest-name">Paris, France</h1>
+      <p style="color:rgba(255,255,255,0.8);font-size:1.1rem;margin-bottom:1.5rem;">The City of Love — where romance, art, cuisine, and history blend into perfection.</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="TravelApp.showToast('Starting trip plan for Paris!','success')">📅 Plan This Trip</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">🖼️ View Gallery</button>
+        <button class="btn btn-secondary" onclick="TravelApp.showToast('Added Paris to wishlist!','success')">❤️ Save</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINATION SELECTOR TABS -->
+<div style="background:var(--bg-secondary);border-bottom:1px solid var(--border-color);position:sticky;top:70px;z-index:50;">
+  <div class="container">
+    <div style="display:flex;gap:0.5rem;overflow-x:auto;padding:1rem 0;">
+      <button class="dest-selector-btn tag active" data-dest="paris" onclick="switchDest(this,'paris','Paris, France','https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&q=80','🇫🇷 France')">🗼 Paris</button>
+      <button class="dest-selector-btn tag" data-dest="bali" onclick="switchDest(this,'bali','Bali, Indonesia','https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1920&q=80','🇮🇩 Indonesia')">🌴 Bali</button>
+      <button class="dest-selector-btn tag" data-dest="tokyo" onclick="switchDest(this,'tokyo','Tokyo, Japan','https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&q=80','🇯🇵 Japan')">🗾 Tokyo</button>
+      <button class="dest-selector-btn tag" data-dest="santorini" onclick="switchDest(this,'santorini','Santorini, Greece','https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1920&q=80','🇬🇷 Greece')">🏛️ Santorini</button>
+      <button class="dest-selector-btn tag" data-dest="maldives" onclick="switchDest(this,'maldives','Maldives','https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=1920&q=80','🇲🇻 Maldives')">🐠 Maldives</button>
+      <button class="dest-selector-btn tag" data-dest="dubai" onclick="switchDest(this,'dubai','Dubai, UAE','https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920&q=80','🇦🇪 UAE')">🏙️ Dubai</button>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="padding-top:3rem;padding-bottom:3rem;">
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start;">
+    
+    <!-- MAIN CONTENT -->
+    <div>
+      <!-- Gallery -->
+      <section id="gallery" style="margin-bottom:3rem;" class="reveal">
+        <h3 style="margin-bottom:1.5rem;color:var(--text-primary);">🖼️ Photo Gallery</h3>
+        <div class="gallery-grid">
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80" alt="Paris 1" />
+          </div>
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1543349689-9a4d426bee8e?w=400&q=80" alt="Paris 2" />
+          </div>
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1471623432079-b009d30b6729?w=400&q=80" alt="Paris 3" />
+          </div>
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=400&q=80" alt="Paris 4" />
+          </div>
+          <div class="gallery-item" style="position:relative;">
+            <img src="https://images.unsplash.com/photo-1549144511-f099e773c147?w=400&q=80" alt="Paris 5" />
+            <div class="gallery-more" onclick="TravelApp.showToast('Full gallery opening...','info')">+12 More</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Description -->
+      <section style="margin-bottom:3rem;" class="reveal">
+        <h3 style="margin-bottom:1rem;color:var(--text-primary);">📖 About Paris</h3>
+        <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:1rem;">
+          Paris, the capital of France, is a major European city and a global center for art, fashion, gastronomy, and culture. Its 19th-century cityscape is crisscrossed by wide boulevards and the River Seine.
+        </p>
+        <p style="color:var(--text-secondary);line-height:1.8;">
+          Beyond such landmarks as the Eiffel Tower and the 12th-century Gothic Notre-Dame Cathedral, the city is known for its café culture and fashion houses, the Musée du Louvre and the Pompidou Center.
+        </p>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;">
+          <span class="tag">🗣️ French</span>
+          <span class="tag">💶 Euro (€)</span>
+          <span class="tag">🕐 CET +1</span>
+          <span class="tag">✈️ CDG Airport</span>
+          <span class="tag">🚇 Metro System</span>
+        </div>
+      </section>
+
+      <!-- Attractions -->
+      <section style="margin-bottom:3rem;">
+        <h3 style="margin-bottom:1.5rem;color:var(--text-primary);">🎯 Top Attractions</h3>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div class="attraction-card reveal">
+            <div class="attraction-icon">🗼</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;color:var(--text-primary);">Eiffel Tower</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">Champ de Mars, 5 Avenue Anatole</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.8rem;font-weight:600;color:var(--teal-500);">€26</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Entry fee</div>
+            </div>
+          </div>
+          <div class="attraction-card reveal delay-100">
+            <div class="attraction-icon">🖼️</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;color:var(--text-primary);">Louvre Museum</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">Rue de Rivoli, 75001 Paris</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.8rem;font-weight:600;color:var(--teal-500);">€17</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Entry fee</div>
+            </div>
+          </div>
+          <div class="attraction-card reveal delay-200">
+            <div class="attraction-icon">⛪</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;color:var(--text-primary);">Notre-Dame Cathedral</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">6 Parvis Notre-Dame</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.8rem;font-weight:600;color:var(--success);">Free</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Entry fee</div>
+            </div>
+          </div>
+          <div class="attraction-card reveal delay-300">
+            <div class="attraction-icon">🎨</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;color:var(--text-primary);">Musée d'Orsay</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">1 Rue de la Légion d'Honneur</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.8rem;font-weight:600;color:var(--teal-500);">€16</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Entry fee</div>
+            </div>
+          </div>
+          <div class="attraction-card reveal delay-400">
+            <div class="attraction-icon">🏰</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;color:var(--text-primary);">Palace of Versailles</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">Place d'Armes, Versailles</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.8rem;font-weight:600;color:var(--teal-500);">€20</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Entry fee</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Nearby Hotels -->
+      <section style="margin-bottom:3rem;">
+        <h3 style="margin-bottom:1.5rem;color:var(--text-primary);">🏨 Nearby Hotels</h3>
+        <div class="grid-2 grid">
+          <div class="card">
+            <div class="card-img-wrapper">
+              <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&q=80" alt="Hotel" class="card-img" />
+            </div>
+            <div class="card-body">
+              <div class="stars" style="margin-bottom:0.5rem;">★★★★★</div>
+              <div class="card-title" style="font-size:1rem;">Le Marais Boutique</div>
+              <div style="font-size:0.85rem;color:var(--teal-500);font-weight:700;margin-top:0.5rem;">$199/night</div>
+              <button class="btn btn-primary btn-sm" style="margin-top:0.75rem;width:100%;" onclick="window.location.href='hotels.html'">Book Now</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-img-wrapper">
+              <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&q=80" alt="Hotel" class="card-img" />
+            </div>
+            <div class="card-body">
+              <div class="stars" style="margin-bottom:0.5rem;">★★★★☆</div>
+              <div class="card-title" style="font-size:1rem;">Champs-Élysées Grand</div>
+              <div style="font-size:0.85rem;color:var(--teal-500);font-weight:700;margin-top:0.5rem;">$329/night</div>
+              <button class="btn btn-primary btn-sm" style="margin-top:0.75rem;width:100%;" onclick="window.location.href='hotels.html'">Book Now</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reviews -->
+      <section>
+        <h3 style="margin-bottom:1.5rem;color:var(--text-primary);">💬 Traveler Reviews</h3>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div class="review-card">
+            <div class="review-quote">"</div>
+            <div class="stars">★★★★★</div>
+            <p class="review-text">"Paris exceeded every expectation. The Eiffel Tower at night, the Seine cruise, the incredible food — it's the most romantic city I've ever visited."</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" class="reviewer-avatar" alt="Emily" />
+              <div><div class="reviewer-name">Emily Chen</div><div class="reviewer-location">🇨🇦 Toronto, Canada</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-quote">"</div>
+            <div class="stars">★★★★★</div>
+            <p class="review-text">"The museum pass was worth every penny. We fit in 8 museums in 5 days! Paris is perfectly walkable and the café culture is something you just have to experience."</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80" class="reviewer-avatar" alt="James" />
+              <div><div class="reviewer-name">James Walker</div><div class="reviewer-location">🇬🇧 London, UK</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div style="display:flex;flex-direction:column;gap:1.5rem;position:sticky;top:130px;">
+      
+      <!-- Quick Info -->
+      <div class="glass-card" style="padding:1.5rem;">
+        <h5 style="margin-bottom:1.25rem;color:var(--text-primary);">📊 Quick Info</h5>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:var(--text-secondary);font-size:0.85rem;">🌡️ Best Time</span>
+            <span style="font-weight:600;font-size:0.85rem;color:var(--text-primary);">Apr – Jun</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:var(--text-secondary);font-size:0.85rem;">💰 Avg Daily Cost</span>
+            <span style="font-weight:600;font-size:0.85rem;color:var(--teal-500);">$120–$200</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:var(--text-secondary);font-size:0.85rem;">🕐 Time Zone</span>
+            <span style="font-weight:600;font-size:0.85rem;color:var(--text-primary);">CET (UTC+1)</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:var(--text-secondary);font-size:0.85rem;">✈️ Flight Time</span>
+            <span style="font-weight:600;font-size:0.85rem;color:var(--text-primary);">~8h from NYC</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:var(--text-secondary);font-size:0.85rem;">🛂 Visa</span>
+            <span style="font-weight:600;font-size:0.85rem;color:var(--success);">Visa-Free (EU)</span>
+          </div>
+        </div>
+        <hr style="border:1px solid var(--border-color);margin:1.25rem 0;" />
+        <button class="btn btn-primary" style="width:100%;" onclick="window.location.href='trip-planner.html'">📅 Plan My Trip Here</button>
+        <button class="btn btn-ghost" style="width:100%;margin-top:0.5rem;" onclick="window.location.href='flights.html'">✈️ Find Flights</button>
+      </div>
+
+      <!-- Weather -->
+      <div class="weather-widget">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="weather-temp">22°C</div>
+            <div class="weather-desc">Partly Cloudy</div>
+            <div style="color:rgba(255,255,255,0.6);font-size:0.8rem;margin-top:0.5rem;">Paris, France</div>
+          </div>
+          <div style="font-size:4rem;">⛅</div>
+        </div>
+        <div style="display:flex;gap:1.5rem;margin-top:1rem;font-size:0.8rem;color:rgba(255,255,255,0.7);">
+          <span>💧 65% humidity</span>
+          <span>💨 12 km/h</span>
+        </div>
+        <div class="weather-grid" style="margin-top:1.25rem;grid-template-columns:repeat(7,1fr);">
+          <div class="weather-day active"><div class="weather-day-name">Mon</div><div class="weather-day-icon">⛅</div><div class="weather-day-temp">22°</div></div>
+          <div class="weather-day"><div class="weather-day-name">Tue</div><div class="weather-day-icon">☀️</div><div class="weather-day-temp">25°</div></div>
+          <div class="weather-day"><div class="weather-day-name">Wed</div><div class="weather-day-icon">🌧️</div><div class="weather-day-temp">18°</div></div>
+          <div class="weather-day"><div class="weather-day-name">Thu</div><div class="weather-day-icon">⛅</div><div class="weather-day-temp">20°</div></div>
+          <div class="weather-day"><div class="weather-day-name">Fri</div><div class="weather-day-icon">☀️</div><div class="weather-day-temp">26°</div></div>
+          <div class="weather-day"><div class="weather-day-name">Sat</div><div class="weather-day-icon">☀️</div><div class="weather-day-temp">28°</div></div>
+          <div class="weather-day"><div class="weather-day-name">Sun</div><div class="weather-day-icon">🌤️</div><div class="weather-day-temp">24°</div></div>
+        </div>
+      </div>
+
+      <!-- Map Placeholder -->
+      <div class="glass-card" style="padding:1.5rem;">
+        <h5 style="margin-bottom:1rem;color:var(--text-primary);">📍 Location</h5>
+        <div style="border-radius:0.75rem;overflow:hidden;height:180px;background:linear-gradient(135deg,var(--primary-800),var(--primary-700));display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;" onclick="TravelApp.showToast('Opening maps...','info')">
+          <div style="text-align:center;color:rgba(255,255,255,0.6);">
+            <div style="font-size:3rem;margin-bottom:0.5rem;">🗺️</div>
+            <div style="font-size:0.85rem;">Click to open Google Maps</div>
+          </div>
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,188,212,0.03) 0px,rgba(0,188,212,0.03) 1px,transparent 1px,transparent 30px),repeating-linear-gradient(90deg,rgba(0,188,212,0.03) 0px,rgba(0,188,212,0.03) 1px,transparent 1px,transparent 30px);pointer-events:none;"></div>
+        </div>
+        <div style="margin-top:0.75rem;font-size:0.8rem;color:var(--text-muted);text-align:center;">Paris, Île-de-France, France</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER (condensed) -->
+<footer class="footer">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,0.08);">
+      <div class="logo" style="color:white;">
+        <div class="logo-icon">✈️</div>
+        Wander<span class="brand-accent">Lux</span>
+      </div>
+      <div style="display:flex;gap:2rem;">
+        <a href="index.html" style="color:var(--gray-400);font-size:0.875rem;">Home</a>
+        <a href="hotels.html" style="color:var(--gray-400);font-size:0.875rem;">Hotels</a>
+        <a href="flights.html" style="color:var(--gray-400);font-size:0.875rem;">Flights</a>
+        <a href="contact.html" style="color:var(--gray-400);font-size:0.875rem;">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom" style="border:none;padding-top:1.5rem;">
+      <span>© 2025 Voyger. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<button class="back-to-top" id="back-to-top">↑</button>
+
+<script src="js/main.js"></script>
+<script>
+function switchDest(el, key, name, imgUrl, country) {
+  document.querySelectorAll('.dest-selector-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('hero-img').style.opacity = 0;
+  document.getElementById('dest-name').textContent = name;
+  setTimeout(() => {
+    document.getElementById('hero-img').src = imgUrl;
+    document.getElementById('hero-img').style.opacity = 1;
+  }, 300);
+}
+document.getElementById('hero-img').style.transition = 'opacity 0.3s';
+
+// Weather day click
+document.querySelectorAll('.weather-day').forEach(day => {
+  day.addEventListener('click', () => {
+    document.querySelectorAll('.weather-day').forEach(d => d.classList.remove('active'));
+    day.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
