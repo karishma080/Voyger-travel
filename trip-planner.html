@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Plan your perfect trip with Voyger interactive trip planner — itinerary, budget tracker, calendar, and packing list." />
+  <title>Trip Planner – Voyger</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    body { background: var(--bg-primary); }
+    .planner-page { padding-top: 80px; min-height: 100vh; }
+    .planner-header {
+      background: 
+        linear-gradient(to bottom, rgba(10,22,40,0.5) 0%, rgba(10,22,40,0.9) 100%),
+        url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2000') center/cover no-repeat;
+      padding: 3rem 0 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .planner-header::before {
+      content:'';position:absolute;inset:0;
+      background: radial-gradient(circle at 80% 50%, rgba(0,188,212,0.15), transparent);
+    }
+    .planner-tabs {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 70px;
+      z-index: 40;
+    }
+    .planner-tabs .tab-list { border-bottom: none; padding: 0 2rem; }
+    .budget-category { display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:0.75rem;transition:background 0.2s; }
+    .budget-category:hover { background:rgba(0,188,212,0.05); }
+    .budget-dot { width:12px;height:12px;border-radius:50%;flex-shrink:0; }
+    .note-area { width:100%;border:1px solid var(--border-color);border-radius:0.75rem;padding:1rem;font-family:var(--font-primary);font-size:0.9rem;resize:vertical;min-height:120px;color:var(--text-primary);background:var(--bg-secondary);outline:none;transition:border-color 0.2s; }
+    .note-area:focus { border-color:var(--teal-500);box-shadow:0 0 0 3px rgba(0,188,212,0.1); }
+    [data-theme="dark"] .note-area { background:rgba(255,255,255,0.05); }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar scrolled" id="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">✈️</div>
+        Voyger
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="destination.html" class="nav-link">Destinations</a></li>
+        <li><a href="trip-planner.html" class="nav-link active">Plan Trip</a></li>
+        <li><a href="hotels.html" class="nav-link">Hotels</a></li>
+        <li><a href="flights.html" class="nav-link">Flights</a></li>
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle">🌙</button>
+        <a href="profile.html" class="btn btn-primary btn-sm">My Profile</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="destination.html" class="nav-link">🌍 Destinations</a>
+  <a href="trip-planner.html" class="nav-link">📅 Plan Trip</a>
+  <a href="hotels.html" class="nav-link">🏨 Hotels</a>
+  <a href="flights.html" class="nav-link">✈️ Flights</a>
+  <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+</div>
+
+<div class="planner-page">
+  <!-- HEADER -->
+  <div class="planner-header">
+    <div class="container" style="position:relative;z-index:1;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <div class="badge badge-teal" style="margin-bottom:0.75rem;">📅 Trip Planner</div>
+          <h2 style="color:white;margin-bottom:0.5rem;font-family:var(--font-display);" id="trip-title">Paris Getaway 2025</h2>
+          <p style="color:rgba(255,255,255,0.7);">📍 Paris, France &nbsp;·&nbsp; 📅 July 15 – July 22 &nbsp;·&nbsp; 👥 2 Travelers</p>
+        </div>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button class="btn btn-secondary" onclick="TravelApp.showToast('Trip saved!','success')">💾 Save Trip</button>
+          <button class="btn btn-secondary" onclick="TravelApp.showToast('Sharing trip...','info')">🔗 Share</button>
+          <button class="btn btn-primary" onclick="TravelApp.showToast('Exporting PDF...','info')">📄 Export PDF</button>
+        </div>
+      </div>
+
+      <!-- Stats Bar -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;" class="reveal">
+        <div class="glass" style="padding:1rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:800;color:white;">7</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Days</div>
+        </div>
+        <div class="glass" style="padding:1rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:800;color:var(--teal-400);">18</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Activities</div>
+        </div>
+        <div class="glass" style="padding:1rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:800;color:var(--sky-400);">$3,200</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Budget</div>
+        </div>
+        <div class="glass" style="padding:1rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:800;color:var(--success);">68%</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Planned</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANNER TABS -->
+  <div class="planner-tabs">
+    <div data-tabs>
+      <div class="tab-list" style="padding:0 2rem;">
+        <button class="tab-btn active">🗓️ Itinerary</button>
+        <button class="tab-btn">📅 Calendar</button>
+        <button class="tab-btn">💰 Budget</button>
+        <button class="tab-btn">🎒 Packing</button>
+        <button class="tab-btn">📝 Notes</button>
+      </div>
+
+      <div class="container" style="padding-top:2rem;padding-bottom:3rem;">
+
+        <!-- TAB 1: ITINERARY -->
+        <div class="tab-content active">
+          <div style="display:grid;grid-template-columns:280px 1fr;gap:1.5rem;">
+            <!-- Calendar Widget -->
+            <div>
+              <div class="calendar-widget">
+                <div class="calendar-header">
+                  <button class="btn btn-ghost btn-sm" onclick="changeMonth(-1)">‹</button>
+                  <strong style="font-size:0.9rem;color:var(--text-primary);" id="cal-month">July 2025</strong>
+                  <button class="btn btn-ghost btn-sm" onclick="changeMonth(1)">›</button>
+                </div>
+                <div class="calendar-grid" id="cal-grid">
+                  <!-- Generated by JS -->
+                </div>
+              </div>
+
+              <!-- Day Selector -->
+              <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;" id="day-list">
+                <button class="tag active" onclick="selectDay(this, 'Day 1')">📅 Day 1 – July 15</button>
+                <button class="tag" onclick="selectDay(this, 'Day 2')">📅 Day 2 – July 16</button>
+                <button class="tag" onclick="selectDay(this, 'Day 3')">📅 Day 3 – July 17</button>
+                <button class="tag" onclick="selectDay(this, 'Day 4')">📅 Day 4 – July 18</button>
+                <button class="tag" onclick="selectDay(this, 'Day 5')">📅 Day 5 – July 19</button>
+                <button class="tag" onclick="selectDay(this, 'Day 6')">📅 Day 6 – July 20</button>
+                <button class="tag" onclick="selectDay(this, 'Day 7')">📅 Day 7 – July 21</button>
+              </div>
+            </div>
+
+            <!-- Timeline -->
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+                <h4 style="color:var(--text-primary);" id="active-day-title">Day 1 – July 15, Paris</h4>
+                <button class="btn btn-primary btn-sm" onclick="openModal('add-activity-modal')">+ Add Activity</button>
+              </div>
+
+              <div class="timeline" id="itinerary-timeline">
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-time">09:00 AM</div>
+                  <div class="timeline-card">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                      <div>
+                        <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">🛬 Arrival at CDG Airport</div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);">Charles de Gaulle International Airport</div>
+                        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
+                          <span class="badge badge-blue">✈️ Transport</span>
+                        </div>
+                      </div>
+                      <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-dot" style="background:var(--warning);"></div>
+                  <div class="timeline-time">11:30 AM</div>
+                  <div class="timeline-card">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                      <div>
+                        <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">🏨 Hotel Check-in – Le Marais</div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);">3 Rue des Archives, Paris 75004</div>
+                        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
+                          <span class="badge badge-teal">🏨 Hotel</span>
+                          <span class="badge badge-success">✅ Confirmed</span>
+                        </div>
+                      </div>
+                      <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-dot" style="background:var(--success);"></div>
+                  <div class="timeline-time">02:00 PM</div>
+                  <div class="timeline-card">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                      <div>
+                        <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">🗼 Visit Eiffel Tower</div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);">Champ de Mars – Est. 2h · €26 entry</div>
+                        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
+                          <span class="badge badge-teal">🎯 Attraction</span>
+                        </div>
+                      </div>
+                      <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-dot" style="background:var(--sky-400);"></div>
+                  <div class="timeline-time">06:30 PM</div>
+                  <div class="timeline-card">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                      <div>
+                        <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">🍷 Dinner at Café de Flore</div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);">172 Bd Saint-Germain · Reservation at 7pm</div>
+                        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
+                          <span class="badge badge-warning">🍽️ Dining</span>
+                          <span class="badge badge-success">✅ Reserved</span>
+                        </div>
+                      </div>
+                      <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-dot" style="background:var(--primary-400);"></div>
+                  <div class="timeline-time">09:00 PM</div>
+                  <div class="timeline-card">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                      <div>
+                        <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">🌉 Seine River Night Cruise</div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);">Bateaux Mouches · 1h cruise · €15pp</div>
+                        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
+                          <span class="badge badge-blue">🚢 Experience</span>
+                        </div>
+                      </div>
+                      <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: CALENDAR -->
+        <div class="tab-content">
+          <div style="max-width:700px;margin:0 auto;">
+            <div class="glass-card" style="padding:2rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;">
+                <button class="btn btn-ghost" onclick="changeMonth(-1)">‹ Prev</button>
+                <h4 style="color:var(--text-primary);">July 2025</h4>
+                <button class="btn btn-ghost" onclick="changeMonth(1)">Next ›</button>
+              </div>
+              <div class="calendar-grid" style="gap:0.5rem;" id="big-cal-grid">
+                <!-- Generated by JS -->
+              </div>
+              <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border-color);">
+                <h5 style="color:var(--text-primary);margin-bottom:1rem;">📌 Legend</h5>
+                <div style="display:flex;gap:1.5rem;flex-wrap:wrap;font-size:0.85rem;color:var(--text-secondary);">
+                  <span style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--teal-500);display:inline-block;"></span>Trip Days</span>
+                  <span style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--warning);display:inline-block;"></span>Activities</span>
+                  <span style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--success);display:inline-block;"></span>Today</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: BUDGET -->
+        <div class="tab-content">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+            <!-- Budget Overview -->
+            <div class="glass-card" style="padding:2rem;">
+              <h4 style="color:var(--text-primary);margin-bottom:1.5rem;">💰 Budget Overview</h4>
+              
+              <div style="display:flex;align-items:center;gap:2rem;margin-bottom:2rem;">
+                <!-- Donut Chart (SVG) -->
+                <div class="budget-ring">
+                  <svg viewBox="0 0 150 150">
+                    <defs>
+                      <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:var(--teal-500);" />
+                        <stop offset="100%" style="stop-color:var(--sky-400);" />
+                      </linearGradient>
+                    </defs>
+                    <circle class="budget-ring-bg" cx="75" cy="75" r="60" />
+                    <circle class="budget-ring-fill" cx="75" cy="75" r="60" id="budget-ring" />
+                  </svg>
+                  <div class="budget-ring-text">
+                    <div style="font-size:1.5rem;font-weight:800;color:var(--text-primary);">68%</div>
+                    <div style="font-size:0.7rem;color:var(--text-muted);">Spent</div>
+                  </div>
+                </div>
+
+                <div style="flex:1;">
+                  <div style="margin-bottom:1rem;">
+                    <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.25rem;">
+                      <span style="color:var(--text-secondary);">Total Budget</span>
+                      <span style="font-weight:700;color:var(--text-primary);">$3,200</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.25rem;">
+                      <span style="color:var(--text-secondary);">Spent</span>
+                      <span style="font-weight:700;color:var(--teal-500);">$2,176</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+                      <span style="color:var(--text-secondary);">Remaining</span>
+                      <span style="font-weight:700;color:var(--success);">$1,024</span>
+                    </div>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width:68%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                <div class="budget-category">
+                  <div class="budget-dot" style="background:#00BCD4;"></div>
+                  <div style="flex:1;">
+                    <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">✈️ Flights</div>
+                    <div class="progress-bar" style="margin-top:0.25rem;height:4px;"><div class="progress-fill" style="width:85%;background:linear-gradient(90deg,#00BCD4,#4FC3F7);"></div></div>
+                  </div>
+                  <div style="text-align:right;font-size:0.85rem;font-weight:700;color:var(--text-primary);">$850</div>
+                </div>
+                <div class="budget-category">
+                  <div class="budget-dot" style="background:#4FC3F7;"></div>
+                  <div style="flex:1;">
+                    <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">🏨 Hotels</div>
+                    <div class="progress-bar" style="margin-top:0.25rem;height:4px;"><div class="progress-fill" style="width:70%;background:linear-gradient(90deg,#4FC3F7,#81D4FA);"></div></div>
+                  </div>
+                  <div style="text-align:right;font-size:0.85rem;font-weight:700;color:var(--text-primary);">$700</div>
+                </div>
+                <div class="budget-category">
+                  <div class="budget-dot" style="background:#F59E0B;"></div>
+                  <div style="flex:1;">
+                    <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">🍽️ Dining</div>
+                    <div class="progress-bar" style="margin-top:0.25rem;height:4px;"><div class="progress-fill" style="width:55%;background:linear-gradient(90deg,#F59E0B,#FCD34D);"></div></div>
+                  </div>
+                  <div style="text-align:right;font-size:0.85rem;font-weight:700;color:var(--text-primary);">$350</div>
+                </div>
+                <div class="budget-category">
+                  <div class="budget-dot" style="background:#10B981;"></div>
+                  <div style="flex:1;">
+                    <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">🎯 Activities</div>
+                    <div class="progress-bar" style="margin-top:0.25rem;height:4px;"><div class="progress-fill" style="width:45%;background:linear-gradient(90deg,#10B981,#34D399);"></div></div>
+                  </div>
+                  <div style="text-align:right;font-size:0.85rem;font-weight:700;color:var(--text-primary);">$276</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add Expense -->
+            <div style="display:flex;flex-direction:column;gap:1.5rem;">
+              <div class="glass-card" style="padding:2rem;">
+                <h4 style="color:var(--text-primary);margin-bottom:1.5rem;">➕ Add Expense</h4>
+                <div style="display:flex;flex-direction:column;gap:1rem;">
+                  <div class="input-group">
+                    <label class="input-label">Category</label>
+                    <select class="input" id="expense-cat">
+                      <option>✈️ Flight</option>
+                      <option>🏨 Hotel</option>
+                      <option>🍽️ Dining</option>
+                      <option>🎯 Activity</option>
+                      <option>🚌 Transport</option>
+                      <option>🛍️ Shopping</option>
+                      <option>📦 Other</option>
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <label class="input-label">Description</label>
+                    <input class="input" type="text" placeholder="e.g. Eiffel Tower tickets" id="expense-desc" />
+                  </div>
+                  <div class="input-group">
+                    <label class="input-label">Amount ($)</label>
+                    <input class="input" type="number" placeholder="0.00" id="expense-amount" />
+                  </div>
+                  <button class="btn btn-primary" onclick="addExpense()">Add Expense</button>
+                </div>
+              </div>
+
+              <!-- Expense History -->
+              <div class="glass-card" style="padding:1.5rem;">
+                <h5 style="color:var(--text-primary);margin-bottom:1rem;">📋 Recent Expenses</h5>
+                <div id="expense-list" style="display:flex;flex-direction:column;gap:0.5rem;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;border-radius:0.5rem;background:rgba(0,188,212,0.05);">
+                    <div>
+                      <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">✈️ Return Flights</div>
+                      <div style="font-size:0.75rem;color:var(--text-muted);">July 10</div>
+                    </div>
+                    <div style="font-weight:700;color:var(--teal-500);">$850</div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;border-radius:0.5rem;">
+                    <div>
+                      <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">🏨 Hotel – 7 nights</div>
+                      <div style="font-size:0.75rem;color:var(--text-muted);">July 10</div>
+                    </div>
+                    <div style="font-weight:700;color:var(--teal-500);">$700</div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;border-radius:0.5rem;background:rgba(0,188,212,0.05);">
+                    <div>
+                      <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">🗼 Eiffel Tower (x2)</div>
+                      <div style="font-size:0.75rem;color:var(--text-muted);">July 11</div>
+                    </div>
+                    <div style="font-weight:700;color:var(--teal-500);">$52</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: PACKING -->
+        <div class="tab-content">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;">
+            <!-- Essentials -->
+            <div class="glass-card" style="padding:1.5rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                <h5 style="color:var(--text-primary);">📋 Essentials</h5>
+                <span class="badge badge-teal" id="essentials-count">4/6</span>
+              </div>
+              <div id="essentials-list" style="display:flex;flex-direction:column;gap:0.25rem;">
+                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">🛂 Passport</span></div>
+                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">💳 Credit Cards</span></div>
+                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">📄 Travel Insurance</span></div>
+                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">✈️ Boarding Passes</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox" onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">🔌 Power Adapter</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox" onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">💊 Medications</span></div>
+              </div>
+              <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:1rem;" onclick="addPackItem('essentials-list')">+ Add Item</button>
+            </div>
+
+            <!-- Clothing -->
+            <div class="glass-card" style="padding:1.5rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                <h5 style="color:var(--text-primary);">👔 Clothing</h5>
+                <span class="badge badge-warning">3/8</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:0.25rem;">
+                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div></label><span class="pack-label">👕 T-shirts (5)</span></div>
+                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div></label><span class="pack-label">👖 Jeans (2)</span></div>
+                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div></label><span class="pack-label">🩲 Underwear (7)</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">🧥 Light Jacket</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">👟 Sneakers</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">👞 Dress Shoes</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">🧤 Socks (7 pairs)</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">👒 Hat / Cap</span></div>
+              </div>
+              <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:1rem;" onclick="TravelApp.showToast('Add clothing item','info')">+ Add Item</button>
+            </div>
+
+            <!-- Electronics & Toiletries -->
+            <div class="glass-card" style="padding:1.5rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                <h5 style="color:var(--text-primary);">💻 Tech & Care</h5>
+                <span class="badge badge-blue">2/6</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:0.25rem;">
+                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div></label><span class="pack-label">📱 Smartphone + Charger</span></div>
+                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div></label><span class="pack-label">🎧 Earphones</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">📷 Camera</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">🪥 Toothbrush & Paste</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">🧴 Sunscreen SPF50</span></div>
+                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">🔋 Power Bank</span></div>
+              </div>
+              <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:1rem;" onclick="TravelApp.showToast('Add tech item','info')">+ Add Item</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: NOTES -->
+        <div class="tab-content">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+              <div class="glass-card" style="padding:1.5rem;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                  <h5 style="color:var(--text-primary);">📝 Trip Notes</h5>
+                  <button class="btn btn-primary btn-sm" onclick="saveNote()">💾 Save</button>
+                </div>
+                <textarea class="note-area" id="trip-notes" placeholder="Add your trip notes, reminders, and ideas here...">Key reminders for Paris trip:
+- Book Louvre tickets in advance (skip queues!)
+- Get Navigo weekly metro pass (saves $)
+- Make dinner reservation at Jules Verne (Eiffel Tower restaurant)
+- Download Google Maps offline
+- Exchange $200 USD to EUR at the airport</textarea>
+              </div>
+              <div class="glass-card" style="padding:1.5rem;">
+                <h5 style="color:var(--text-primary);margin-bottom:1rem;">🌐 Useful Contacts</h5>
+                <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.85rem;">
+                  <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-secondary);">🏨 Hotel</span><span style="color:var(--text-primary);font-weight:500;">+33 1 42 72 60 23</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-secondary);">🚑 Emergency</span><span style="color:var(--text-primary);font-weight:500;">112</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-secondary);">✈️ Airline</span><span style="color:var(--text-primary);font-weight:500;">+1-800-AIR-FRANCE</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-secondary);">🏥 Travel Insurance</span><span style="color:var(--text-primary);font-weight:500;">+1-800-INSURE-ME</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card" style="padding:1.5rem;">
+              <h5 style="color:var(--text-primary);margin-bottom:1rem;">💡 AI Travel Tips</h5>
+              <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                <div style="padding:1rem;border-radius:0.75rem;background:rgba(0,188,212,0.08);border:1px solid rgba(0,188,212,0.2);">
+                  <div style="font-size:0.8rem;font-weight:700;color:var(--teal-500);margin-bottom:0.5rem;">🎟️ Save on Entry Tickets</div>
+                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Buy the Paris Museum Pass (€52/3 days) to access 50+ sites including Louvre, Orsay, and Versailles.</p>
+                </div>
+                <div style="padding:1rem;border-radius:0.75rem;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);">
+                  <div style="font-size:0.8rem;font-weight:700;color:var(--warning);margin-bottom:0.5rem;">🚇 Getting Around</div>
+                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">The Navigo Semaine (weekly pass) covers all metro, bus, and RER zones for ~€22. Much cheaper than individual tickets.</p>
+                </div>
+                <div style="padding:1rem;border-radius:0.75rem;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);">
+                  <div style="font-size:0.8rem;font-weight:700;color:var(--success);margin-bottom:0.5rem;">🍽️ Dining Tips</div>
+                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Lunch "formules" offer 2-3 courses for €15-20. Evening meals are expensive. Make reservations for popular restaurants.</p>
+                </div>
+                <div style="padding:1rem;border-radius:0.75rem;background:rgba(79,195,247,0.08);border:1px solid rgba(79,195,247,0.2);">
+                  <div style="font-size:0.8rem;font-weight:700;color:var(--sky-400);margin-bottom:0.5rem;">📸 Best Photo Spots</div>
+                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Trocadéro Gardens (Eiffel Tower view), Montmartre at sunrise, Pont des Arts bridge, and Seine riverside walks.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /container -->
+    </div><!-- /data-tabs -->
+  </div><!-- /planner-tabs -->
+</div>
+
+<!-- ADD ACTIVITY MODAL -->
+<div class="modal-overlay" id="add-activity-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h4>➕ Add Activity</h4>
+      <button class="btn btn-ghost btn-sm" data-modal-close="add-activity-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div class="input-group">
+          <label class="input-label">Activity Name</label>
+          <input class="input" type="text" placeholder="e.g. Visit Louvre Museum" id="act-name" />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="input-group">
+            <label class="input-label">Time</label>
+            <input class="input" type="time" id="act-time" value="10:00" />
+          </div>
+          <div class="input-group">
+            <label class="input-label">Category</label>
+            <select class="input" id="act-category">
+              <option>🎯 Attraction</option>
+              <option>🍽️ Dining</option>
+              <option>🏨 Hotel</option>
+              <option>✈️ Transport</option>
+              <option>🚢 Experience</option>
+              <option>🛍️ Shopping</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Location</label>
+          <input class="input destination-input" type="text" placeholder="Enter location or address" id="act-location" />
+        </div>
+        <div class="input-group">
+          <label class="input-label">Notes (optional)</label>
+          <textarea class="input" placeholder="Any notes about this activity..." style="resize:vertical;height:80px;" id="act-notes"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-modal-close="add-activity-modal">Cancel</button>
+      <button class="btn btn-primary" onclick="addActivity()">Add to Itinerary</button>
+    </div>
+  </div>
+</div>
+
+<button class="back-to-top" id="back-to-top">↑</button>
+
+<script src="js/main.js"></script>
+<script>
+// Calendar rendering
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+let currentMonth = 6; // July (0-indexed)
+let currentYear = 2025;
+
+function renderCalendar(gridId, compact = true) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const tripDays = [15,16,17,18,19,20,21];
+  const today = new Date();
+
+  const dayNames = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  let html = dayNames.map(d => `<div class="calendar-day-label">${d}</div>`).join('');
+
+  for (let i = 0; i < firstDay; i++) {
+    html += `<div class="calendar-day other-month">${new Date(currentYear, currentMonth, -firstDay + i + 1).getDate()}</div>`;
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = today.getFullYear() === currentYear && today.getMonth() === currentMonth && today.getDate() === d;
+    const isTrip = tripDays.includes(d);
+    let cls = 'calendar-day';
+    if (isToday) cls += ' today';
+    if (isTrip) cls += ' selected has-event';
+    const size = compact ? '' : 'font-size:1rem;padding:0.75rem;';
+    html += `<div class="${cls}" style="${size}" onclick="selectCalDay(${d})">${d}</div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function changeMonth(dir) {
+  currentMonth += dir;
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  document.querySelectorAll('#cal-month').forEach(el => el.textContent = `${months[currentMonth]} ${currentYear}`);
+  renderCalendar('cal-grid', true);
+  renderCalendar('big-cal-grid', false);
+}
+
+function selectCalDay(day) {
+  TravelApp.showToast(`Selected ${months[currentMonth]} ${day}, ${currentYear}`, 'info');
+}
+
+renderCalendar('cal-grid', true);
+renderCalendar('big-cal-grid', false);
+
+// Day selection
+function selectDay(el, label) {
+  document.querySelectorAll('#day-list button').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('active-day-title').textContent = `${label} – Paris`;
+}
+
+// Add activity
+function addActivity() {
+  const name = document.getElementById('act-name').value;
+  const time = document.getElementById('act-time').value;
+  const cat = document.getElementById('act-category').value;
+  const loc = document.getElementById('act-location').value;
+  if (!name) { TravelApp.showToast('Please enter an activity name', 'warning'); return; }
+
+  const timeline = document.getElementById('itinerary-timeline');
+  const item = document.createElement('div');
+  item.className = 'timeline-item';
+  item.innerHTML = `
+    <div class="timeline-dot"></div>
+    <div class="timeline-time">${time}</div>
+    <div class="timeline-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">${cat.split(' ')[0]} ${name}</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);">${loc || 'Location TBD'}</div>
+          <div style="margin-top:0.5rem;"><span class="badge badge-teal">${cat}</span></div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
+      </div>
+    </div>`;
+
+  timeline.appendChild(item);
+  closeModal('add-activity-modal');
+  TravelApp.showToast(`${name} added to itinerary!`, 'success');
+  document.getElementById('act-name').value = '';
+  document.getElementById('act-location').value = '';
+}
+
+function removeActivity(btn) {
+  const item = btn.closest('.timeline-item');
+  item.style.opacity = '0';
+  item.style.transform = 'translateX(30px)';
+  item.style.transition = 'all 0.3s';
+  setTimeout(() => item.remove(), 300);
+  TravelApp.showToast('Activity removed', 'info');
+}
+
+// Add expense
+function addExpense() {
+  const cat = document.getElementById('expense-cat').value;
+  const desc = document.getElementById('expense-desc').value;
+  const amount = document.getElementById('expense-amount').value;
+  if (!desc || !amount) { TravelApp.showToast('Fill in all fields', 'warning'); return; }
+  
+  const list = document.getElementById('expense-list');
+  const entry = document.createElement('div');
+  entry.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:0.75rem;border-radius:0.5rem;animation:fadeInUp 0.3s ease;';
+  entry.innerHTML = `<div><div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">${cat.split(' ')[0]} ${desc}</div><div style="font-size:0.75rem;color:var(--text-muted);">Today</div></div><div style="font-weight:700;color:var(--teal-500);">$${parseFloat(amount).toFixed(2)}</div>`;
+  list.insertBefore(entry, list.firstChild);
+  document.getElementById('expense-desc').value = '';
+  document.getElementById('expense-amount').value = '';
+  TravelApp.showToast('Expense added!', 'success');
+}
+
+function saveNote() { TravelApp.showToast('Notes saved!', 'success'); }
+
+function addPackItem(listId) {
+  const name = prompt('New item name:');
+  if (!name) return;
+  const list = document.getElementById(listId);
+  if (!list) return;
+  const item = document.createElement('div');
+  item.className = 'pack-item';
+  item.innerHTML = `<label class="checkbox-custom"><input type="checkbox" onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">${name}</span>`;
+  list.appendChild(item);
+}
+
+// Packing count update
+function updatePackCount() { /* Visual feedback */ }
+</script>
+</body>
+</html>
