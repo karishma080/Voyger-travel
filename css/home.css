@@ -386,14 +386,7 @@
   transition: all 0.3s ease;
   white-space: nowrap;
 }
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 52px;
-  margin-top: 22px;
-  box-shadow: 0 8px 25px rgba(0, 194, 255, 0.4);
-  transition: all 0.3s ease;
-}
+
 
 .btn-search-submit:hover {
   transform: translateY(-2px) scale(1.03);
@@ -2261,6 +2254,953 @@
 }
 
 /* Mobile Sticky Bottom Generate Button */
+/* ============================================
+   FLIGHTS PAGE SPECIFIC STYLES (SPACING & LAYOUT ENFORCED)
+   ============================================ */
+
+/* Global Flight Container */
+.flight-container {
+  width: calc(100% - 48px);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 0 64px;
+  box-sizing: border-box;
+}
+
+/* Flight Hero Section */
+.flight-hero-section {
+  position: relative;
+  min-height: 32vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 90px 20px 60px;
+  background: var(--color-secondary);
+  text-align: center;
+}
+
+.flight-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2000') center/cover no-repeat;
+  z-index: 0;
+  filter: brightness(0.5) contrast(1.1);
+}
+
+.flight-hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 3.8vw, 3.2rem);
+  font-weight: 800;
+  color: white;
+  margin-bottom: 8px;
+  line-height: 1.15;
+}
+
+.flight-hero-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 620px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* Trip Type Selector Pills */
+.trip-type-wrapper {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.trip-type-btn {
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--gray-300);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.trip-type-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #0F172A;
+  font-weight: 700;
+}
+
+/* Glassmorphism Flight Search Card */
+.flight-search-card {
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 30px rgba(0, 194, 255, 0.15);
+  margin-bottom: 48px;
+  box-sizing: border-box;
+}
+
+.flight-search-grid {
+  display: grid;
+  grid-template-columns: 1.8fr auto 1.8fr 1.1fr 1.1fr 1.2fr 1.1fr auto;
+  gap: 16px;
+  align-items: end;
+}
+
+.flight-search-grid .planner-form-field {
+  position: relative;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.flight-search-grid input,
+.flight-search-grid select,
+.flight-search-grid button.summary-field-btn {
+  width: 100%;
+  min-height: 58px;
+  height: 58px;
+  padding: 0 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: white;
+  font-size: 0.9rem;
+  outline: none;
+  box-sizing: border-box;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.flight-search-grid button[type="submit"] {
+  min-height: 58px;
+  height: 58px;
+  padding: 0 26px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swap-btn-icon {
+  width: 46px;
+  height: 58px;
+  border-radius: 12px;
+  background: rgba(0, 194, 255, 0.15);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+/* Autocomplete & Traveler Dropdown Menus */
+.autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: rgba(15, 23, 42, 0.98);
+  border: 1px solid rgba(0, 194, 255, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+  z-index: 100;
+  display: none;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.autocomplete-item {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.autocomplete-item:hover {
+  background: rgba(0, 194, 255, 0.15);
+}
+
+.traveler-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 260px;
+  background: rgba(15, 23, 42, 0.98);
+  border: 1px solid rgba(0, 194, 255, 0.3);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+  z-index: 100;
+  display: none;
+}
+
+.traveler-dropdown-menu.show {
+  display: block;
+}
+
+.traveler-counter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.counter-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Quick Sort Cards (Cheapest, Best, Fastest) */
+.quick-sort-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.quick-sort-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 18px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quick-sort-card.active,
+.quick-sort-card:hover {
+  border-color: var(--color-primary);
+  background: rgba(0, 194, 255, 0.12);
+}
+
+/* Desktop Two-Column Results Grid (.flight-results-layout) */
+.flight-results-layout {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+/* Filter Sidebar Card */
+.flight-filter-sidebar {
+  width: 270px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 24px;
+  color: white;
+  position: sticky;
+  top: 90px;
+  box-sizing: border-box;
+}
+
+.filter-group {
+  margin-bottom: 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+}
+
+.filter-group:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.filter-group-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+  margin-bottom: 7px;
+  font-size: 0.88rem;
+  color: var(--gray-300);
+  cursor: pointer;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.filter-option:hover {
+  color: white;
+}
+
+.filter-option input[type="checkbox"] {
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* Results Toolbar Container (.results-toolbar) */
+.results-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-sizing: border-box;
+}
+
+/* Flight Result Card (.flight-card) */
+.flight-card {
+  width: 100%;
+  padding: 24px;
+  margin-bottom: 24px;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) 180px;
+  gap: 24px;
+  align-items: center;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.flight-card:hover {
+  border-color: rgba(0, 194, 255, 0.35);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 25px rgba(0, 194, 255, 0.15);
+  transform: translateY(-3px);
+}
+
+.flight-card-airline-col {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.flight-card-airline-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Route Line Diagram */
+.flight-route-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: 12px 0;
+}
+
+.flight-route-line {
+  flex: 1;
+  height: 2px;
+  background: rgba(0, 194, 255, 0.4);
+  position: relative;
+  margin: 0 16px;
+}
+
+.flight-stop-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px var(--color-primary);
+}
+
+/* Flight Features Bottom Row */
+.flight-card-features-row {
+  grid-column: span 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* Price & Buttons Right Column */
+.flight-card-price-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  text-align: right;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  padding-left: 16px;
+  height: 100%;
+  justify-content: space-between;
+}
+
+/* Fare Tier Cards */
+.fare-tier-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.fare-tier-card:hover {
+  border-color: var(--color-primary);
+  background: rgba(0, 194, 255, 0.08);
+}
+
+/* Seat Picker Grid */
+.seat-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  max-width: 320px;
+  margin: 20px auto;
+}
+
+.seat-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.seat-btn.selected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #0F172A;
+}
+
+.seat-btn.occupied {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: #EF4444;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+/* Skeleton Loading Shimmer */
+.flight-skeleton-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  height: 140px;
+  margin-bottom: 24px;
+  animation: pulseSkeleton 1.5s infinite ease-in-out;
+}
+
+@keyframes pulseSkeleton {
+  0% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.4; }
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 1024px) {
+  .flight-search-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .flight-search-grid button[type="submit"] {
+    grid-column: span 2;
+  }
+  .flight-results-layout {
+    grid-template-columns: 1fr;
+  }
+  .flight-filter-sidebar {
+    width: 100%;
+    position: static;
+  }
+  .flight-card {
+    grid-template-columns: 1fr;
+  }
+  .flight-card-features-row {
+    grid-column: span 1;
+  }
+  .flight-card-price-col {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-left: 0;
+    padding-top: 14px;
+    align-items: stretch;
+    text-align: left;
+  }
+}
+
+@media (max-width: 768px) {
+  .flight-container {
+    width: calc(100% - 32px);
+  }
+  .flight-search-grid {
+    grid-template-columns: 1fr;
+  }
+  .flight-search-grid button[type="submit"] {
+    grid-column: span 1;
+  }
+  .quick-sort-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   ABOUT US & CONTACT US SPECIFIC STYLES
+   ============================================ */
+
+/* Global Containers */
+.about-container,
+.contact-container {
+  width: calc(100% - 48px);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 0 80px;
+  box-sizing: border-box;
+}
+
+.about-section-mb {
+  margin-bottom: 80px;
+}
+
+/* About & Contact Hero Sections */
+.about-hero-section,
+.contact-hero-section {
+  position: relative;
+  min-height: 32vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 90px 20px 60px;
+  background: var(--color-secondary);
+  text-align: center;
+}
+
+.about-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=2000') center/cover no-repeat;
+  z-index: 0;
+  filter: brightness(0.5) contrast(1.1);
+}
+
+.contact-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?q=80&w=2000') center/cover no-repeat;
+  z-index: 0;
+  filter: brightness(0.5) contrast(1.1);
+}
+
+/* Two-Column Story Layout */
+.story-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+/* Mission & Vision Glassmorphism Cards */
+.mission-vision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.mission-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 32px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.mission-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px);
+}
+
+/* Why Voyger 4-Column Feature Cards */
+.why-voyger-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.why-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 26px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.why-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 10px 30px rgba(0, 194, 255, 0.15);
+  transform: translateY(-4px);
+}
+
+/* How Voyger Works 4-Step Process */
+.process-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  position: relative;
+}
+
+.step-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 28px 20px;
+  text-align: center;
+  position: relative;
+}
+
+.step-number-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00C2FF, #14B8A6);
+  color: #0F172A;
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+/* Platform Statistics Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.stat-box {
+  background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(0,77,102,0.6));
+  border: 1px solid rgba(0, 194, 255, 0.3);
+  border-radius: 20px;
+  padding: 32px 20px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, #00C2FF, #14B8A6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Core Values 4-Column Grid */
+.core-values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.value-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.value-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px);
+}
+
+/* Team Member Cards Grid */
+.team-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.team-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 28px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.team-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+  transform: translateY(-4px);
+}
+
+.team-avatar-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.team-social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.team-social-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.team-social-btn:hover {
+  background: var(--color-primary);
+  color: #0F172A;
+}
+
+/* Contact Page Two-Column Grid */
+.contact-layout-grid {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.contact-info-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.contact-info-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(0, 194, 255, 0.15);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Contact Form Card & Fields */
+.contact-form-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+
+.contact-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.contact-form-grid .full-width-field {
+  grid-column: span 2;
+}
+
+.contact-form-grid input,
+.contact-form-grid select,
+.contact-form-grid textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: white;
+  font-size: 0.9rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.contact-form-grid input:focus,
+.contact-form-grid select:focus,
+.contact-form-grid textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 15px rgba(0, 194, 255, 0.2);
+}
+
+.field-error-msg {
+  color: #EF4444;
+  font-size: 0.78rem;
+  margin-top: 4px;
+  display: none;
+}
+
+/* FAQ Accordion Styling */
+.faq-accordion-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-accordion-item {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.faq-accordion-item.active {
+  border-color: var(--color-primary);
+}
+
+.faq-header-btn {
+  width: 100%;
+  padding: 20px 24px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+}
+
+.faq-icon-toggle {
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  transition: transform 0.3s ease;
+}
+
+.faq-accordion-item.active .faq-icon-toggle {
+  transform: rotate(45deg);
+}
+
+.faq-content-body {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 24px;
+  color: var(--gray-300);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.faq-accordion-item.active .faq-content-body {
+  max-height: 300px;
+  padding: 0 24px 20px;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .story-layout-grid,
+  .mission-vision-grid,
+  .contact-layout-grid {
+    grid-template-columns: 1fr;
+  }
+  .why-voyger-grid,
+  .process-steps-grid,
+  .stats-grid,
+  .core-values-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .team-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .about-container,
+  .contact-container {
+    width: calc(100% - 32px);
+  }
+  .why-voyger-grid,
+  .process-steps-grid,
+  .stats-grid,
+  .core-values-grid,
+  .team-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .contact-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .contact-form-grid .full-width-field {
+    grid-column: span 1;
+  }
+}
+
 .mobile-sticky-generate-btn {
   display: none;
   position: fixed;

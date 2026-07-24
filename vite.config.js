@@ -6,11 +6,22 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      input: 'dashboard.html',
-    },
+      input: {
+        main: 'index.html',
+        destination: 'destination.html',
+        planner: 'trip-planner.html',
+        hotels: 'hotels.html',
+        flights: 'flights.html',
+        about: 'about.html',
+        contact: 'contact.html',
+        profile: 'profile.html',
+        dashboard: 'dashboard.html'
+      }
+    }
   },
   server: {
     port: 3000,
-    open: '/dashboard.html'
+    open: '/index.html'
   }
 })
+

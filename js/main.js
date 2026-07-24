@@ -747,7 +747,10 @@ function filterByStyle(styleKey) {
     destGrid.scrollIntoView({ behavior: 'smooth' });
   }
   showToast(`Filtered destinations for "${styleKey.toUpperCase()}"`, 'success');
+}
+
 // ---- TRIP PLANNER INTERACTIVE LOGIC ----
+
 
 // Interest chips selector
 function toggleInterestChip(btn) {
@@ -1089,206 +1092,507 @@ function filterHotelsByCategory(btn, categoryKey) {
     }
   });
 
-  const countLabel = document.getElementById('hotelsResultCount');
-  if (countLabel) {
-    countLabel.textContent = `${visibleCount} properties found`;
-  }
-
-  const emptyState = document.getElementById('noHotelsState');
-  if (emptyState) {
-    emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
-  }
+  const badge = document.getElementById('hotelCountBadge');
+  if (badge) badge.textContent = `${visibleCount} Stays Found`;
 }
 
-// Apply Sidebar Filters
-function applyHotelFilters() {
-  const cards = document.querySelectorAll('.hotel-card-item');
-  let visibleCount = 0;
+// ============================================
+// FLIGHTS PAGE INTERACTIVE FUNCTIONALITY
+// ============================================
 
-  const maxPrice = parseInt(document.getElementById('priceRangeSlider')?.value || '50000');
-  
-  // Selected Property Types
-  const selectedTypes = Array.from(document.querySelectorAll('.filter-type-checkbox:checked')).map(cb => cb.value);
-  
-  // Selected Star Ratings
-  const selectedStars = Array.from(document.querySelectorAll('.filter-star-checkbox:checked')).map(cb => cb.value);
 
-  cards.forEach(card => {
-    const price = parseInt(card.getAttribute('data-price') || '0');
-    const type = card.getAttribute('data-category') || 'hotel';
-    const stars = card.getAttribute('data-stars') || '5';
+  // Sample Airports Database for Autocomplete
+  const sampleAirports = [
+    { code: 'CJB', city: 'Coimbatore', name: 'Coimbatore International Airport', country: 'India' },
+    { code: 'CDG', city: 'Paris', name: 'Charles de Gaulle Airport', country: 'France' },
+    { code: 'MAA', city: 'Chennai', name: 'Chennai International Airport', country: 'India' },
+    { code: 'DEL', city: 'New Delhi', name: 'Indira Gandhi International Airport', country: 'India' },
+    { code: 'DXB', city: 'Dubai', name: 'Dubai International Airport', country: 'UAE' },
+    { code: 'LHR', city: 'London', name: 'Heathrow Airport', country: 'United Kingdom' },
+    { code: 'JFK', city: 'New York', name: 'John F. Kennedy International Airport', country: 'USA' },
+    { code: 'SIN', city: 'Singapore', name: 'Changi Airport', country: 'Singapore' },
+    { code: 'HND', city: 'Tokyo', name: 'Haneda Airport', country: 'Japan' },
+    { code: 'FRA', city: 'Frankfurt', name: 'Frankfurt Airport', country: 'Germany' }
+  ];
 
-    const matchesPrice = price <= maxPrice;
-    const matchesType = selectedTypes.length === 0 || selectedTypes.includes('all') || selectedTypes.includes(type);
-    const matchesStars = selectedStars.length === 0 || selectedStars.includes('all') || selectedStars.includes(stars);
+  // Trip Type Switcher (Round Trip, One Way, Multi-City)
+  function switchTripType(type) {
+    const returnField = document.getElementById('flightReturnField');
+    const typeBtns = document.querySelectorAll('.trip-type-btn');
+    typeBtns.forEach(btn => btn.classList.remove('active'));
+    
+    const activeBtn = document.querySelector(`.trip-type-btn[data-type="${type}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
 
-    if (matchesPrice && matchesType && matchesStars) {
-      card.style.display = 'grid';
-      visibleCount++;
-    } else {
-      card.style.display = 'none';
+    if (returnField) {
+      returnField.style.opacity = type === 'oneway' ? '0.4' : '1';
+      returnField.style.pointerEvents = type === 'oneway' ? 'none' : 'auto';
     }
+    showToast(`Selected ${type.toUpperCase()} trip mode`, 'info');
+  }
+
+  // Swap Airports Button (⇄)
+  function swapAirports() {
+    const fromInput = document.getElementById('flightFromInput');
+    const toInput = document.getElementById('flightToInput');
+    const swapBtn = document.getElementById('swapAirportsBtn');
+
+    if (fromInput && toInput) {
+      const temp = fromInput.value;
+      fromInput.value = toInput.value;
+      toInput.value = temp;
+
+      if (swapBtn) {
+        swapBtn.style.transform = 'rotate(180deg)';
+        setTimeout(() => swapBtn.style.transform = 'rotate(0deg)', 300);
+      }
+      showToast('Swapped departure and arrival airports', 'info');
+    }
+  }
+
+  // Airport Autocomplete Listener
+  function handleAirportAutocomplete(inputEl, dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown || !inputEl) return;
+
+    const query = inputEl.value.toLowerCase().trim();
+    if (query.length < 1) {
+      dropdown.style.display = 'none';
+      return;
+    }
+
+    const matches = sampleAirports.filter(a => 
+      a.city.toLowerCase().includes(query) ||
+      a.name.toLowerCase().includes(query) ||
+      a.code.toLowerCase().includes(query) ||
+      a.country.toLowerCase().includes(query)
+    );
+
+    if (matches.length === 0) {
+      dropdown.style.display = 'none';
+      return;
+    }
+
+    dropdown.innerHTML = matches.map(a => `
+      <div class="autocomplete-item" onclick="selectAirport('${inputEl.id}', '${dropdownId}', '${a.city} (${a.code})')">
+        <div style="font-weight:700; color:white;">${a.city} (${a.code})</div>
+        <div style="font-size:0.75rem; color:var(--gray-400);">${a.name}, ${a.country}</div>
+      </div>
+    `).join('');
+
+    dropdown.style.display = 'block';
+  }
+
+  function selectAirport(inputId, dropdownId, value) {
+    const inputEl = document.getElementById(inputId);
+    const dropdown = document.getElementById(dropdownId);
+    if (inputEl) inputEl.value = value;
+    if (dropdown) dropdown.style.display = 'none';
+  }
+
+  // Traveler Counter Dropdown logic
+  let adultCount = 1;
+  let childCount = 0;
+  let infantCount = 0;
+
+  function toggleTravelerDropdown() {
+    const dropdown = document.getElementById('travelerDropdownMenu');
+    if (dropdown) {
+      dropdown.classList.toggle('show');
+    }
+  }
+
+  function updateTravelerCount(type, delta) {
+    if (type === 'adults') {
+      adultCount = Math.max(1, adultCount + delta);
+      document.getElementById('adultCountVal').textContent = adultCount;
+    } else if (type === 'children') {
+      childCount = Math.max(0, childCount + delta);
+      document.getElementById('childCountVal').textContent = childCount;
+    } else if (type === 'infants') {
+      infantCount = Math.max(0, infantCount + delta);
+      document.getElementById('infantCountVal').textContent = infantCount;
+    }
+
+    const total = adultCount + childCount + infantCount;
+    const summaryBtn = document.getElementById('travelerSummaryBtn');
+    if (summaryBtn) {
+      summaryBtn.textContent = `${total} Traveler${total > 1 ? 's' : ''}`;
+    }
+  }
+
+  function confirmTravelers() {
+    toggleTravelerDropdown();
+    showToast(`Updated to ${adultCount + childCount + infantCount} Traveler(s)`, 'info');
+  }
+
+  // Search Flights & Trigger Skeleton Loading State
+  function searchFlights(event) {
+    if (event) event.preventDefault();
+
+    const fromVal = document.getElementById('flightFromInput')?.value || 'Coimbatore (CJB)';
+    const toVal = document.getElementById('flightToInput')?.value || 'Paris (CDG)';
+    
+    const skeletonState = document.getElementById('flightSkeletonState');
+    const resultsContainer = document.getElementById('flightResultsContainer');
+    const summaryText = document.getElementById('flightSearchSummaryText');
+
+    if (skeletonState) skeletonState.style.display = 'block';
+    if (resultsContainer) resultsContainer.style.display = 'none';
+
+    setTimeout(() => {
+      if (skeletonState) skeletonState.style.display = 'none';
+      if (resultsContainer) resultsContainer.style.display = 'block';
+
+      if (summaryText) {
+        summaryText.innerHTML = `<strong>Flights from ${fromVal} to ${toVal}</strong> &nbsp;•&nbsp; 32 flights found`;
+      }
+      showToast(`Found 32 flights for ${fromVal} → ${toVal}`, 'success');
+    }, 1200);
+  }
+
+  // Apply Flight Sidebar Filters
+  function applyFlightFilters() {
+    const cards = document.querySelectorAll('.flight-card-item');
+    let visibleCount = 0;
+
+    const maxPrice = parseInt(document.getElementById('flightPriceSlider')?.value || '200000');
+    const selectedStops = Array.from(document.querySelectorAll('.filter-stop-checkbox:checked')).map(cb => cb.value);
+    const selectedAirlines = Array.from(document.querySelectorAll('.filter-airline-checkbox:checked')).map(cb => cb.value);
+
+    cards.forEach(card => {
+      const price = parseInt(card.getAttribute('data-price') || '0');
+      const stops = card.getAttribute('data-stops') || '1';
+      const airline = card.getAttribute('data-airline') || '';
+
+      const matchesPrice = price <= maxPrice;
+      const matchesStops = selectedStops.length === 0 || selectedStops.includes(stops);
+      const matchesAirline = selectedAirlines.length === 0 || selectedAirlines.includes(airline);
+
+      if (matchesPrice && matchesStops && matchesAirline) {
+        card.style.display = 'grid';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    const countLabel = document.getElementById('flightCountBadge');
+    if (countLabel) countLabel.textContent = `${visibleCount} Flights Found`;
+
+    const emptyState = document.getElementById('noFlightsState');
+    if (emptyState) emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+
+  // Clear Flight Filters
+  function clearFlightFilters() {
+    const slider = document.getElementById('flightPriceSlider');
+    if (slider) slider.value = 200000;
+    const sliderVal = document.getElementById('flightPriceVal');
+    if (sliderVal) sliderVal.textContent = '₹2,00,000+';
+
+    document.querySelectorAll('.flight-filter-sidebar input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+    const cards = document.querySelectorAll('.flight-card-item');
+    cards.forEach(card => card.style.display = 'grid');
+
+    const countLabel = document.getElementById('flightCountBadge');
+    if (countLabel) countLabel.textContent = `${cards.length} Flights Found`;
+
+    const emptyState = document.getElementById('noFlightsState');
+    if (emptyState) emptyState.style.display = 'none';
+
+    showToast('All flight filters cleared!', 'info');
+  }
+
+  // Price Slider Display Text
+  function updateFlightPriceSliderVal(val) {
+    const label = document.getElementById('flightPriceVal');
+    if (label) {
+      label.textContent = val >= 200000 ? '₹2,00,000+' : `₹${parseInt(val).toLocaleString()}`;
+    }
+    applyFlightFilters();
+  }
+
+  // Sort Flights
+  function sortFlights(sortKey) {
+    const container = document.getElementById('flightListViewContainer');
+    if (!container) return;
+
+    const cards = Array.from(container.querySelectorAll('.flight-card-item'));
+
+    cards.sort((a, b) => {
+      const priceA = parseInt(a.getAttribute('data-price') || '0');
+      const priceB = parseInt(b.getAttribute('data-price') || '0');
+      const durationA = parseInt(a.getAttribute('data-duration') || '0');
+      const durationB = parseInt(b.getAttribute('data-duration') || '0');
+
+      if (sortKey === 'cheapest') return priceA - priceB;
+      if (sortKey === 'fastest') return durationA - durationB;
+      return 0; // Default recommended
+    });
+
+    cards.forEach(card => container.appendChild(card));
+    showToast(`Sorted flights by ${sortKey.toUpperCase()}`, 'info');
+  }
+
+  // Quick Sort Selection Tabs (Cheapest, Best, Fastest)
+  function selectQuickSortTab(btnEl, sortKey) {
+    document.querySelectorAll('.quick-sort-card').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    sortFlights(sortKey);
+  }
+
+  // Flight Details Modal Handler
+  function openFlightDetailsModal(flightName, flightNo) {
+    const modal = document.getElementById('flightDetailsModal');
+    if (modal) {
+      const titleEl = document.getElementById('modalFlightTitle');
+      if (titleEl) titleEl.textContent = `${flightName} (${flightNo})`;
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeFlightDetailsModal() {
+    const modal = document.getElementById('flightDetailsModal');
+    if (modal) {
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Fare Tier Selection Modal & State
+  let currentBaseFare = 58999;
+  let selectedSeatPrice = 0;
+  let selectedSeatNo = '';
+  let selectedAddons = {};
+
+  function openFareSelectionModal(flightName, basePrice) {
+    currentBaseFare = basePrice;
+    const modal = document.getElementById('fareSelectionModal');
+    if (modal) {
+      const titleEl = document.getElementById('fareModalFlightTitle');
+      if (titleEl) titleEl.textContent = flightName;
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeFareSelectionModal() {
+    const modal = document.getElementById('fareSelectionModal');
+    if (modal) {
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function chooseFareTier(tierName, fareAmount) {
+    currentBaseFare = fareAmount;
+    closeFareSelectionModal();
+    updateBookingSummary();
+
+    const passengerModal = document.getElementById('passengerDetailsModal');
+    if (passengerModal) {
+      passengerModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    showToast(`Selected "${tierName}" fare tier!`, 'success');
+  }
+
+  function closePassengerDetailsModal() {
+    const passengerModal = document.getElementById('passengerDetailsModal');
+    if (passengerModal) {
+      passengerModal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Seat Selector Toggle
+  function selectSeat(seatBtn, seatNo, price) {
+    document.querySelectorAll('.seat-btn').forEach(b => b.classList.remove('selected'));
+    if (seatBtn) seatBtn.classList.add('selected');
+
+    selectedSeatNo = seatNo;
+    selectedSeatPrice = price;
+
+    const seatLabel = document.getElementById('selectedSeatDisplay');
+    if (seatLabel) seatLabel.textContent = `Seat ${seatNo} (${price > 0 ? '+₹' + price : 'Free'})`;
+
+    updateBookingSummary();
+    showToast(`Selected Seat ${seatNo}`, 'info');
+  }
+
+  // Add-on Toggle
+  function toggleFlightAddon(checkbox, addonName, price) {
+    if (checkbox.checked) {
+      selectedAddons[addonName] = price;
+    } else {
+      delete selectedAddons[addonName];
+    }
+    updateBookingSummary();
+  }
+
+  // Dynamic Price Summary Calculator
+  function updateBookingSummary() {
+    const taxes = 5999;
+    let addonsTotal = 0;
+    Object.values(selectedAddons).forEach(p => addonsTotal += p);
+
+    const grandTotal = currentBaseFare + taxes + selectedSeatPrice + addonsTotal;
+
+    const baseEl = document.getElementById('summaryBaseFare');
+    const taxesEl = document.getElementById('summaryTaxes');
+    const seatEl = document.getElementById('summarySeatPrice');
+    const addonsEl = document.getElementById('summaryAddonsPrice');
+    const grandTotalEl = document.getElementById('summaryGrandTotal');
+
+    if (baseEl) baseEl.textContent = `₹${currentBaseFare.toLocaleString()}`;
+    if (taxesEl) taxesEl.textContent = `₹${taxes.toLocaleString()}`;
+    if (seatEl) seatEl.textContent = selectedSeatPrice > 0 ? `₹${selectedSeatPrice.toLocaleString()}` : 'Free';
+    if (addonsEl) addonsEl.textContent = addonsTotal > 0 ? `₹${addonsTotal.toLocaleString()}` : '₹0';
+    if (grandTotalEl) grandTotalEl.textContent = `₹${grandTotal.toLocaleString()}`;
+  }
+
+  // Submit Passenger Form & Show Final Confirmation
+  function submitPassengerForm(event) {
+    if (event) event.preventDefault();
+
+    const firstName = document.getElementById('passFirstName')?.value || 'Elena';
+    const lastName = document.getElementById('passLastName')?.value || 'Rostova';
+    const passportNo = document.getElementById('passPassportNo')?.value || 'A9824012';
+
+    if (!firstName || !lastName || !passportNo) {
+      showToast('Please fill out all required passenger details!', 'warning');
+      return;
+    }
+
+    closePassengerDetailsModal();
+
+    // Confirm Booking Modal
+    const confirmModal = document.getElementById('flightConfirmModal');
+    if (confirmModal) {
+      confirmModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Save Flight Booking to LocalStorage
+    const newFlightBooking = {
+      id: '#VOY-FLT-' + Math.floor(10000 + Math.random() * 90000),
+      airline: 'Emirates EK543',
+      route: 'Coimbatore (CJB) → Paris (CDG)',
+      dates: '15 Jul 2026 – 22 Jul 2026',
+      passenger: `${firstName} ${lastName}`,
+      seat: selectedSeatNo || '12A',
+      amount: document.getElementById('summaryGrandTotal')?.textContent || '₹58,999',
+      status: 'Confirmed'
+    };
+
+    const existing = JSON.parse(localStorage.getItem('voyger_flight_bookings') || '[]');
+    existing.push(newFlightBooking);
+    localStorage.setItem('voyger_flight_bookings', JSON.stringify(existing));
+
+    showToast('🎉 Flight Ticket Booked Successfully!', 'success', 5000);
+  }
+
+  function closeFlightConfirmModal() {
+    const confirmModal = document.getElementById('flightConfirmModal');
+    if (confirmModal) {
+      confirmModal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+  }
+
+// ============================================
+// ABOUT US & CONTACT US FUNCTIONALITY
+// ============================================
+
+// Contact Form Submission & Validation
+function submitContactForm(event) {
+  if (event) event.preventDefault();
+
+  const nameInput = document.getElementById('contactName');
+  const emailInput = document.getElementById('contactEmail');
+  const subjectSelect = document.getElementById('contactSubject');
+  const messageInput = document.getElementById('contactMessage');
+  const privacyCheck = document.getElementById('contactPrivacy');
+
+  const nameError = document.getElementById('contactNameError');
+  const emailError = document.getElementById('contactEmailError');
+  const subjectError = document.getElementById('contactSubjectError');
+  const messageError = document.getElementById('contactMessageError');
+  const privacyError = document.getElementById('contactPrivacyError');
+
+  // Reset error states
+  if (nameError) nameError.style.display = 'none';
+  if (emailError) emailError.style.display = 'none';
+  if (subjectError) subjectError.style.display = 'none';
+  if (messageError) messageError.style.display = 'none';
+  if (privacyError) privacyError.style.display = 'none';
+
+  let isValid = true;
+
+  if (!nameInput || !nameInput.value.trim()) {
+    if (nameError) nameError.style.display = 'block';
+    isValid = false;
+  }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailInput || !emailPattern.test(emailInput.value.trim())) {
+    if (emailError) emailError.style.display = 'block';
+    isValid = false;
+  }
+
+  if (!subjectSelect || !subjectSelect.value) {
+    if (subjectError) subjectError.style.display = 'block';
+    isValid = false;
+  }
+
+  if (!messageInput || !messageInput.value.trim()) {
+    if (messageError) messageError.style.display = 'block';
+    isValid = false;
+  }
+
+  if (!privacyCheck || !privacyCheck.checked) {
+    if (privacyError) privacyError.style.display = 'block';
+    isValid = false;
+  }
+
+  if (!isValid) return;
+
+  // Show Success State
+  const formCard = document.getElementById('contactFormCard');
+  const successCard = document.getElementById('contactSuccessMessage');
+
+  if (formCard) formCard.style.display = 'none';
+  if (successCard) successCard.style.display = 'block';
+
+  showToast('✉️ Message Sent Successfully! We will respond shortly.', 'success', 5000);
+}
+
+function resetContactForm() {
+  const formCard = document.getElementById('contactFormCard');
+  const successCard = document.getElementById('contactSuccessMessage');
+  const form = document.getElementById('contactForm');
+
+  if (form) form.reset();
+  if (successCard) successCard.style.display = 'none';
+  if (formCard) formCard.style.display = 'block';
+}
+
+// FAQ Accordion Toggle
+function toggleFaqAccordion(headerEl) {
+  const item = headerEl.parentElement;
+  const isExpanded = item.classList.contains('active');
+
+  // Close all FAQs
+  document.querySelectorAll('.faq-accordion-item').forEach(faq => {
+    faq.classList.remove('active');
   });
 
-  const countLabel = document.getElementById('hotelsResultCount');
-  if (countLabel) {
-    countLabel.textContent = `${visibleCount} properties found`;
-  }
-
-  const emptyState = document.getElementById('noHotelsState');
-  if (emptyState) {
-    emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
-  }
-}
-
-// Clear All Filters
-function clearHotelFilters() {
-  const slider = document.getElementById('priceRangeSlider');
-  if (slider) slider.value = 50000;
-  const sliderVal = document.getElementById('priceRangeVal');
-  if (sliderVal) sliderVal.textContent = '₹50,000';
-
-  document.querySelectorAll('.filter-checkbox-label input[type="checkbox"]').forEach(cb => cb.checked = false);
-  document.querySelectorAll('.accom-category-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.accom-category-btn[data-category="all"]')?.classList.add('active');
-
-  const cards = document.querySelectorAll('.hotel-card-item');
-  cards.forEach(card => card.style.display = 'grid');
-
-  const countLabel = document.getElementById('hotelsResultCount');
-  if (countLabel) countLabel.textContent = `${cards.length} properties found`;
-
-  const emptyState = document.getElementById('noHotelsState');
-  if (emptyState) emptyState.style.display = 'none';
-
-  showToast('All hotel filters cleared!', 'info');
-}
-
-// Update Price Slider Display Text
-function updatePriceSliderVal(val) {
-  const label = document.getElementById('priceRangeVal');
-  if (label) {
-    label.textContent = val >= 50000 ? '₹50,000+' : `₹${parseInt(val).toLocaleString()}`;
-  }
-  applyHotelFilters();
-}
-
-// Sort Hotels
-function sortHotels(sortKey) {
-  const container = document.getElementById('hotelListViewContainer');
-  if (!container) return;
-
-  const cards = Array.from(container.querySelectorAll('.hotel-card-item'));
-
-  cards.sort((a, b) => {
-    const priceA = parseInt(a.getAttribute('data-price') || '0');
-    const priceB = parseInt(b.getAttribute('data-price') || '0');
-    const ratingA = parseFloat(a.getAttribute('data-rating') || '0');
-    const ratingB = parseFloat(b.getAttribute('data-rating') || '0');
-
-    if (sortKey === 'price-low') return priceA - priceB;
-    if (sortKey === 'price-high') return priceB - priceA;
-    if (sortKey === 'rating') return ratingB - ratingA;
-    return 0; // Default recommended
-  });
-
-  cards.forEach(card => container.appendChild(card));
-  showToast(`Sorted properties by ${sortKey.toUpperCase()}`, 'info');
-}
-
-// View Mode Switcher (List vs Map)
-function switchHotelViewMode(mode) {
-  const listBtn = document.getElementById('btnListView');
-  const mapBtn = document.getElementById('btnMapView');
-  const listContainer = document.getElementById('hotelListViewContainer');
-  const mapContainer = document.getElementById('hotelMapViewContainer');
-
-  if (mode === 'map') {
-    listBtn?.classList.remove('active');
-    mapBtn?.classList.add('active');
-    if (listContainer) listContainer.style.display = 'none';
-    if (mapContainer) mapContainer.style.display = 'block';
-  } else {
-    mapBtn?.classList.remove('active');
-    listBtn?.classList.add('active');
-    if (mapContainer) mapContainer.style.display = 'none';
-    if (listContainer) listContainer.style.display = 'block';
-  }
-}
-
-// Hotel Details Modal Management
-function openHotelDetailsModal(hotelName) {
-  const modal = document.getElementById('hotelDetailsModal');
-  if (modal) {
-    const nameEl = document.getElementById('modalHotelName');
-    if (nameEl && hotelName) nameEl.textContent = hotelName;
-
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-}
-
-function closeHotelDetailsModal() {
-  const modal = document.getElementById('hotelDetailsModal');
-  if (modal) {
-    modal.classList.remove('show');
-    document.body.style.overflow = '';
-  }
-}
-
-// Select Room inside Details Modal
-function selectHotelRoom(roomName, pricePerNight) {
-  const roomEl = document.getElementById('selectedRoomName');
-  const priceEl = document.getElementById('selectedRoomPrice');
-  const totalEl = document.getElementById('selectedRoomTotal');
-
-  if (roomEl) roomEl.textContent = roomName;
-  if (priceEl) priceEl.textContent = `₹${pricePerNight.toLocaleString()}`;
-
-  const numNights = 3;
-  const subtotal = pricePerNight * numNights;
-  const taxes = 4500;
-  const grandTotal = subtotal + taxes;
-
-  if (totalEl) totalEl.textContent = `₹${grandTotal.toLocaleString()}`;
-
-  showToast(`Selected "${roomName}" for booking!`, 'success');
-  document.getElementById('bookingSummarySidebar')?.scrollIntoView({ behavior: 'smooth' });
-}
-
-// Reserve Now Handler & Confirmation
-function reserveHotelNow() {
-  closeHotelDetailsModal();
-
-  const confirmModal = document.getElementById('bookingConfirmModal');
-  if (confirmModal) {
-    confirmModal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-
-  // Save booking to localStorage
-  const newBooking = {
-    id: '#VOY-HTL-' + Math.floor(10000 + Math.random() * 90000),
-    hotel: document.getElementById('modalHotelName')?.textContent || 'Grand Hôtel Paris',
-    room: document.getElementById('selectedRoomName')?.textContent || 'Deluxe King Room',
-    checkin: '15 July 2026',
-    checkout: '18 July 2026',
-    amount: document.getElementById('selectedRoomTotal')?.textContent || '₹41,997',
-    status: 'Confirmed'
-  };
-
-  const existing = JSON.parse(localStorage.getItem('voyger_hotel_bookings') || '[]');
-  existing.push(newBooking);
-  localStorage.setItem('voyger_hotel_bookings', JSON.stringify(existing));
-
-  showToast('🎉 Hotel Stay Reserved Successfully!', 'success', 5000);
-}
-
-function closeBookingConfirmModal() {
-  const confirmModal = document.getElementById('bookingConfirmModal');
-  if (confirmModal) {
-    confirmModal.classList.remove('show');
-    document.body.style.overflow = '';
+  // If wasn't expanded, expand current
+  if (!isExpanded) {
+    item.classList.add('active');
   }
 }
 
@@ -1342,11 +1646,42 @@ window.TravelApp = {
   selectHotelRoom,
   reserveHotelNow,
   closeBookingConfirmModal,
+  switchTripType,
+  swapAirports,
+  handleAirportAutocomplete,
+  selectAirport,
+  toggleTravelerDropdown,
+  updateTravelerCount,
+  confirmTravelers,
+  searchFlights,
+  applyFlightFilters,
+  clearFlightFilters,
+  updateFlightPriceSliderVal,
+  sortFlights,
+  selectQuickSortTab,
+  openFlightDetailsModal,
+  closeFlightDetailsModal,
+  openFareSelectionModal,
+  closeFareSelectionModal,
+  chooseFareTier,
+  closePassengerDetailsModal,
+  selectSeat,
+  toggleFlightAddon,
+  updateBookingSummary,
+  submitPassengerForm,
+  closeFlightConfirmModal,
+  submitContactForm,
+  resetContactForm,
+  toggleFaqAccordion,
   handleSearch,
   handleNewsletterSubmit,
   setTheme,
   getTheme
 };
+
+
+
+
 
 
 
