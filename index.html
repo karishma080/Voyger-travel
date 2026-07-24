@@ -1,918 +1,1051 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Voyger - Your premium travel planning platform. Discover destinations, book hotels & flights, and plan perfect trips." />
-  <title>Voyger – Discover the World in Luxury</title>
+  <meta name="description" content="Voyger - Luxury Travel & Experiences. Discover breathtaking destinations, luxury stays, personalized itineraries, and unforgettable travel experiences." />
+  <title>Voyger | Luxury Travel & Curated Experiences</title>
+  
+  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/home.css" />
+
   <style>
-    /* Auth Modal / Lock Screen Styles */
-    .auth-overlay {
+    /* Additional inline navbar & modal utility helpers */
+    .nav-icon-btn {
+      position: relative;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-icon-btn:hover {
+      background: rgba(0, 194, 255, 0.2);
+      border-color: var(--color-primary);
+      transform: scale(1.05);
+    }
+    .badge-count {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #EF4444;
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 2px solid #0F172A;
+    }
+    .dropdown-wrapper {
+      position: relative;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      width: 260px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    .dropdown-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .dropdown-header {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 8px;
+    }
+    .dropdown-header h5 {
+      margin: 0;
+      color: white;
+      font-size: 0.95rem;
+    }
+    .dropdown-header p {
+      margin: 2px 0 0;
+      color: var(--color-primary);
+      font-size: 0.78rem;
+    }
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 0.88rem;
+      border-radius: 12px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .dropdown-item:hover {
+      background: rgba(0, 194, 255, 0.15);
+      color: var(--color-primary);
+    }
+    .user-avatar-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--color-primary);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .user-avatar-btn:hover {
+      transform: scale(1.08);
+    }
+    /* Search Quick Overlay Modal */
+    .quick-search-modal {
       position: fixed;
       inset: 0;
-      background: var(--gradient-hero);
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(20px);
       z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: var(--space-6);
-      transition: opacity var(--transition-slow);
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
     }
-    .auth-overlay::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 30% 50%, rgba(0,188,212,0.15) 0%, transparent 50%),
-                  radial-gradient(circle at 70% 20%, rgba(79,195,247,0.12) 0%, transparent 50%);
-      pointer-events: none;
+    .quick-search-modal.show {
+      opacity: 1;
+      visibility: visible;
     }
-    .auth-card {
+    .quick-search-box {
       width: 100%;
-      max-width: 440px;
-      padding: var(--space-8);
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: var(--glass-blur-lg);
-      -webkit-backdrop-filter: var(--glass-blur-lg);
-      border: 1px solid var(--glass-border-strong);
-      border-radius: var(--radius-2xl);
-      box-shadow: var(--shadow-2xl), var(--shadow-glow);
-      z-index: 10;
-      color: white;
-    }
-    [data-theme="light"] .auth-card {
-      background: rgba(255, 255, 255, 0.9);
-      border-color: var(--gray-200);
-      color: var(--gray-900);
-    }
-    .auth-logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-3);
-      font-size: var(--text-2xl);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: var(--space-6);
-    }
-    /* Show auth wall only when not logged in (class set by early <head> script) */
-    html.show-auth-wall #auth-wall {
-      display: flex !important;
+      max-width: 680px;
+      background: #0F172A;
+      border: 1px solid rgba(0, 194, 255, 0.3);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+      position: relative;
     }
   </style>
-  <!-- EARLY auth check: runs before render to prevent flash -->
-  <script>
-    if (!localStorage.getItem('voyger_user')) {
-      document.documentElement.classList.add('show-auth-wall');
-    }
-  </script>
-
 </head>
 <body>
 
-<!-- ==================== SIGN IN WALL ==================== -->
-<div class="auth-overlay" id="auth-wall" style="display:none;">
-  <div class="auth-card reveal-scale revealed">
-    <div class="auth-logo">
-      <div class="logo-icon">✈️</div>
-      Voyger
-    </div>
-    <div style="text-align:center;margin-bottom:2rem;">
-      <h4 id="auth-title" style="margin-bottom:0.5rem;">Create an Account</h4>
-      <p id="auth-subtitle" style="font-size:0.875rem;opacity:0.8;">Join Voyger to explore premium travel plans</p>
-    </div>
-    <form id="auth-form" onsubmit="handleAuthSubmit(event)">
-      <div style="display:flex;flex-direction:column;gap:1.25rem;">
-        <div class="input-group" id="name-group">
-          <label class="input-label" style="color:inherit;opacity:0.9;">Full Name</label>
-          <input type="text" id="auth-name" class="input" placeholder="Enter your full name" required style="background:rgba(255,255,255,0.1);color:white;border-color:rgba(255,255,255,0.2);" />
+  <!-- ==================== STICKY TRANSPARENT NAVBAR ==================== -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="navbar-inner" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+        
+        <!-- Website Logo Left -->
+        <a href="index.html" class="logo" style="display:flex; align-items:center; gap:10px; font-size:1.6rem; font-weight:800; color:white; text-decoration:none;">
+          <div class="logo-icon" style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #00C2FF, #14B8A6); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow: 0 4px 15px rgba(0,194,255,0.4);">✈️</div>
+          <span style="font-family:var(--font-primary); letter-spacing:-0.03em;">Voyger</span>
+        </a>
+
+        <!-- Navigation Links -->
+        <ul class="nav-links" style="display:flex; align-items:center; gap:24px; list-style:none; margin:0; padding:0;">
+          <li><a href="index.html" class="nav-link active">Home</a></li>
+          <li><a href="destination.html" class="nav-link">Destinations</a></li>
+          <li><a href="trip-planner.html" class="nav-link">Packages</a></li>
+          <li><a href="hotels.html" class="nav-link">Hotels</a></li>
+          <li><a href="flights.html" class="nav-link">Flights</a></li>
+          <li><a href="#why-us" class="nav-link">About</a></li>
+          <li><a href="#newsletter" class="nav-link">Contact</a></li>
+        </ul>
+
+        <!-- Right Header Action Icons & User Dropdown -->
+        <div class="nav-actions" style="display:flex; align-items:center; gap:14px;">
+          
+          <!-- Theme Toggle -->
+          <button class="nav-icon-btn theme-toggle" aria-label="Toggle dark mode">🌙</button>
+
+          <!-- Quick Search Icon -->
+          <button class="nav-icon-btn" onclick="toggleQuickSearchModal()" aria-label="Search">🔍</button>
+
+          <!-- Notifications Dropdown Icon -->
+          <div class="dropdown-wrapper">
+            <button class="nav-icon-btn" onclick="TravelApp.toggleDropdown('notifDropdown')" aria-label="Notifications">
+              🔔 <span class="badge-count">3</span>
+            </button>
+            <div class="dropdown-menu" id="notifDropdown">
+              <div class="dropdown-header">
+                <h5>Notifications</h5>
+                <p>3 unread updates</p>
+              </div>
+              <a href="#" class="dropdown-item">
+                <span>🌴</span>
+                <div>
+                  <strong>Bora Bora Deal</strong>
+                  <div style="font-size:0.75rem; opacity:0.7;">20% OFF Luxury Overwater Villa</div>
+                </div>
+              </a>
+              <a href="#" class="dropdown-item">
+                <span>✈️</span>
+                <div>
+                  <strong>Flight Price Drop</strong>
+                  <div style="font-size:0.75rem; opacity:0.7;">First Class Tokyo round-trip</div>
+                </div>
+              </a>
+              <a href="#" class="dropdown-item">
+                <span>✨</span>
+                <div>
+                  <strong>VIP Itinerary Ready</strong>
+                  <div style="font-size:0.75rem; opacity:0.7;">AI Trip Plan generated</div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- User Profile Dropdown -->
+          <div class="dropdown-wrapper">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150" alt="User Profile" class="user-avatar-btn" onclick="TravelApp.toggleDropdown('userDropdown')" />
+            <div class="dropdown-menu" id="userDropdown">
+              <div class="dropdown-header">
+                <h5>Elena Rostova</h5>
+                <p>VIP Luxury Explorer</p>
+              </div>
+              <a href="profile.html" class="dropdown-item">👤 My Profile</a>
+              <a href="dashboard.html" class="dropdown-item">📅 My Bookings</a>
+              <a href="profile.html" class="dropdown-item">❤️ Saved Trips</a>
+              <a href="profile.html" class="dropdown-item">⚙️ Account Settings</a>
+              <div style="border-top:1px solid rgba(255,255,255,0.1); margin-top:6px; padding-top:6px;">
+                <a href="#" onclick="TravelApp.showToast('Logged out successfully','info')" class="dropdown-item" style="color:#EF4444;">🚪 Sign Out</a>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div class="input-group">
-          <label class="input-label" style="color:inherit;opacity:0.9;">Email Address</label>
-          <input type="email" id="auth-email" class="input" placeholder="Enter your email address" required style="background:rgba(255,255,255,0.1);color:white;border-color:rgba(255,255,255,0.2);" />
-        </div>
-        <div class="input-group">
-          <label class="input-label" style="color:inherit;opacity:0.9;">Password</label>
-          <input type="password" class="input" placeholder="Enter your password" required style="background:rgba(255,255,255,0.1);color:white;border-color:rgba(255,255,255,0.2);" />
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;opacity:0.8;">
-          <label class="checkbox-custom" style="color:inherit;"><input type="checkbox" checked><div class="checkbox-box" style="border-color:rgba(255,255,255,0.3)"></div>Remember me</label>
-          <a href="#" onclick="TravelApp.showToast('Password reset link sent!','info')" style="color:var(--teal-300);">Forgot password?</a>
-        </div>
-        <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-lg" style="width:100%;margin-top:0.5rem;">Register</button>
-        <div style="text-align:center;font-size:0.875rem;opacity:0.9;margin-top:0.5rem;">
-          <span id="auth-toggle-text">Already have an account?</span> 
-          <a href="#" onclick="toggleAuthMode(event)" id="auth-toggle-link" style="color:var(--teal-300);font-weight:600;text-decoration:none;">Sign In</a>
-        </div>
+
+        <!-- Hamburger Menu Button -->
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+
       </div>
-    </form>
-  </div>
-</div>
-
-<!-- ==================== NAVBAR ==================== -->
-<nav class="navbar" id="navbar">
-  <div class="container">
-    <div class="navbar-inner">
-      <a href="index.html" class="logo">
-        <div class="logo-icon">✈️</div>
-        Voyger
-      </a>
-      <ul class="nav-links">
-        <li><a href="index.html" class="nav-link">Home</a></li>
-        <li><a href="destination.html" class="nav-link">Destinations</a></li>
-        <li><a href="trip-planner.html" class="nav-link">Plan Trip</a></li>
-        <li><a href="hotels.html" class="nav-link">Hotels</a></li>
-        <li><a href="flights.html" class="nav-link">Flights</a></li>
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="contact.html" class="nav-link">Contact</a></li>
-      </ul>
-      <div class="nav-actions">
-        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
-        <div id="auth-buttons" style="display:flex;gap:0.5rem;align-items:center;">
-          <a href="profile.html" class="btn btn-outline btn-sm">Sign In</a>
-          <a href="profile.html" class="btn btn-primary btn-sm">Get Started</a>
-        </div>
-      </div>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
     </div>
+  </nav>
+
+  <!-- Mobile Dropdown Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="nav-link active">🏠 Home</a>
+    <a href="destination.html" class="nav-link">🌍 Destinations</a>
+    <a href="trip-planner.html" class="nav-link">📦 Packages</a>
+    <a href="hotels.html" class="nav-link">🏨 Hotels</a>
+    <a href="flights.html" class="nav-link">✈️ Flights</a>
+    <a href="#why-us" class="nav-link">ℹ️ About Us</a>
+    <a href="#newsletter" class="nav-link">📩 Contact</a>
+    <a href="profile.html" class="nav-link">👤 My Account</a>
   </div>
-</nav>
 
-<!-- Mobile Menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="destination.html" class="nav-link">🌍 Destinations</a>
-  <a href="trip-planner.html" class="nav-link">📅 Plan Trip</a>
-  <a href="hotels.html" class="nav-link">🏨 Hotels</a>
-  <a href="flights.html" class="nav-link">✈️ Flights</a>
-  <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-  <a href="profile.html" class="nav-link">👤 Profile</a>
-  <a href="contact.html" class="nav-link">📩 Contact</a>
-</div>
+  <!-- ==================== HERO SECTION ==================== -->
+  <section class="hero" id="hero">
+    
+    <!-- Background Image / Video Fallback -->
+    <div class="hero-img-bg"></div>
+    <div class="hero-overlay"></div>
 
-<!-- ==================== HERO ==================== -->
-<section class="hero" id="hero">
-  <div class="hero-bg"></div>
+    <!-- Floating Orbs -->
+    <div class="floating-orb orb-cyan"></div>
+    <div class="floating-orb orb-teal"></div>
 
-  <!-- Decorative orbs -->
-  <div class="orb orb-1" style="top:-100px;right:-100px;animation-delay:-2s;"></div>
-  <div class="orb orb-2" style="bottom:100px;right:300px;animation-delay:-4s;"></div>
-  <div class="orb orb-3" style="top:200px;left:60%;animation-delay:-1s;"></div>
+    <!-- Floating Luxury Badges -->
+    <div class="hero-floating-card top-left">
+      <div class="card-icon">⭐</div>
+      <div class="card-text">
+        <h5>4.98 Rating</h5>
+        <p>Over 200K+ Reviews</p>
+      </div>
+    </div>
 
-  <div class="container" style="position:relative;z-index:2;width:100%;">
-    <div class="hero-content">
+    <div class="hero-floating-card bottom-right">
+      <div class="card-icon">🛩️</div>
+      <div class="card-text">
+        <h5>VIP Private Jet</h5>
+        <p>180+ Global Routes</p>
+      </div>
+    </div>
+
+    <!-- Main Hero Content -->
+    <div class="container hero-content">
+      
       <div class="hero-badge">
-        <span>🌟</span>
-        Trusted by 2M+ travelers worldwide
+        <span>✨</span> Experience Unmatched Luxury & Distinction
       </div>
 
       <h1 class="hero-title">
-        Explore The World<br>With <span>Confidence</span><br>& Style
+        Explore the World with<br>
+        <span class="gradient-text">Confidence & Style</span>
       </h1>
 
-      <p class="hero-desc">
-        Curated luxury travel experiences, seamless booking, and AI-powered itineraries for the modern explorer.
+      <p class="hero-subtitle">
+        Discover breathtaking destinations, luxury stays, personalized itineraries, and unforgettable travel experiences—all in one place.
       </p>
 
-      <div class="hero-actions">
-        <a href="destination.html" class="btn btn-primary btn-lg">
+      <div class="hero-cta-group">
+        <a href="#destinations" class="btn-hero-primary">
           🗺️ Explore Destinations
         </a>
-        <a href="trip-planner.html" class="btn btn-secondary btn-lg">
+        <a href="trip-planner.html" class="btn-hero-secondary">
           📅 Plan My Trip
         </a>
       </div>
 
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="hero-stat-value"><span data-counter>2</span>M+</div>
-          <div class="hero-stat-label">Happy Travelers</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-value"><span data-counter>150</span>+</div>
-          <div class="hero-stat-label">Destinations</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-value"><span data-counter>4</span>.9⭐</div>
-          <div class="hero-stat-label">Average Rating</div>
-        </div>
-      </div>
     </div>
 
-    <!-- Search Box -->
-    <div class="search-container" style="margin-top:3rem;">
-      <div class="search-box">
-        <div class="search-field">
-          <label>📍 Destination</label>
-          <input type="text" class="input destination-input" placeholder="Where to?" id="hero-destination" />
-        </div>
-        <div class="search-field">
-          <label>📅 Check In</label>
-          <input type="date" class="input" id="hero-checkin" />
-        </div>
-        <div class="search-field">
-          <label>📅 Check Out</label>
-          <input type="date" class="input" id="hero-checkout" />
-        </div>
-        <button class="btn btn-primary btn-lg" onclick="handleSearch()" style="padding:0 2rem;min-width:120px;">
-          🔍 Search
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scroll indicator -->
-  <div class="scroll-indicator" onclick="document.getElementById('destinations').scrollIntoView({behavior:'smooth'})">
-    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
-    <span>Scroll to explore</span>
-  </div>
-</section>
-
-<!-- ==================== POPULAR DESTINATIONS ==================== -->
-<section class="section" id="destinations">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-overline">✈️ Explore</div>
-      <h2 class="section-title">Popular <span style="background:var(--gradient-teal);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Destinations</span></h2>
-      <p class="section-desc">From pristine beaches to mountain peaks — discover the world's most breathtaking places.</p>
-    </div>
-
-    <div class="destination-grid reveal">
-      <!-- Large featured destination -->
-      <div class="destination-card">
-        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80" alt="Paris" />
-        <div class="destination-card-overlay">
-          <span class="destination-tag glass" style="color:var(--teal-300)">⭐ Featured</span>
-          <div>
-            <div class="destination-card-name">Paris</div>
-            <div class="destination-card-country">🇫🇷 France · From ₹76,415</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="destination-card">
-        <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Bali" />
-        <div class="destination-card-overlay">
-          <div>
-            <div class="destination-card-name" style="font-size:1.25rem;">Bali</div>
-            <div class="destination-card-country">🇮🇩 Indonesia · From ₹55,165</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="destination-card">
-        <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80" alt="Tokyo" />
-        <div class="destination-card-overlay">
-          <div>
-            <div class="destination-card-name" style="font-size:1.25rem;">Tokyo</div>
-            <div class="destination-card-country">🇯🇵 Japan · From ₹101,915</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="destination-card">
-        <img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=600&q=80" alt="Santorini" />
-        <div class="destination-card-overlay">
-          <div>
-            <div class="destination-card-name" style="font-size:1.25rem;">Santorini</div>
-            <div class="destination-card-country">🇬🇷 Greece · From ₹93,415</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="destination-card">
-        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80" alt="Dubai" />
-        <div class="destination-card-overlay">
-          <div>
-            <div class="destination-card-name" style="font-size:1.25rem;">Dubai</div>
-            <div class="destination-card-country">🇦🇪 UAE · From ₹67,915</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="text-align:center;margin-top:2.5rem;" class="reveal">
-      <a href="destination.html" class="btn btn-outline btn-lg">View All Destinations →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ==================== FEATURED PACKAGES ==================== -->
-<section class="section" style="background:var(--bg-secondary);">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-overline">🎒 Packages</div>
-      <h2 class="section-title">Featured Tour <span style="background:var(--gradient-teal);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Packages</span></h2>
-      <p class="section-desc">Handcrafted itineraries for every type of traveler — adventure, romance, or family.</p>
-    </div>
-
-    <!-- Filter Tags -->
-    <div class="flex flex-wrap gap-3 justify-center" style="margin-bottom:2.5rem;" id="package-filters">
-      <span class="tag active" onclick="filterPackages(this,'all')">All Packages</span>
-      <span class="tag" onclick="filterPackages(this,'adventure')">🧗 Adventure</span>
-      <span class="tag" onclick="filterPackages(this,'romance')">💑 Romance</span>
-      <span class="tag" onclick="filterPackages(this,'family')">👨‍👩‍👧‍👦 Family</span>
-      <span class="tag" onclick="filterPackages(this,'luxury')">👑 Luxury</span>
-      <span class="tag" onclick="filterPackages(this,'cultural')">🏛️ Cultural</span>
-    </div>
-
-    <div class="grid-auto grid" id="packages-grid">
-      <!-- Package Card 1 -->
-      <div class="package-card" data-category="romance luxury">
-        <div class="package-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=600&q=80" alt="Maldives Escape" />
-          <span class="package-badge">🔥 Best Seller</span>
-          <button class="package-wishlist" aria-label="Add to wishlist">🤍</button>
-        </div>
-        <div class="package-body">
-          <div class="package-meta">
-            <span>📅 7 Nights</span>
-            <span>👤 2 Adults</span>
-            <span>✈️ Includes Flight</span>
-          </div>
-          <div class="package-title">Maldives Overwater Paradise</div>
-          <div class="stars">★★★★★</div>
-          <p class="card-desc" style="margin-top:0.5rem;font-size:0.8rem;">Crystal lagoons, private villas, and world-class snorkeling in the Indian Ocean.</p>
-        </div>
-        <div class="package-footer">
-          <div class="package-price">
-            <span class="from">From</span>
-            <span class="amount">₹2,12,415</span>
-            <span class="per">/ per person</span>
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Booking Maldives package!','success')">Book Now</button>
-        </div>
-      </div>
-
-      <!-- Package Card 2 -->
-      <div class="package-card" data-category="adventure">
-        <div class="package-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Swiss Alps Adventure" />
-          <span class="package-badge" style="background:linear-gradient(135deg,#667eea,#764ba2)">🆕 New</span>
-          <button class="package-wishlist" aria-label="Add to wishlist">🤍</button>
-        </div>
-        <div class="package-body">
-          <div class="package-meta">
-            <span>📅 10 Nights</span>
-            <span>👤 2-6 People</span>
-            <span>🚞 Train Included</span>
-          </div>
-          <div class="package-title">Swiss Alps Adventure Tour</div>
-          <div class="stars">★★★★★</div>
-          <p class="card-desc" style="margin-top:0.5rem;font-size:0.8rem;">Hike through the Jungfrau region with scenic train rides and luxury chalets.</p>
-        </div>
-        <div class="package-footer">
-          <div class="package-price">
-            <span class="from">From</span>
-            <span class="amount">₹2,80,415</span>
-            <span class="per">/ per person</span>
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Booking Swiss Alps package!','success')">Book Now</button>
-        </div>
-      </div>
-
-      <!-- Package Card 3 -->
-      <div class="package-card" data-category="cultural">
-        <div class="package-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=600&q=80" alt="Japan Cultural" />
-          <span class="package-badge" style="background:linear-gradient(135deg,#f093fb,#f5576c)">⏰ Limited</span>
-          <button class="package-wishlist" aria-label="Add to wishlist">🤍</button>
-        </div>
-        <div class="package-body">
-          <div class="package-meta">
-            <span>📅 12 Nights</span>
-            <span>👤 Any Group</span>
-            <span>🍱 Meals Included</span>
-          </div>
-          <div class="package-title">Japan Cherry Blossom Tour</div>
-          <div class="stars">★★★★★</div>
-          <p class="card-desc" style="margin-top:0.5rem;font-size:0.8rem;">Experience sakura season in Kyoto, Tokyo & Osaka with a local guide.</p>
-        </div>
-        <div class="package-footer">
-          <div class="package-price">
-            <span class="from">From</span>
-            <span class="amount">₹2,37,915</span>
-            <span class="per">/ per person</span>
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Booking Japan package!','success')">Book Now</button>
-        </div>
-      </div>
-
-      <!-- Package Card 4 -->
-      <div class="package-card" data-category="family">
-        <div class="package-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" alt="Bali Family" />
-          <button class="package-wishlist" aria-label="Add to wishlist">🤍</button>
-        </div>
-        <div class="package-body">
-          <div class="package-meta">
-            <span>📅 8 Nights</span>
-            <span>👨‍👩‍👧 Family Pack</span>
-            <span>🏊 Pool Villa</span>
-          </div>
-          <div class="package-title">Bali Family Resort Escape</div>
-          <div class="stars">★★★★☆</div>
-          <p class="card-desc" style="margin-top:0.5rem;font-size:0.8rem;">Private pool villa, temple tours, and cooking classes for the whole family.</p>
-        </div>
-        <div class="package-footer">
-          <div class="package-price">
-            <span class="from">From</span>
-            <span class="amount">₹1,61,415</span>
-            <span class="per">/ per person</span>
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Booking Bali package!','success')">Book Now</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ==================== TOP HOTELS ==================== -->
-<section class="section">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-overline">🏨 Stay</div>
-      <h2 class="section-title">Top Hotels</h2>
-      <p class="section-desc">Handpicked luxury accommodations for an unforgettable stay.</p>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:1rem;" class="reveal">
-      <!-- Hotel 1 -->
-      <div class="hotel-card">
-        <div class="hotel-card-img">
-          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500&q=80" alt="The Azure Palace" />
-        </div>
-        <div class="hotel-card-body">
-          <div>
-            <div class="hotel-card-meta">
-              <span class="stars">★★★★★</span>
-              <span class="badge badge-success">4.9 Excellent</span>
-              <span style="font-size:0.75rem;color:var(--text-muted);">📍 Bali, Indonesia</span>
+    <!-- SMART TRAVEL SEARCH BAR -->
+    <div class="smart-search-container">
+      <div class="smart-search-card">
+        <form onsubmit="TravelApp.handleSearch(event)">
+          <div class="search-grid">
+            
+            <!-- Field 1: Destination -->
+            <div class="search-input-group">
+              <label>📍 Destination</label>
+              <div class="search-field-wrapper">
+                <span class="field-icon">📍</span>
+                <input type="text" class="destination-input" id="hero-destination" placeholder="Where to? (e.g. Bora Bora)" required />
+              </div>
             </div>
-            <div class="hotel-card-name">The Azure Palace Resort</div>
-            <p class="card-desc" style="font-size:0.8rem;">Ocean-front luxury resort with private beach, world-class spa, and Michelin-starred dining.</p>
-            <div class="hotel-card-amenities">
-              <span class="amenity-tag">🏊 Pool</span>
-              <span class="amenity-tag">🍽️ Restaurant</span>
-              <span class="amenity-tag">💆 Spa</span>
-              <span class="amenity-tag">🏋️ Gym</span>
-              <span class="amenity-tag">📶 Free WiFi</span>
+
+            <!-- Field 2: Check-in Date -->
+            <div class="search-input-group">
+              <label>📅 Check-In</label>
+              <div class="search-field-wrapper">
+                <span class="field-icon">📅</span>
+                <input type="date" id="hero-checkin" required />
+              </div>
             </div>
+
+            <!-- Field 3: Check-out Date -->
+            <div class="search-input-group">
+              <label>📅 Check-Out</label>
+              <div class="search-field-wrapper">
+                <span class="field-icon">📅</span>
+                <input type="date" id="hero-checkout" required />
+              </div>
+            </div>
+
+            <!-- Field 4: Number of Travelers -->
+            <div class="search-input-group">
+              <label>👥 Travelers</label>
+              <div class="search-field-wrapper">
+                <span class="field-icon">👥</span>
+                <select id="hero-travelers">
+                  <option value="1">1 Traveler</option>
+                  <option value="2" selected>2 Travelers</option>
+                  <option value="4">3-4 Travelers</option>
+                  <option value="5">5+ VIP Group</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Field 5: Budget -->
+            <div class="search-input-group">
+              <label>💰 Budget</label>
+              <div class="search-field-wrapper">
+                <span class="field-icon">💎</span>
+                <select id="hero-budget">
+                  <option value="any">Any Budget</option>
+                  <option value="luxury" selected>$1k - $3k</option>
+                  <option value="vip">$3k - $5k+</option>
+                  <option value="ultra">Ultra ($10k+)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Field 6: Travel Type -->
+            <div class="search-input-group">
+              <label>🧭 Travel Type</label>
+              <div class="search-field-wrapper">
+                <span class="field-icon">🏖️</span>
+                <select id="hero-type">
+                  <option value="all">All Types</option>
+                  <option value="beach" selected>Beach & Island</option>
+                  <option value="mountain">Mountain</option>
+                  <option value="city">City Break</option>
+                  <option value="adventure">Wild Safari</option>
+                  <option value="honeymoon">Honeymoon</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Search Button Group -->
+            <div class="search-input-group search-button-group">
+              <label class="search-button-label-hide">ACTION</label>
+              <button type="submit" class="btn-search-submit">
+                🔍 Search
+              </button>
+            </div>
+
           </div>
-          <div class="hotel-card-price">
-            <div class="hotel-price-info">
-              <div class="price">₹24,565</div>
-              <div class="night">per night</div>
-            </div>
-            <div style="display:flex;gap:0.5rem;">
-              <button class="btn btn-ghost btn-sm" onclick="openModal('hotel-modal')">View Details</button>
-              <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Hotel booked!','success')">Book Now</button>
+        </form>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ==================== TRAVEL STATISTICS SECTION ==================== -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        
+        <div class="stat-card reveal">
+          <div class="stat-number" data-counter data-prefix="" data-suffix="M+">2</div>
+          <div class="stat-label">Happy Travelers</div>
+        </div>
+
+        <div class="stat-card reveal delay-100">
+          <div class="stat-number" data-counter data-prefix="" data-suffix="+">180</div>
+          <div class="stat-label">Countries Covered</div>
+        </div>
+
+        <div class="stat-card reveal delay-200">
+          <div class="stat-number" data-counter data-prefix="" data-suffix="K+">50</div>
+          <div class="stat-label">Luxury Hotels & Stays</div>
+        </div>
+
+        <div class="stat-card reveal delay-300">
+          <div class="stat-number" data-counter data-prefix="" data-suffix="★">4.9</div>
+          <div class="stat-label">Average Customer Rating</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== POPULAR DESTINATIONS (8 Cards Grid) ==================== -->
+  <section class="destinations-section" id="destinations">
+    <div class="container">
+      
+      <div class="section-header reveal">
+        <span class="section-tag">🌍 Curated Destinations</span>
+        <h2 class="section-title">Popular Luxury <span style="color:var(--color-primary);">Destinations</span></h2>
+        <p class="section-subtitle">Explore the world's most captivating locations, handpicked for extraordinary comfort and luxury.</p>
+      </div>
+
+      <div class="destination-grid-8">
+        
+        <!-- Destination Card 1 -->
+        <div class="dest-card reveal">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800" alt="Bora Bora" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Bora Bora')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.98</div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">French Polynesia</div>
+            <h3 class="dest-title">Bora Bora Overwater Retreat</h3>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">Starting from</span>
+                <span class="dest-price-val">$2,450 <span style="font-size:0.75rem; font-weight:400; color:var(--gray-400);">/ person</span></span>
+              </div>
+              <a href="destination.html" class="btn-dest-explore">Explore</a>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Hotel 2 -->
-      <div class="hotel-card">
-        <div class="hotel-card-img">
-          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80" alt="Santorini Bliss" />
-        </div>
-        <div class="hotel-card-body">
-          <div>
-            <div class="hotel-card-meta">
-              <span class="stars">★★★★★</span>
-              <span class="badge badge-success">4.8 Exceptional</span>
-              <span style="font-size:0.75rem;color:var(--text-muted);">📍 Santorini, Greece</span>
-            </div>
-            <div class="hotel-card-name">Santorini Bliss Suites</div>
-            <p class="card-desc" style="font-size:0.8rem;">Iconic blue-domed suites perched on the caldera with breathtaking Aegean Sea views.</p>
-            <div class="hotel-card-amenities">
-              <span class="amenity-tag">🌅 Caldera View</span>
-              <span class="amenity-tag">🍷 Wine Bar</span>
-              <span class="amenity-tag">🛁 Jacuzzi</span>
-              <span class="amenity-tag">🎵 Music Lounge</span>
-            </div>
+        <!-- Destination Card 2 -->
+        <div class="dest-card reveal delay-100">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=800" alt="Santorini" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Santorini')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.95</div>
           </div>
-          <div class="hotel-card-price">
-            <div class="hotel-price-info">
-              <div class="price">₹39,015</div>
-              <div class="night">per night</div>
-            </div>
-            <div style="display:flex;gap:0.5rem;">
-              <button class="btn btn-ghost btn-sm" onclick="openModal('hotel-modal')">View Details</button>
-              <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Hotel booked!','success')">Book Now</button>
+          <div class="dest-card-body">
+            <div class="dest-location">Greece</div>
+            <h3 class="dest-title">Santorini Cliffside Villa</h3>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">Starting from</span>
+                <span class="dest-price-val">$1,850 <span style="font-size:0.75rem; font-weight:400; color:var(--gray-400);">/ person</span></span>
+              </div>
+              <a href="destination.html" class="btn-dest-explore">Explore</a>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div style="text-align:center;margin-top:2rem;" class="reveal">
-      <a href="hotels.html" class="btn btn-outline btn-lg">Browse All Hotels →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ==================== SPECIAL OFFERS ==================== -->
-<section class="section" style="background:var(--bg-secondary);">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-overline">🎁 Deals</div>
-      <h2 class="section-title">Special Offers</h2>
-    </div>
-    <div class="grid-2 grid reveal">
-      <div class="offer-banner" style="cursor:pointer;" onclick="TravelApp.showToast('Offer applied! 30% off your next booking','success')">
-        <div class="offer-discount">30%</div>
-        <div class="badge badge-teal" style="margin-bottom:1rem;">⏰ Limited Time</div>
-        <h3 style="color:white;margin-bottom:0.75rem;">Summer Flash Sale</h3>
-        <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin-bottom:1.5rem;">Get 30% off on all European packages booked before July 31st. Don't miss this exclusive deal!</p>
-        <div style="display:flex;align-items:center;gap:1rem;">
-          <button class="btn btn-primary">Claim Offer</button>
-          <span style="color:var(--teal-300);font-size:0.85rem;">Code: SUMMER30</span>
-        </div>
-      </div>
-      <div class="offer-banner" style="cursor:pointer;background:linear-gradient(135deg,#1a0533 0%,#2d0b69 100%);border-color:rgba(167,139,250,0.3);" onclick="TravelApp.showToast('Early bird deal activated!','success')">
-        <div class="offer-discount" style="color:rgba(167,139,250,0.5);">20%</div>
-        <div class="badge" style="background:rgba(167,139,250,0.15);color:#a78bfa;border:1px solid rgba(167,139,250,0.3);margin-bottom:1rem;">🐦 Early Bird</div>
-        <h3 style="color:white;margin-bottom:0.75rem;">Early Bird Special</h3>
-        <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin-bottom:1.5rem;">Book 60 days in advance and save 20% on premium hotel stays worldwide.</p>
-        <div style="display:flex;align-items:center;gap:1rem;">
-          <button class="btn btn-primary" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">Grab Deal</button>
-          <span style="color:#c4b5fd;font-size:0.85rem;">Code: EARLY20</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ==================== REVIEWS ==================== -->
-<section class="section">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-overline">💬 Testimonials</div>
-      <h2 class="section-title">What Our Travelers Say</h2>
-      <p class="section-desc">Real stories from real adventurers around the globe.</p>
-    </div>
-
-    <div class="grid-3 grid">
-      <div class="review-card reveal">
-        <div class="review-quote">"</div>
-        <div class="stars">★★★★★</div>
-        <p class="review-text">"Voyger completely transformed how I plan travel. The Maldives package was beyond perfect — every detail was taken care of. Truly a 5-star experience!"</p>
-        <div class="reviewer">
-          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" class="reviewer-avatar" alt="Sarah" />
-          <div>
-            <div class="reviewer-name">Sarah Johnson</div>
-            <div class="reviewer-location">🇺🇸 New York, USA</div>
+        <!-- Destination Card 3 -->
+        <div class="dest-card reveal delay-200">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800" alt="Kyoto" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Kyoto')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.92</div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Japan</div>
+            <h3 class="dest-title">Kyoto Zen Ryokan Sanctuary</h3>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">Starting from</span>
+                <span class="dest-price-val">$1,650 <span style="font-size:0.75rem; font-weight:400; color:var(--gray-400);">/ person</span></span>
+              </div>
+              <a href="destination.html" class="btn-dest-explore">Explore</a>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="review-card reveal delay-200">
-        <div class="review-quote">"</div>
-        <div class="stars">★★★★★</div>
-        <p class="review-text">"Booked the Japan Cherry Blossom tour and it was the trip of a lifetime. The local guide was incredible and all accommodations were superb. 10/10!"</p>
-        <div class="reviewer">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" class="reviewer-avatar" alt="Marco" />
-          <div>
-            <div class="reviewer-name">Marco Rossi</div>
-            <div class="reviewer-location">🇮🇹 Milan, Italy</div>
+        <!-- Destination Card 4 -->
+        <div class="dest-card reveal delay-300">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800" alt="Swiss Alps" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Swiss Alps')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.96</div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Switzerland</div>
+            <h3 class="dest-title">Swiss Alps Luxury Chalet</h3>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">Starting from</span>
+                <span class="dest-price-val">$2,100 <span style="font-size:0.75rem; font-weight:400; color:var(--gray-400);">/ person</span></span>
+              </div>
+              <a href="destination.html" class="btn-dest-explore">Explore</a>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="review-card reveal delay-400">
-        <div class="review-quote">"</div>
-        <div class="stars">★★★★★</div>
-        <p class="review-text">"The trip planner tool is genius! I mapped out our entire family vacation in minutes. The budget tracker saved us so much stress. Highly recommended!"</p>
-        <div class="reviewer">
-          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" class="reviewer-avatar" alt="Priya" />
-          <div>
-            <div class="reviewer-name">Priya Sharma</div>
-            <div class="reviewer-location">🇮🇳 Mumbai, India</div>
+        <!-- Destination Card 5 -->
+        <div class="dest-card reveal">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=800" alt="Amalfi Coast" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Amalfi Coast')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.91</div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Italy</div>
+            <h3 class="dest-title">Amalfi Riviera Resort</h3>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">Starting from</span>
+                <span class="dest-price-val">$1,950 <span style="font-size:0.75rem; font-weight:400; color:var(--gray-400);">/ person</span></span>
+              </div>
+              <a href="destination.html" class="btn-dest-explore">Explore</a>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ==================== CTA SECTION ==================== -->
-<section class="section">
-  <div class="container reveal">
-    <div class="cta-section">
-      <div style="position:relative;z-index:1;">
-        <div class="badge badge-teal" style="margin:0 auto 1.5rem;display:inline-flex;">✨ Start Your Journey</div>
-        <h2 style="color:white;margin-bottom:1rem;">Ready for Your Next<br>Adventure?</h2>
-        <p style="color:rgba(255,255,255,0.8);font-size:1.1rem;max-width:500px;margin:0 auto 2rem;">
-          Join 2 million travelers who've discovered the world with Voyger. Your dream destination awaits.
-        </p>
-        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-          <a href="trip-planner.html" class="btn btn-lg" style="background:white;color:var(--primary-800);font-weight:700;">🗺️ Start Planning Free</a>
-          <a href="flights.html" class="btn btn-secondary btn-lg">✈️ Find Cheap Flights</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ==================== FOOTER ==================== -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="logo" style="color:white;margin-bottom:0;">
-          <div class="logo-icon">✈️</div>
-          Voyger
-        </div>
-        <p>Your premium travel companion. Discover, plan, and book extraordinary journeys with confidence and style.</p>
-        <p style="font-size: 0.8rem; color: var(--gray-500); margin-top: 1rem;">Connecting travelers with amazing experiences globally.</p>
-      </div>
-      <div>
-        <div class="footer-title">Explore</div>
-        <ul class="footer-links">
-          <li><a href="destination.html">Destinations</a></li>
-          <li><a href="hotels.html">Hotels</a></li>
-          <li><a href="flights.html">Flights</a></li>
-          <li><a href="trip-planner.html">Trip Planner</a></li>
-          <li><a href="#">Travel Guides</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="footer-title">Company</div>
-        <ul class="footer-links">
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Careers</a></li>
-          <li><a href="#">Press</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="#">Blog</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="footer-title">Support</div>
-        <ul class="footer-links">
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Sitemap</a></li>
-        </ul>
-        <div style="margin-top:1.5rem;">
-          <div class="footer-title" style="font-size:0.75rem;">Newsletter</div>
-          <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
-            <input type="email" placeholder="your@email.com" class="input" style="flex:1;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15);color:white;" />
-            <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Subscribed!','success')">→</button>
+        <!-- Destination Card 6 -->
+        <div class="dest-card reveal delay-100">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1542259009477-d625272157b7?q=80&w=800" alt="Maui" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Maui')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.94</div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Hawaii, USA</div>
+            <h3 class="dest-title">Maui Oceanfront Estate</h3>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">Starting from</span>
+                <span class="dest-price-val">$2,250 <span style="font-size:0.75rem; font-weight:400; color:var(--gray-400);">/ person</span></span>
+              </div>
+              <a href="destination.html" class="btn-dest-explore">Explore</a>
+            </div>
           </div>
         </div>
+
+        <!-- Destination Card 7 -->
+        <div class="dest-card reveal delay-200">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800" alt="Bali" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Bali')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.89</div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Indonesia</div>
+            <h3 class="dest-title">Ubud Jungle Luxury Haven</h3>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">Starting from</span>
+                <span class="dest-price-val">$1,250 <span style="font-size:0.75rem; font-weight:400; color:var(--gray-400);">/ person</span></span>
+              </div>
+              <a href="destination.html" class="btn-dest-explore">Explore</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Destination Card 8 -->
+        <div class="dest-card reveal delay-300">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800" alt="Paris" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Paris')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.93</div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">France</div>
+            <h3 class="dest-title">Paris Penthouse & Eiffel Views</h3>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">Starting from</span>
+                <span class="dest-price-val">$1,750 <span style="font-size:0.75rem; font-weight:400; color:var(--gray-400);">/ person</span></span>
+              </div>
+              <a href="destination.html" class="btn-dest-explore">Explore</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== WHY CHOOSE US ==================== -->
+  <section class="why-us-section" id="why-us">
+    <div class="container">
+      
+      <div class="section-header reveal">
+        <span class="section-tag">💎 The Voyger Standard</span>
+        <h2 class="section-title">Why Choose <span style="color:var(--color-accent);">Voyger</span></h2>
+        <p class="section-subtitle">We combine cutting-edge technology with high-touch human expertise to deliver unparalleled travel perfection.</p>
+      </div>
+
+      <div class="why-us-grid">
+        
+        <div class="feature-glass-card reveal">
+          <div class="feature-icon-wrapper">🤖</div>
+          <h3 class="feature-title">AI Travel Planner</h3>
+          <p class="feature-desc">Engineered algorithm that crafts custom luxury itineraries matched precisely to your style, pacing, and preferences in seconds.</p>
+        </div>
+
+        <div class="feature-glass-card reveal delay-100">
+          <div class="feature-icon-wrapper">🔒</div>
+          <h3 class="feature-title">Secure Booking</h3>
+          <p class="feature-desc">Bank-grade 256-bit SSL encryption, verified luxury partners, and instant booking confirmation with 100% financial guarantee.</p>
+        </div>
+
+        <div class="feature-glass-card reveal delay-200">
+          <div class="feature-icon-wrapper">🏷️</div>
+          <h3 class="feature-title">Best Price Guarantee</h3>
+          <p class="feature-desc">Exclusive VIP rates on five-star resorts, private villas, and first-class flights with direct price-match promise.</p>
+        </div>
+
+        <div class="feature-glass-card reveal delay-300">
+          <div class="feature-icon-wrapper">🎧</div>
+          <h3 class="feature-title">24/7 VIP Support</h3>
+          <p class="feature-desc">Dedicated personal travel concierge available round-the-clock via WhatsApp, phone, or live chat anywhere in the world.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== TRENDING TRAVEL PACKAGES (Carousel) ==================== -->
+  <section class="packages-section" id="packages">
+    <div class="container">
+      
+      <div class="section-header reveal" style="display:flex; align-items:flex-end; justify-content:space-between; max-width:100%; text-align:left; margin-bottom:40px;">
+        <div>
+          <span class="section-tag">🔥 Trending Now</span>
+          <h2 class="section-title" style="margin-bottom:0;">Luxury Travel <span style="color:var(--color-primary);">Packages</span></h2>
+        </div>
+        <div class="carousel-controls">
+          <button class="carousel-btn" onclick="TravelApp.scrollPackagesCarousel('prev')" aria-label="Previous">❮</button>
+          <button class="carousel-btn" onclick="TravelApp.scrollPackagesCarousel('next')" aria-label="Next">❯</button>
+        </div>
+      </div>
+
+      <div class="package-carousel-track" id="packageCarouselTrack">
+        
+        <!-- Package 1 -->
+        <div class="package-card-slide">
+          <div class="pkg-img-box">
+            <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800" alt="French Riviera Cruise" />
+            <div class="pkg-discount-badge">20% OFF</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-meta">
+              <span>⏱️ 10 Days / 9 Nights</span>
+              <span>⭐ 4.95</span>
+            </div>
+            <h3 class="pkg-title">European Riviera Luxury Yacht Cruise</h3>
+            <div class="pkg-footer">
+              <div class="pkg-price-box">
+                <span class="pkg-old-price">$4,399</span>
+                <span class="pkg-current-price">$3,499</span>
+              </div>
+              <a href="trip-planner.html" class="btn-book-pkg">Book Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Package 2 -->
+        <div class="package-card-slide">
+          <div class="pkg-img-box">
+            <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800" alt="Bali Bungalow" />
+            <div class="pkg-discount-badge">15% OFF</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-meta">
+              <span>⏱️ 7 Days / 6 Nights</span>
+              <span>⭐ 4.98</span>
+            </div>
+            <h3 class="pkg-title">Overwater Bungalow Sanctuary Bali</h3>
+            <div class="pkg-footer">
+              <div class="pkg-price-box">
+                <span class="pkg-old-price">$2,599</span>
+                <span class="pkg-current-price">$2,199</span>
+              </div>
+              <a href="trip-planner.html" class="btn-book-pkg">Book Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Package 3 -->
+        <div class="package-card-slide">
+          <div class="pkg-img-box">
+            <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800" alt="Swiss Glacier Express" />
+            <div class="pkg-discount-badge" style="background:linear-gradient(135deg, #10B981, #14B8A6);">POPULAR</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-meta">
+              <span>⏱️ 6 Days / 5 Nights</span>
+              <span>⭐ 4.88</span>
+            </div>
+            <h3 class="pkg-title">Swiss Alps Glacier Express & Chalet</h3>
+            <div class="pkg-footer">
+              <div class="pkg-price-box">
+                <span class="pkg-old-price">$3,200</span>
+                <span class="pkg-current-price">$2,850</span>
+              </div>
+              <a href="trip-planner.html" class="btn-book-pkg">Book Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Package 4 -->
+        <div class="package-card-slide">
+          <div class="pkg-img-box">
+            <img src="https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800" alt="Maldives Island Escape" />
+            <div class="pkg-discount-badge">25% OFF</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-meta">
+              <span>⏱️ 8 Days / 7 Nights</span>
+              <span>⭐ 5.00</span>
+            </div>
+            <h3 class="pkg-title">Private Island VIP Escape Maldives</h3>
+            <div class="pkg-footer">
+              <div class="pkg-price-box">
+                <span class="pkg-old-price">$5,600</span>
+                <span class="pkg-current-price">$4,200</span>
+              </div>
+              <a href="trip-planner.html" class="btn-book-pkg">Book Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Package 5 -->
+        <div class="package-card-slide">
+          <div class="pkg-img-box">
+            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800" alt="Kyoto Zen" />
+            <div class="pkg-discount-badge">10% OFF</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-meta">
+              <span>⏱️ 7 Days / 6 Nights</span>
+              <span>⭐ 4.92</span>
+            </div>
+            <h3 class="pkg-title">Kyoto Zen Ryokan & Tea Ceremony Journey</h3>
+            <div class="pkg-footer">
+              <div class="pkg-price-box">
+                <span class="pkg-old-price">$2,900</span>
+                <span class="pkg-current-price">$2,600</span>
+              </div>
+              <a href="trip-planner.html" class="btn-book-pkg">Book Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Package 6 -->
+        <div class="package-card-slide">
+          <div class="pkg-img-box">
+            <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800" alt="Serengeti Safari" />
+            <div class="pkg-discount-badge" style="background:linear-gradient(135deg, #8B5CF6, #EC4899);">VIP EXCLUSIVE</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-meta">
+              <span>⏱️ 9 Days / 8 Nights</span>
+              <span>⭐ 4.97</span>
+            </div>
+            <h3 class="pkg-title">Serengeti Safari & Private Jet Charter</h3>
+            <div class="pkg-footer">
+              <div class="pkg-price-box">
+                <span class="pkg-old-price">$6,200</span>
+                <span class="pkg-current-price">$5,100</span>
+              </div>
+              <a href="trip-planner.html" class="btn-book-pkg">Book Now</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== TESTIMONIALS (Auto-slide Review Cards) ==================== -->
+  <section class="testimonials-section">
+    <div class="container">
+      
+      <div class="section-header reveal">
+        <span class="section-tag">💬 Client Testimonials</span>
+        <h2 class="section-title">Loved By <span style="color:var(--color-primary);">VIP Travelers</span></h2>
+        <p class="section-subtitle">Hear what discerning explorers say about their bespoke Voyger journeys.</p>
+      </div>
+
+      <div class="testimonials-container reveal">
+        <div class="testimonial-card-slide" id="testimonialSlideContainer">
+          <!-- Dynamic Content rendered via JS -->
+        </div>
+        <div class="testi-dots" id="testiDots"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== TRAVEL INSPIRATION GALLERY (Pinterest-style Masonry) ==================== -->
+  <section class="gallery-section" id="gallery">
+    <div class="container">
+      
+      <div class="section-header reveal">
+        <span class="section-tag">📸 Inspiration Gallery</span>
+        <h2 class="section-title">Wanderlust <span style="color:var(--color-accent);">Gallery</span></h2>
+        <p class="section-subtitle">Filter through our breathtaking collection of luxury travel moments.</p>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="gallery-filters reveal">
+        <button class="gallery-filter-btn active" data-filter="all">All Destinations</button>
+        <button class="gallery-filter-btn" data-filter="beaches">🏖️ Beaches</button>
+        <button class="gallery-filter-btn" data-filter="mountains">🏔️ Mountains</button>
+        <button class="gallery-filter-btn" data-filter="cities">🏙️ Cities</button>
+        <button class="gallery-filter-btn" data-filter="adventure">🧭 Adventure</button>
+        <button class="gallery-filter-btn" data-filter="wildlife">🦁 Wildlife</button>
+        <button class="gallery-filter-btn" data-filter="snow">❄️ Snow</button>
+      </div>
+
+      <!-- Masonry Grid -->
+      <div class="masonry-grid reveal" id="masonryGrid">
+        
+        <!-- Item 1: Beach -->
+        <div class="masonry-item" data-category="beaches" onclick="TravelApp.openLightbox('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200', 'Bora Bora Crystal Waters', 'Beaches')">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600" alt="Beach" loading="lazy" />
+          <div class="masonry-overlay">
+            <span>🏖️ Beaches</span>
+            <h4>Bora Bora Crystal Waters</h4>
+          </div>
+        </div>
+
+        <!-- Item 2: Mountain -->
+        <div class="masonry-item" data-category="mountains" onclick="TravelApp.openLightbox('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1200', 'Swiss Alps Peak Horizon', 'Mountains')">
+          <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600" alt="Mountain" loading="lazy" />
+          <div class="masonry-overlay">
+            <span>🏔️ Mountains</span>
+            <h4>Swiss Alps Peak Horizon</h4>
+          </div>
+        </div>
+
+        <!-- Item 3: City -->
+        <div class="masonry-item" data-category="cities" onclick="TravelApp.openLightbox('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1200', 'Paris Twilight Elegance', 'Cities')">
+          <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=600" alt="City" loading="lazy" />
+          <div class="masonry-overlay">
+            <span>🏙️ Cities</span>
+            <h4>Paris Twilight Elegance</h4>
+          </div>
+        </div>
+
+        <!-- Item 4: Wildlife -->
+        <div class="masonry-item" data-category="wildlife" onclick="TravelApp.openLightbox('https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200', 'Serengeti Lion Safari', 'Wildlife')">
+          <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=600" alt="Wildlife" loading="lazy" />
+          <div class="masonry-overlay">
+            <span>🦁 Wildlife</span>
+            <h4>Serengeti Lion Safari</h4>
+          </div>
+        </div>
+
+        <!-- Item 5: Snow -->
+        <div class="masonry-item" data-category="snow" onclick="TravelApp.openLightbox('https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200', 'Arctic Lodge Aurora Views', 'Snow')">
+          <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=600" alt="Snow" loading="lazy" />
+          <div class="masonry-overlay">
+            <span>❄️ Snow</span>
+            <h4>Arctic Lodge Aurora Views</h4>
+          </div>
+        </div>
+
+        <!-- Item 6: Adventure -->
+        <div class="masonry-item" data-category="adventure" onclick="TravelApp.openLightbox('https://images.unsplash.com/photo-1528164344705-47542687990d?q=80&w=1200', 'Kyoto Bamboo Forest Walk', 'Adventure')">
+          <img src="https://images.unsplash.com/photo-1528164344705-47542687990d?q=80&w=600" alt="Adventure" loading="lazy" />
+          <div class="masonry-overlay">
+            <span>🧭 Adventure</span>
+            <h4>Kyoto Bamboo Forest Walk</h4>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== NEWSLETTER SECTION ==================== -->
+  <section class="newsletter-section" id="newsletter">
+    <div class="container">
+      <div class="newsletter-card reveal">
+        <div class="newsletter-content">
+          <span class="section-tag" style="background:rgba(255,255,255,0.15); color:white; border-color:rgba(255,255,255,0.3);">💌 VIP Secret Club</span>
+          <h2 style="font-family:var(--font-display); font-size:clamp(2rem, 3.5vw, 3rem); font-weight:800; color:white; margin:16px 0;">Get Exclusive Travel Deals</h2>
+          <p style="color:rgba(255,255,255,0.85); font-size:1.05rem; line-height:1.6;">
+            Subscribe to receive private airfare discounts, secret luxury resort access, and curated VIP itineraries directly to your inbox.
+          </p>
+
+          <form class="newsletter-form" onsubmit="TravelApp.handleNewsletterSubmit(event)">
+            <input type="email" id="newsletterEmail" placeholder="Enter your email address..." required />
+            <button type="submit" class="btn-subscribe">Subscribe Now</button>
+          </form>
+        </div>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2025 Voyger. All rights reserved.</span>
-      <span>Made with ❤️ for travelers worldwide</span>
+  </section>
+
+  <!-- ==================== LUXURY FOOTER ==================== -->
+  <footer class="luxury-footer">
+    <div class="container">
+      
+      <div class="footer-grid">
+        
+        <!-- Col 1: Brand Info -->
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo">
+            <span>✈️</span> Voyger
+          </a>
+          <p>The world's premier luxury travel platform. Delivering bespoke journeys, five-star resorts, and seamless VIP experiences worldwide.</p>
+          <div class="social-links">
+            <a href="#" class="social-icon" aria-label="Instagram">📸</a>
+            <a href="#" class="social-icon" aria-label="Twitter">🐦</a>
+            <a href="#" class="social-icon" aria-label="Facebook">📘</a>
+            <a href="#" class="social-icon" aria-label="YouTube">🎬</a>
+            <a href="#" class="social-icon" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+
+        <!-- Col 2: Quick Links -->
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="destination.html">Destinations</a></li>
+            <li><a href="trip-planner.html">Luxury Packages</a></li>
+            <li><a href="hotels.html">Stays & Hotels</a></li>
+            <li><a href="flights.html">Private Flights</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Popular Destinations -->
+        <div class="footer-col">
+          <h5>Popular Spots</h5>
+          <ul class="footer-links">
+            <li><a href="destination.html">Bora Bora</a></li>
+            <li><a href="destination.html">Santorini, Greece</a></li>
+            <li><a href="destination.html">Swiss Alps</a></li>
+            <li><a href="destination.html">Kyoto, Japan</a></li>
+            <li><a href="destination.html">Maldives</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Resources -->
+        <div class="footer-col">
+          <h5>Resources</h5>
+          <ul class="footer-links">
+            <li><a href="#why-us">AI Planner</a></li>
+            <li><a href="#why-us">VIP Support</a></li>
+            <li><a href="profile.html">My Account</a></li>
+            <li><a href="dashboard.html">Bookings</a></li>
+            <li><a href="#newsletter">FAQs</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 5: Contact Details -->
+        <div class="footer-col">
+          <h5>Contact Details</h5>
+          <div class="contact-item">
+            <span>📍</span>
+            <div>5th Avenue, Suite 1200, New York, NY 10001</div>
+          </div>
+          <div class="contact-item">
+            <span>📞</span>
+            <div>+1 (800) 888-VOYGER</div>
+          </div>
+          <div class="contact-item">
+            <span>✉️</span>
+            <div>vip@voyger-luxury.com</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div>© 2026 Voyger Travel Inc. All rights reserved. Designed for Luxury Explorers.</div>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms & Conditions</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ==================== BACK TO TOP BUTTON ==================== -->
+  <button class="back-to-top-btn" id="backToTop" aria-label="Back to top">↑</button>
+
+  <!-- Quick Search Modal Overlay -->
+  <div class="quick-search-modal" id="quickSearchModal">
+    <div class="quick-search-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 style="margin:0; color:white;">Quick Search</h3>
+        <button onclick="toggleQuickSearchModal()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+      <input type="text" class="destination-input" placeholder="Type destination, hotel, or country..." style="width:100%; padding:14px; border-radius:14px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; font-size:1rem;" autofocus />
+      <div style="margin-top:20px; color:var(--gray-400); font-size:0.85rem;">
+        Popular searches: <a href="#" style="color:var(--color-primary);">Bora Bora</a>, <a href="#" style="color:var(--color-primary);">Swiss Chalet</a>, <a href="#" style="color:var(--color-primary);">First Class Flights</a>
+      </div>
     </div>
   </div>
-</footer>
 
-<!-- ==================== HOTEL MODAL ==================== -->
-<div class="modal-overlay" id="hotel-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h4>🏨 The Azure Palace Resort</h4>
-      <button class="btn btn-ghost btn-sm" data-modal-close="hotel-modal">✕</button>
-    </div>
-    <div class="modal-body">
-      <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=700&q=80" alt="Hotel" style="width:100%;height:250px;object-fit:cover;border-radius:1rem;margin-bottom:1.5rem;" />
-      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
-        <span class="badge badge-success">4.9 ⭐ Exceptional</span>
-        <span class="badge badge-teal">🏊 Pool</span>
-        <span class="badge badge-blue">🍽️ Restaurant</span>
-        <span class="badge badge-teal">💆 Spa</span>
-      </div>
-      <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.7;">
-        Perched on the oceanfront in Bali's most exclusive location, The Azure Palace Resort offers an unparalleled luxury experience. Each villa features private infinity pools, butler service, and direct beach access.
-      </p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem;">
-        <div class="stat-card">
-          <div class="stat-value" style="font-size:1.75rem;">₹24,565</div>
-          <div class="stat-label">Per Night</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" style="font-size:1.75rem;">50m²</div>
-          <div class="stat-label">Room Size</div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" data-modal-close="hotel-modal">Close</button>
-      <button class="btn btn-primary" onclick="TravelApp.showToast('Booking initiated!','success');closeModal('hotel-modal')">Book This Hotel</button>
-    </div>
-  </div>
-</div>
-
-<!-- Back to Top -->
-<button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
-
-<script src="js/main.js"></script>
-<script>
-// Auth mode toggle
-let isRegisterMode = true;
-function toggleAuthMode(e) {
-  if (e) e.preventDefault();
-  isRegisterMode = !isRegisterMode;
-  
-  const title = document.getElementById('auth-title');
-  const subtitle = document.getElementById('auth-subtitle');
-  const nameGroup = document.getElementById('name-group');
-  const nameInput = document.getElementById('auth-name');
-  const submitBtn = document.getElementById('auth-submit-btn');
-  const toggleText = document.getElementById('auth-toggle-text');
-  const toggleLink = document.getElementById('auth-toggle-link');
-  
-  if (isRegisterMode) {
-    title.innerText = 'Create an Account';
-    subtitle.innerText = 'Join Voyger to explore premium travel plans';
-    nameGroup.style.display = 'block';
-    nameInput.required = true;
-    submitBtn.innerText = 'Register';
-    toggleText.innerText = 'Already have an account?';
-    toggleLink.innerText = 'Sign In';
-  } else {
-    title.innerText = 'Welcome to Voyger';
-    subtitle.innerText = 'Please sign in to explore your travel plans';
-    nameGroup.style.display = 'none';
-    nameInput.required = false;
-    submitBtn.innerText = 'Sign In';
-    toggleText.innerText = "Don't have an account?";
-    toggleLink.innerText = 'Register';
-  }
-}
-
-// Sign-in wall check
-function getAvatarUrl(email) {
-  const firstName = (email || '').toLowerCase().split('@')[0].split(/[\.\-_]/)[0];
-  const femaleNames = ['jane', 'sara', 'sarah', 'emily', 'jessica', 'mary', 'linda', 'emma', 'olivia', 'sophia', 'isabella', 'mia', 'chloe', 'kari', 'alice', 'anna'];
-  const maleNames = ['john', 'michael', 'david', 'james', 'robert', 'william', 'joseph', 'charles', 'thomas', 'daniel', 'peter', 'paul', 'mark', 'alex'];
-  if (femaleNames.includes(firstName)) return 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80';
-  if (maleNames.includes(firstName)) return 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80';
-  return 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80';
-}
-
-function showProfileInNav(avatarUrl) {
-  const authButtons = document.getElementById('auth-buttons');
-  if (authButtons) {
-    authButtons.style.position = 'relative';
-    authButtons.innerHTML = `
-      <div style="position:relative;" id="profile-dropdown-wrapper">
-        <a href="profile.html" id="profile-nav-btn" class="btn btn-primary btn-sm" style="display:flex;align-items:center;gap:0.5rem;text-decoration:none;padding:0.35rem 1rem 0.35rem 0.35rem;border-radius:50px;" onclick="toggleProfileDropdown(event)">
-          <img src="${avatarUrl}" alt="Profile" style="width:24px;height:24px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);">
-          <span style="font-weight:600;font-size:0.875rem;">Profile</span>
-          <span style="font-size:0.6rem;margin-left:-2px;">▼</span>
-        </a>
-        <div id="profile-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--bg-secondary,#1e293b);border:1px solid rgba(255,255,255,0.1);border-radius:12px;min-width:160px;box-shadow:0 8px 32px rgba(0,0,0,0.3);z-index:1000;overflow:hidden;">
-          <a href="profile.html" style="display:flex;align-items:center;gap:0.6rem;padding:0.75rem 1rem;color:inherit;text-decoration:none;font-size:0.875rem;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background=''">👤 My Profile</a>
-          <div style="height:1px;background:rgba(255,255,255,0.08);margin:0.25rem 0;"></div>
-          <a href="#" onclick="logoutUser()" style="display:flex;align-items:center;gap:0.6rem;padding:0.75rem 1rem;color:#ff6b6b;text-decoration:none;font-size:0.875rem;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,80,80,0.1)'" onmouseout="this.style.background=''">🚪 Logout</a>
-        </div>
-      </div>
-    `;
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-      const wrapper = document.getElementById('profile-dropdown-wrapper');
-      const dd = document.getElementById('profile-dropdown');
-      if (dd && wrapper && !wrapper.contains(e.target)) dd.style.display = 'none';
-    });
-  }
-}
-
-function logoutUser() {
-  localStorage.removeItem('voyger_user');
-  // Show auth wall again and restore sign in/get started buttons
-  const authWall = document.getElementById('auth-wall');
-  if (authWall) authWall.style.display = 'flex';
-  const authButtons = document.getElementById('auth-buttons');
-  if (authButtons) {
-    authButtons.innerHTML = `
-      <a href="#" onclick="document.getElementById('auth-wall').style.display='flex';return false;" class="btn btn-outline btn-sm">Sign In</a>
-      <a href="#" onclick="document.getElementById('auth-wall').style.display='flex';return false;" class="btn btn-primary btn-sm">Get Started</a>
-    `;
-  }
-}
-
-function toggleProfileDropdown(e) {
-  e.preventDefault();
-  const dd = document.getElementById('profile-dropdown');
-  if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
-}
-
-
-function handleAuthSubmit(e) {
-  e.preventDefault();
-  
-  const emailInput = document.getElementById('auth-email');
-  const email = emailInput ? emailInput.value.toLowerCase() : '';
-  const nameInput = document.getElementById('auth-name');
-  const name = nameInput ? nameInput.value : email.split('@')[0];
-  const avatarUrl = getAvatarUrl(email);
-
-  // Save session to localStorage
-  localStorage.setItem('voyger_user', JSON.stringify({ email, name, avatarUrl }));
-
-  const authWall = document.getElementById('auth-wall');
-  authWall.style.opacity = '0';
-  setTimeout(() => {
-    authWall.style.display = 'none';
-    if (isRegisterMode) {
-      TravelApp.showToast('Registration successful! Welcome to Voyger.', 'success');
-    } else {
-      TravelApp.showToast('Signed in successfully!', 'success');
+  <script>
+    function toggleQuickSearchModal() {
+      const modal = document.getElementById('quickSearchModal');
+      modal.classList.toggle('show');
     }
-    showProfileInNav(avatarUrl);
-  }, 400);
-}
+  </script>
 
-// On page load: restore profile pill if already logged in
-(function checkSession() {
-  const stored = localStorage.getItem('voyger_user');
-  if (stored) {
-    try {
-      const user = JSON.parse(stored);
-      // Auth wall is already hidden via CSS class set in <head>
-      // Just restore the profile pill
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => showProfileInNav(user.avatarUrl));
-      } else {
-        showProfileInNav(user.avatarUrl);
-      }
-    } catch(err) {
-      localStorage.removeItem('voyger_user');
-    }
-  }
-})();
-
-// Home page specific
-function handleSearch() {
-  const dest = document.getElementById('hero-destination').value;
-  const checkinVal = document.getElementById('hero-checkin').value;
-  const checkoutVal = document.getElementById('hero-checkout').value;
-
-  if (!dest) {
-    TravelApp.showToast('Please enter a destination!', 'warning');
-    return;
-  }
-  
-  if (!checkinVal || !checkoutVal) {
-    TravelApp.showToast('Please select both Check-In and Check-Out dates!', 'warning');
-    return;
-  }
-
-  const checkinDate = new Date(checkinVal);
-  const checkoutDate = new Date(checkoutVal);
-  const today = new Date();
-  today.setHours(0,0,0,0);
-
-  if (checkinDate < today) {
-    TravelApp.showToast('Check-In date cannot be in the past!', 'error');
-    return;
-  }
-
-  if (checkoutDate <= checkinDate) {
-    TravelApp.showToast('Check-Out date must be after the Check-In date!', 'error');
-    return;
-  }
-
-  TravelApp.showToast(`Searching for flights and hotels in ${dest}...`, 'info');
-  setTimeout(() => { window.location.href = 'hotels.html'; }, 1500);
-}
-
-function filterPackages(el, category) {
-  document.querySelectorAll('#package-filters .tag').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('#packages-grid .package-card').forEach(card => {
-    if (category === 'all' || card.dataset.category?.includes(category)) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
-    }
-  });
-}
-
-// Set min dates for inputs dynamically
-const todayStr = new Date().toISOString().split('T')[0];
-document.getElementById('hero-checkin').min = todayStr;
-document.getElementById('hero-checkout').min = todayStr;
-document.getElementById('hero-checkin').addEventListener('change', (e) => {
-  document.getElementById('hero-checkout').min = e.target.value;
-});
-</script>
+  <!-- Main JavaScript File -->
+  <script src="js/main.js"></script>
 </body>
 </html>

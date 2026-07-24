@@ -1,368 +1,1064 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Explore stunning travel destinations with detailed guides, galleries, weather info, and local attractions." />
-  <title>Destinations – Voyger</title>
+  <meta name="description" content="Explore 138+ luxury travel destinations worldwide with Voyger. Discover detailed guides, photos, travel tips, and plan your dream vacation." />
+  <title>Explore Luxury Destinations | Voyger</title>
+  
+  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/home.css" />
+
+  <style>
+    /* Inline navbar & dropdown helper styles matching home.html */
+    .nav-icon-btn {
+      position: relative;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-icon-btn:hover {
+      background: rgba(0, 194, 255, 0.2);
+      border-color: var(--color-primary);
+      transform: scale(1.05);
+    }
+    .badge-count {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #EF4444;
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 2px solid #0F172A;
+    }
+    .dropdown-wrapper {
+      position: relative;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      width: 260px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    .dropdown-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .dropdown-header {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 8px;
+    }
+    .dropdown-header h5 {
+      margin: 0;
+      color: white;
+      font-size: 0.95rem;
+    }
+    .dropdown-header p {
+      margin: 2px 0 0;
+      color: var(--color-primary);
+      font-size: 0.78rem;
+    }
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 0.88rem;
+      border-radius: 12px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .dropdown-item:hover {
+      background: rgba(0, 194, 255, 0.15);
+      color: var(--color-primary);
+    }
+    .user-avatar-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--color-primary);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .user-avatar-btn:hover {
+      transform: scale(1.08);
+    }
+  </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar scrolled" id="navbar">
-  <div class="container">
-    <div class="navbar-inner">
-      <a href="index.html" class="logo">
-        <div class="logo-icon">✈️</div>
-        Voyger
-      </a>
-      <ul class="nav-links">
-        <li><a href="index.html" class="nav-link">Home</a></li>
-        <li><a href="destination.html" class="nav-link active">Destinations</a></li>
-        <li><a href="trip-planner.html" class="nav-link">Plan Trip</a></li>
-        <li><a href="hotels.html" class="nav-link">Hotels</a></li>
-        <li><a href="flights.html" class="nav-link">Flights</a></li>
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="contact.html" class="nav-link">Contact</a></li>
-      </ul>
-      <div class="nav-actions">
-        <button class="theme-toggle" id="theme-toggle">🌙</button>
-        <a href="profile.html" class="btn btn-primary btn-sm">My Profile</a>
-      </div>
-      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
-    </div>
-  </div>
-</nav>
-<div class="mobile-menu" id="mobile-menu">
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="destination.html" class="nav-link">🌍 Destinations</a>
-  <a href="trip-planner.html" class="nav-link">📅 Plan Trip</a>
-  <a href="hotels.html" class="nav-link">🏨 Hotels</a>
-  <a href="flights.html" class="nav-link">✈️ Flights</a>
-  <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-  <a href="profile.html" class="nav-link">👤 Profile</a>
-</div>
-
-<!-- DESTINATION HERO -->
-<section class="destination-hero" id="dest-hero">
-  <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&q=80" alt="Paris" class="destination-hero-img" id="hero-img" />
-  <div class="destination-hero-overlay">
+  <!-- ==================== EXISTING NAVBAR (PRESERVED) ==================== -->
+  <nav class="navbar scrolled" id="navbar">
     <div class="container">
-      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
-        <span class="badge badge-teal">🌍 Western Europe</span>
-        <span class="badge badge-success">✅ Visa Free for EU</span>
-        <span class="badge badge-warning">⭐ Top Rated</span>
+      <div class="navbar-inner" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+        
+        <!-- Logo -->
+        <a href="index.html" class="logo" style="display:flex; align-items:center; gap:10px; font-size:1.6rem; font-weight:800; color:white; text-decoration:none;">
+          <div class="logo-icon" style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #00C2FF, #14B8A6); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow: 0 4px 15px rgba(0,194,255,0.4);">✈️</div>
+          <span style="font-family:var(--font-primary); letter-spacing:-0.03em;">Voyger</span>
+        </a>
+
+        <!-- Links -->
+        <ul class="nav-links" style="display:flex; align-items:center; gap:24px; list-style:none; margin:0; padding:0;">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="destination.html" class="nav-link active">Destinations</a></li>
+          <li><a href="trip-planner.html" class="nav-link">Packages</a></li>
+          <li><a href="hotels.html" class="nav-link">Hotels</a></li>
+          <li><a href="flights.html" class="nav-link">Flights</a></li>
+          <li><a href="index.html#why-us" class="nav-link">About</a></li>
+          <li><a href="#newsletter" class="nav-link">Contact</a></li>
+        </ul>
+
+        <!-- Right Actions -->
+        <div class="nav-actions" style="display:flex; align-items:center; gap:14px;">
+          <button class="nav-icon-btn theme-toggle" aria-label="Toggle dark mode">🌙</button>
+          
+          <div class="dropdown-wrapper">
+            <button class="nav-icon-btn" onclick="TravelApp.toggleDropdown('notifDropdown')" aria-label="Notifications">
+              🔔 <span class="badge-count">3</span>
+            </button>
+            <div class="dropdown-menu" id="notifDropdown">
+              <div class="dropdown-header">
+                <h5>Notifications</h5>
+                <p>3 unread updates</p>
+              </div>
+              <a href="#" class="dropdown-item"><span>🌴</span><div><strong>Bora Bora Deal</strong><div style="font-size:0.75rem; opacity:0.7;">20% OFF Luxury Overwater Villa</div></div></a>
+              <a href="#" class="dropdown-item"><span>✈️</span><div><strong>Flight Price Drop</strong><div style="font-size:0.75rem; opacity:0.7;">First Class Tokyo round-trip</div></div></a>
+              <a href="#" class="dropdown-item"><span>✨</span><div><strong>VIP Itinerary Ready</strong><div style="font-size:0.75rem; opacity:0.7;">AI Trip Plan generated</div></div></a>
+            </div>
+          </div>
+
+          <div class="dropdown-wrapper">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150" alt="User Profile" class="user-avatar-btn" onclick="TravelApp.toggleDropdown('userDropdown')" />
+            <div class="dropdown-menu" id="userDropdown">
+              <div class="dropdown-header">
+                <h5>Elena Rostova</h5>
+                <p>VIP Luxury Explorer</p>
+              </div>
+              <a href="profile.html" class="dropdown-item">👤 My Profile</a>
+              <a href="dashboard.html" class="dropdown-item">📅 My Bookings</a>
+              <a href="profile.html" class="dropdown-item">❤️ Saved Trips</a>
+              <a href="profile.html" class="dropdown-item">⚙️ Account Settings</a>
+              <div style="border-top:1px solid rgba(255,255,255,0.1); margin-top:6px; padding-top:6px;">
+                <a href="#" onclick="TravelApp.showToast('Logged out successfully','info')" class="dropdown-item" style="color:#EF4444;">🚪 Sign Out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+
       </div>
-      <h1 style="color:white;font-family:var(--font-display);margin-bottom:0.5rem;" id="dest-name">Paris, France</h1>
-      <p style="color:rgba(255,255,255,0.8);font-size:1.1rem;margin-bottom:1.5rem;">The City of Love — where romance, art, cuisine, and history blend into perfection.</p>
-      <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-        <button class="btn btn-primary" onclick="TravelApp.showToast('Starting trip plan for Paris!','success')">📅 Plan This Trip</button>
-        <button class="btn btn-secondary" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">🖼️ View Gallery</button>
-        <button class="btn btn-secondary" onclick="TravelApp.showToast('Added Paris to wishlist!','success')">❤️ Save</button>
-      </div>
     </div>
+  </nav>
+
+  <!-- Mobile Dropdown Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="destination.html" class="nav-link active">🌍 Destinations</a>
+    <a href="trip-planner.html" class="nav-link">📦 Packages</a>
+    <a href="hotels.html" class="nav-link">🏨 Hotels</a>
+    <a href="flights.html" class="nav-link">✈️ Flights</a>
+    <a href="index.html#why-us" class="nav-link">ℹ️ About Us</a>
+    <a href="#newsletter" class="nav-link">📩 Contact</a>
+    <a href="profile.html" class="nav-link">👤 My Account</a>
   </div>
-</section>
 
-<!-- DESTINATION SELECTOR TABS -->
-<div style="background:var(--bg-secondary);border-bottom:1px solid var(--border-color);position:sticky;top:70px;z-index:50;">
-  <div class="container">
-    <div style="display:flex;gap:0.5rem;overflow-x:auto;padding:1rem 0;">
-      <button class="dest-selector-btn tag active" data-dest="paris" onclick="switchDest(this,'paris','Paris, France','https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&q=80','🇫🇷 France')">🗼 Paris</button>
-      <button class="dest-selector-btn tag" data-dest="bali" onclick="switchDest(this,'bali','Bali, Indonesia','https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1920&q=80','🇮🇩 Indonesia')">🌴 Bali</button>
-      <button class="dest-selector-btn tag" data-dest="tokyo" onclick="switchDest(this,'tokyo','Tokyo, Japan','https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&q=80','🇯🇵 Japan')">🗾 Tokyo</button>
-      <button class="dest-selector-btn tag" data-dest="santorini" onclick="switchDest(this,'santorini','Santorini, Greece','https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1920&q=80','🇬🇷 Greece')">🏛️ Santorini</button>
-      <button class="dest-selector-btn tag" data-dest="maldives" onclick="switchDest(this,'maldives','Maldives','https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=1920&q=80','🇲🇻 Maldives')">🐠 Maldives</button>
-      <button class="dest-selector-btn tag" data-dest="dubai" onclick="switchDest(this,'dubai','Dubai, UAE','https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920&q=80','🇦🇪 UAE')">🏙️ Dubai</button>
-    </div>
-  </div>
-</div>
+  <!-- ==================== 1. DESTINATION HERO SECTION ==================== -->
+  <section class="dest-hero-section" id="dest-hero">
+    <div class="dest-hero-bg"></div>
+    <div class="hero-overlay"></div>
 
-<div class="container" style="padding-top:3rem;padding-bottom:3rem;">
-  <div style="display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start;">
-    
-    <!-- MAIN CONTENT -->
-    <div>
-      <!-- Gallery -->
-      <section id="gallery" style="margin-bottom:3rem;" class="reveal">
-        <h3 style="margin-bottom:1.5rem;color:var(--text-primary);">🖼️ Photo Gallery</h3>
-        <div class="gallery-grid">
-          <div class="gallery-item">
-            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80" alt="Paris 1" />
-          </div>
-          <div class="gallery-item">
-            <img src="https://images.unsplash.com/photo-1543349689-9a4d426bee8e?w=400&q=80" alt="Paris 2" />
-          </div>
-          <div class="gallery-item">
-            <img src="https://images.unsplash.com/photo-1471623432079-b009d30b6729?w=400&q=80" alt="Paris 3" />
-          </div>
-          <div class="gallery-item">
-            <img src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=400&q=80" alt="Paris 4" />
-          </div>
-          <div class="gallery-item" style="position:relative;">
-            <img src="https://images.unsplash.com/photo-1549144511-f099e773c147?w=400&q=80" alt="Paris 5" />
-            <div class="gallery-more" onclick="TravelApp.showToast('Full gallery opening...','info')">+12 More</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Description -->
-      <section style="margin-bottom:3rem;" class="reveal">
-        <h3 style="margin-bottom:1rem;color:var(--text-primary);">📖 About Paris</h3>
-        <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:1rem;">
-          Paris, the capital of France, is a major European city and a global center for art, fashion, gastronomy, and culture. Its 19th-century cityscape is crisscrossed by wide boulevards and the River Seine.
-        </p>
-        <p style="color:var(--text-secondary);line-height:1.8;">
-          Beyond such landmarks as the Eiffel Tower and the 12th-century Gothic Notre-Dame Cathedral, the city is known for its café culture and fashion houses, the Musée du Louvre and the Pompidou Center.
-        </p>
-        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;">
-          <span class="tag">🗣️ French</span>
-          <span class="tag">💶 Euro (€)</span>
-          <span class="tag">🕐 CET +1</span>
-          <span class="tag">✈️ CDG Airport</span>
-          <span class="tag">🚇 Metro System</span>
-        </div>
-      </section>
-
-      <!-- Attractions -->
-      <section style="margin-bottom:3rem;">
-        <h3 style="margin-bottom:1.5rem;color:var(--text-primary);">🎯 Top Attractions</h3>
-        <div style="display:flex;flex-direction:column;gap:0.75rem;">
-          <div class="attraction-card reveal">
-            <div class="attraction-icon">🗼</div>
-            <div style="flex:1;">
-              <div style="font-weight:600;color:var(--text-primary);">Eiffel Tower</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">Champ de Mars, 5 Avenue Anatole</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:0.8rem;font-weight:600;color:var(--teal-500);">€26</div>
-              <div style="font-size:0.75rem;color:var(--text-muted);">Entry fee</div>
-            </div>
-          </div>
-          <div class="attraction-card reveal delay-100">
-            <div class="attraction-icon">🖼️</div>
-            <div style="flex:1;">
-              <div style="font-weight:600;color:var(--text-primary);">Louvre Museum</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">Rue de Rivoli, 75001 Paris</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:0.8rem;font-weight:600;color:var(--teal-500);">€17</div>
-              <div style="font-size:0.75rem;color:var(--text-muted);">Entry fee</div>
-            </div>
-          </div>
-          <div class="attraction-card reveal delay-200">
-            <div class="attraction-icon">⛪</div>
-            <div style="flex:1;">
-              <div style="font-weight:600;color:var(--text-primary);">Notre-Dame Cathedral</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">6 Parvis Notre-Dame</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:0.8rem;font-weight:600;color:var(--success);">Free</div>
-              <div style="font-size:0.75rem;color:var(--text-muted);">Entry fee</div>
-            </div>
-          </div>
-          <div class="attraction-card reveal delay-300">
-            <div class="attraction-icon">🎨</div>
-            <div style="flex:1;">
-              <div style="font-weight:600;color:var(--text-primary);">Musée d'Orsay</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">1 Rue de la Légion d'Honneur</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:0.8rem;font-weight:600;color:var(--teal-500);">€16</div>
-              <div style="font-size:0.75rem;color:var(--text-muted);">Entry fee</div>
-            </div>
-          </div>
-          <div class="attraction-card reveal delay-400">
-            <div class="attraction-icon">🏰</div>
-            <div style="flex:1;">
-              <div style="font-weight:600;color:var(--text-primary);">Palace of Versailles</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">Place d'Armes, Versailles</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:0.8rem;font-weight:600;color:var(--teal-500);">€20</div>
-              <div style="font-size:0.75rem;color:var(--text-muted);">Entry fee</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Nearby Hotels -->
-      <section style="margin-bottom:3rem;">
-        <h3 style="margin-bottom:1.5rem;color:var(--text-primary);">🏨 Nearby Hotels</h3>
-        <div class="grid-2 grid">
-          <div class="card">
-            <div class="card-img-wrapper">
-              <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&q=80" alt="Hotel" class="card-img" />
-            </div>
-            <div class="card-body">
-              <div class="stars" style="margin-bottom:0.5rem;">★★★★★</div>
-              <div class="card-title" style="font-size:1rem;">Le Marais Boutique</div>
-              <div style="font-size:0.85rem;color:var(--teal-500);font-weight:700;margin-top:0.5rem;">$199/night</div>
-              <button class="btn btn-primary btn-sm" style="margin-top:0.75rem;width:100%;" onclick="window.location.href='hotels.html'">Book Now</button>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-img-wrapper">
-              <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&q=80" alt="Hotel" class="card-img" />
-            </div>
-            <div class="card-body">
-              <div class="stars" style="margin-bottom:0.5rem;">★★★★☆</div>
-              <div class="card-title" style="font-size:1rem;">Champs-Élysées Grand</div>
-              <div style="font-size:0.85rem;color:var(--teal-500);font-weight:700;margin-top:0.5rem;">$329/night</div>
-              <button class="btn btn-primary btn-sm" style="margin-top:0.75rem;width:100%;" onclick="window.location.href='hotels.html'">Book Now</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Reviews -->
-      <section>
-        <h3 style="margin-bottom:1.5rem;color:var(--text-primary);">💬 Traveler Reviews</h3>
-        <div style="display:flex;flex-direction:column;gap:1rem;">
-          <div class="review-card">
-            <div class="review-quote">"</div>
-            <div class="stars">★★★★★</div>
-            <p class="review-text">"Paris exceeded every expectation. The Eiffel Tower at night, the Seine cruise, the incredible food — it's the most romantic city I've ever visited."</p>
-            <div class="reviewer">
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" class="reviewer-avatar" alt="Emily" />
-              <div><div class="reviewer-name">Emily Chen</div><div class="reviewer-location">🇨🇦 Toronto, Canada</div></div>
-            </div>
-          </div>
-          <div class="review-card">
-            <div class="review-quote">"</div>
-            <div class="stars">★★★★★</div>
-            <p class="review-text">"The museum pass was worth every penny. We fit in 8 museums in 5 days! Paris is perfectly walkable and the café culture is something you just have to experience."</p>
-            <div class="reviewer">
-              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80" class="reviewer-avatar" alt="James" />
-              <div><div class="reviewer-name">James Walker</div><div class="reviewer-location">🇬🇧 London, UK</div></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- SIDEBAR -->
-    <div style="display:flex;flex-direction:column;gap:1.5rem;position:sticky;top:130px;">
+    <div class="container hero-content" style="position:relative; z-index:2; text-align:center;">
       
-      <!-- Quick Info -->
-      <div class="glass-card" style="padding:1.5rem;">
-        <h5 style="margin-bottom:1.25rem;color:var(--text-primary);">📊 Quick Info</h5>
-        <div style="display:flex;flex-direction:column;gap:1rem;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="color:var(--text-secondary);font-size:0.85rem;">🌡️ Best Time</span>
-            <span style="font-weight:600;font-size:0.85rem;color:var(--text-primary);">Apr – Jun</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="color:var(--text-secondary);font-size:0.85rem;">💰 Avg Daily Cost</span>
-            <span style="font-weight:600;font-size:0.85rem;color:var(--teal-500);">$120–$200</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="color:var(--text-secondary);font-size:0.85rem;">🕐 Time Zone</span>
-            <span style="font-weight:600;font-size:0.85rem;color:var(--text-primary);">CET (UTC+1)</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="color:var(--text-secondary);font-size:0.85rem;">✈️ Flight Time</span>
-            <span style="font-weight:600;font-size:0.85rem;color:var(--text-primary);">~8h from NYC</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="color:var(--text-secondary);font-size:0.85rem;">🛂 Visa</span>
-            <span style="font-weight:600;font-size:0.85rem;color:var(--success);">Visa-Free (EU)</span>
-          </div>
-        </div>
-        <hr style="border:1px solid var(--border-color);margin:1.25rem 0;" />
-        <button class="btn btn-primary" style="width:100%;" onclick="window.location.href='trip-planner.html'">📅 Plan My Trip Here</button>
-        <button class="btn btn-ghost" style="width:100%;margin-top:0.5rem;" onclick="window.location.href='flights.html'">✈️ Find Flights</button>
+      <div class="hero-badge">
+        <span>🌍</span> Explore 138+ Destinations Worldwide
       </div>
 
-      <!-- Weather -->
-      <div class="weather-widget">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-          <div>
-            <div class="weather-temp">22°C</div>
-            <div class="weather-desc">Partly Cloudy</div>
-            <div style="color:rgba(255,255,255,0.6);font-size:0.8rem;margin-top:0.5rem;">Paris, France</div>
+      <h1 class="hero-title" style="font-size:clamp(2.5rem, 5vw, 4.2rem); margin-bottom:16px;">
+        Discover Your Next <span class="gradient-text">Destination</span>
+      </h1>
+
+      <p class="hero-subtitle" style="max-width:680px; margin:0 auto 24px;">
+        From tropical beaches to historic cities, find the perfect place for your next unforgettable journey.
+      </p>
+
+      <!-- Destination Search Bar -->
+      <div class="dest-hero-search-wrapper">
+        <input type="text" id="destHeroSearch" class="dest-hero-search-input" placeholder="Search city, country or destination..." oninput="TravelApp.applyDestinationFilters()" />
+        <button class="btn-hero-search" onclick="TravelApp.applyDestinationFilters()">Explore</button>
+      </div>
+
+    </div>
+
+    <!-- Scroll Down Indicator -->
+    <div class="scroll-indicator" style="bottom:16px;" onclick="document.getElementById('stickyFilterBar').scrollIntoView({behavior:'smooth'})">
+      <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+      <span>Scroll to explore</span>
+    </div>
+  </section>
+
+  <!-- ==================== 2. DESTINATION SEARCH & FILTER ==================== -->
+  <section class="sticky-filter-bar" id="stickyFilterBar">
+    <div class="container">
+      
+      <div class="filter-grid-row">
+        
+        <!-- Search Input & Results Count -->
+        <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:260px;">
+          <input type="text" id="destSearchInput" class="input" placeholder="Where do you want to go?" style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.2); color:white; padding:8px 16px; border-radius:12px; font-size:0.88rem; width:100%;" oninput="TravelApp.applyDestinationFilters()" />
+          <span id="destResultsCount" style="font-size:0.82rem; font-weight:700; color:var(--color-primary); white-space:nowrap; background:rgba(0,194,255,0.12); padding:6px 12px; border-radius:10px; border:1px solid rgba(0,194,255,0.3);">138 destinations found</span>
+        </div>
+
+        <!-- Filter Selects -->
+        <div class="filter-selects-group">
+          
+          <!-- Continent -->
+          <select id="filterContinent" class="filter-select-box" onchange="TravelApp.applyDestinationFilters()">
+            <option value="all">Continent: All</option>
+            <option value="europe">Europe</option>
+            <option value="asia">Asia</option>
+            <option value="north america">North America</option>
+            <option value="south america">South America</option>
+            <option value="africa">Africa</option>
+            <option value="oceania">Australia & Oceania</option>
+          </select>
+
+          <!-- Travel Type -->
+          <select id="filterTravelType" class="filter-select-box" onchange="TravelApp.applyDestinationFilters()">
+            <option value="all">Type: All</option>
+            <option value="adventure">Adventure</option>
+            <option value="beach">Beach</option>
+            <option value="romantic">Romantic</option>
+            <option value="cultural">Cultural</option>
+            <option value="nature">Nature</option>
+            <option value="luxury">Luxury</option>
+            <option value="family">Family</option>
+            <option value="solo">Solo</option>
+          </select>
+
+          <!-- Budget -->
+          <select id="filterBudget" class="filter-select-box" onchange="TravelApp.applyDestinationFilters()">
+            <option value="all">Budget: All</option>
+            <option value="budget">Budget (&lt;₹50k)</option>
+            <option value="mid-range">Mid-range (₹50k-₹80k)</option>
+            <option value="premium">Premium (₹80k-₹100k)</option>
+            <option value="luxury">Luxury (&gt;₹100k)</option>
+          </select>
+
+          <!-- Rating -->
+          <select id="filterRating" class="filter-select-box" onchange="TravelApp.applyDestinationFilters()">
+            <option value="all">Rating: All</option>
+            <option value="4.8">4.8+ ⭐</option>
+            <option value="4.9">4.9+ ⭐</option>
+          </select>
+
+          <!-- Buttons -->
+          <button class="btn-filter-action btn-clear-filter" onclick="TravelApp.clearDestinationFilters()">Clear Filters</button>
+          <button class="btn-filter-action btn-apply-filter" onclick="TravelApp.applyDestinationFilters()">Apply Filters</button>
+
+        </div>
+
+      </div>
+
+      <!-- ==================== 3. EXPLORE BY CONTINENT TABS ==================== -->
+      <div class="continent-tab-container" style="margin-top:10px;">
+        <button class="continent-tab-btn active" data-continent="all" onclick="TravelApp.filterByContinent(this, 'all')">All Continents</button>
+        <button class="continent-tab-btn" data-continent="asia" onclick="TravelApp.filterByContinent(this, 'asia')">🌏 Asia</button>
+        <button class="continent-tab-btn" data-continent="europe" onclick="TravelApp.filterByContinent(this, 'europe')">European Riviera</button>
+        <button class="continent-tab-btn" data-continent="north america" onclick="TravelApp.filterByContinent(this, 'north america')">🗽 North America</button>
+        <button class="continent-tab-btn" data-continent="south america" onclick="TravelApp.filterByContinent(this, 'south america')">🗿 South America</button>
+        <button class="continent-tab-btn" data-continent="africa" onclick="TravelApp.filterByContinent(this, 'africa')">🦁 Africa</button>
+        <button class="continent-tab-btn" data-continent="oceania" onclick="TravelApp.filterByContinent(this, 'oceania')">🦘 Australia & Oceania</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== 4. POPULAR DESTINATIONS GRID ==================== -->
+  <section class="destinations-section" style="padding:70px 0 90px;">
+    <div class="container">
+      
+      <div class="section-header reveal">
+        <span class="section-tag">🌟 Top Rated Places</span>
+        <h2 class="section-title">Popular <span style="color:var(--color-primary);">Destinations</span></h2>
+        <p class="section-subtitle">Explore places travelers are loving right now around the globe.</p>
+      </div>
+
+      <div class="destination-grid-8" id="popularDestinationsGrid">
+        
+        <!-- Card 1: Paris, France -->
+        <div class="dest-card dest-card-item reveal" data-city="Paris" data-country="France" data-continent="europe" data-type="romantic,cultural" data-budget="mid-range" data-rating="4.8">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800" alt="Paris, France" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Paris')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.8 <span style="font-size:0.72rem; color:var(--gray-400);">(12.4k)</span></div>
           </div>
-          <div style="font-size:4rem;">⛅</div>
+          <div class="dest-card-body">
+            <div class="dest-location">France • Europe</div>
+            <h3 class="dest-title">Paris</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">The city of romance, art and timeless architecture.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: Apr – Jun</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">Romantic</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Culture</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹75,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('paris')">Explore Destination →</button>
+            </div>
+          </div>
         </div>
-        <div style="display:flex;gap:1.5rem;margin-top:1rem;font-size:0.8rem;color:rgba(255,255,255,0.7);">
-          <span>💧 65% humidity</span>
-          <span>💨 12 km/h</span>
+
+        <!-- Card 2: Bali, Indonesia -->
+        <div class="dest-card dest-card-item reveal delay-100" data-city="Bali" data-country="Indonesia" data-continent="asia" data-type="beach,nature" data-budget="budget" data-rating="4.9">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800" alt="Bali, Indonesia" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Bali')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.9 <span style="font-size:0.72rem; color:var(--gray-400);">(18.2k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Indonesia • Asia</div>
+            <h3 class="dest-title">Bali</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">Tropical paradise with lush terraces, temples & surf beaches.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: Apr – Oct</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">Beach</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Nature</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹45,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('bali')">Explore Destination →</button>
+            </div>
+          </div>
         </div>
-        <div class="weather-grid" style="margin-top:1.25rem;grid-template-columns:repeat(7,1fr);">
-          <div class="weather-day active"><div class="weather-day-name">Mon</div><div class="weather-day-icon">⛅</div><div class="weather-day-temp">22°</div></div>
-          <div class="weather-day"><div class="weather-day-name">Tue</div><div class="weather-day-icon">☀️</div><div class="weather-day-temp">25°</div></div>
-          <div class="weather-day"><div class="weather-day-name">Wed</div><div class="weather-day-icon">🌧️</div><div class="weather-day-temp">18°</div></div>
-          <div class="weather-day"><div class="weather-day-name">Thu</div><div class="weather-day-icon">⛅</div><div class="weather-day-temp">20°</div></div>
-          <div class="weather-day"><div class="weather-day-name">Fri</div><div class="weather-day-icon">☀️</div><div class="weather-day-temp">26°</div></div>
-          <div class="weather-day"><div class="weather-day-name">Sat</div><div class="weather-day-icon">☀️</div><div class="weather-day-temp">28°</div></div>
-          <div class="weather-day"><div class="weather-day-name">Sun</div><div class="weather-day-icon">🌤️</div><div class="weather-day-temp">24°</div></div>
+
+        <!-- Card 3: Tokyo, Japan -->
+        <div class="dest-card dest-card-item reveal delay-200" data-city="Tokyo" data-country="Japan" data-continent="asia" data-type="cultural,solo" data-budget="premium" data-rating="4.9">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800" alt="Tokyo, Japan" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Tokyo')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.9 <span style="font-size:0.72rem; color:var(--gray-400);">(15.1k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Japan • Asia</div>
+            <h3 class="dest-title">Tokyo</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">Ultramodern neon metropolis meets ancient Shinto sanctuaries.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: Mar – May</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">Cultural</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">City</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹85,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('tokyo')">Explore Destination →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Santorini, Greece -->
+        <div class="dest-card dest-card-item reveal delay-300" data-city="Santorini" data-country="Greece" data-continent="europe" data-type="romantic,luxury" data-budget="premium" data-rating="4.95">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=800" alt="Santorini, Greece" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Santorini')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.95 <span style="font-size:0.72rem; color:var(--gray-400);">(9.8k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Greece • Europe</div>
+            <h3 class="dest-title">Santorini</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">Whitewashed cliffside villas overlooking volcanic Aegean caldera.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: May – Oct</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">Romantic</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Luxury</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹95,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('santorini')">Explore Destination →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Dubai, UAE -->
+        <div class="dest-card dest-card-item reveal" data-city="Dubai" data-country="UAE" data-continent="asia" data-type="luxury,family" data-budget="mid-range" data-rating="4.85">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800" alt="Dubai, UAE" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Dubai')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.85 <span style="font-size:0.72rem; color:var(--gray-400);">(22.3k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">UAE • Middle East</div>
+            <h3 class="dest-title">Dubai</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">Futuristic skyscraper haven, desert safaris & luxury shopping.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: Nov – Mar</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">Luxury</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Family</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹65,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('dubai')">Explore Destination →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Maldives -->
+        <div class="dest-card dest-card-item reveal delay-100" data-city="Maldives" data-country="Maldives" data-continent="asia" data-type="beach,luxury" data-budget="luxury" data-rating="5.0">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1573843981267-be1999ff37cd?q=80&w=800" alt="Maldives" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Maldives')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 5.0 <span style="font-size:0.72rem; color:var(--gray-400);">(14.7k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Maldives • Asia</div>
+            <h3 class="dest-title">Maldives</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">Turquoise lagoons & world-famous overwater private bungalows.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: Nov – Apr</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">Beach</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Luxury</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹110,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('maldives')">Explore Destination →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7: Swiss Alps, Switzerland -->
+        <div class="dest-card dest-card-item reveal delay-200" data-city="Swiss Alps" data-country="Switzerland" data-continent="europe" data-type="adventure,nature" data-budget="luxury" data-rating="4.92">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800" alt="Swiss Alps" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Swiss Alps')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.92 <span style="font-size:0.72rem; color:var(--gray-400);">(8.4k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Switzerland • Europe</div>
+            <h3 class="dest-title">Swiss Alps</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">Majestic snow peaks, alpine lakes & world-class ski trails.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: Dec – Mar</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">Adventure</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Nature</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹105,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('swissalps')">Explore Destination →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 8: New York, USA -->
+        <div class="dest-card dest-card-item reveal delay-300" data-city="New York" data-country="USA" data-continent="north america" data-type="city,cultural" data-budget="premium" data-rating="4.8">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=800" alt="New York, USA" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'New York')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.8 <span style="font-size:0.72rem; color:var(--gray-400);">(28.5k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">USA • North America</div>
+            <h3 class="dest-title">New York</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">The concrete jungle where Broadway & iconic skylines thrive.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: Apr – Jun</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">City</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Culture</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹80,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('newyork')">Explore Destination →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 9: Rome, Italy -->
+        <div class="dest-card dest-card-item reveal" data-city="Rome" data-country="Italy" data-continent="europe" data-type="cultural,romantic" data-budget="mid-range" data-rating="4.87">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=800" alt="Rome, Italy" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Rome')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.87 <span style="font-size:0.72rem; color:var(--gray-400);">(19.3k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Italy • Europe</div>
+            <h3 class="dest-title">Rome</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">Eternal city of ancient gladiators, Renaissance art & gelato.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: Apr – May</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">Cultural</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Romantic</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹70,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('rome')">Explore Destination →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 10: Singapore -->
+        <div class="dest-card dest-card-item reveal delay-100" data-city="Singapore" data-country="Singapore" data-continent="asia" data-type="city,family" data-budget="budget" data-rating="4.88">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=800" alt="Singapore" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Singapore')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.88 <span style="font-size:0.72rem; color:var(--gray-400);">(16.9k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Singapore • Asia</div>
+            <h3 class="dest-title">Singapore</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">Garden city with futuristic supertrees & Michelin street food.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: Nov – Aug</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">City</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Family</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹55,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('singapore')">Explore Destination →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 11: Kyoto, Japan -->
+        <div class="dest-card dest-card-item reveal delay-200" data-city="Kyoto" data-country="Japan" data-continent="asia" data-type="cultural,nature" data-budget="premium" data-rating="4.93">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800" alt="Kyoto, Japan" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Kyoto')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.93 <span style="font-size:0.72rem; color:var(--gray-400);">(11.2k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Japan • Asia</div>
+            <h3 class="dest-title">Kyoto</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">Tranquil bamboo groves, 10,000 torii gates & ryokan sanctuaries.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: Mar – May</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">Cultural</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Nature</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹82,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('kyoto')">Explore Destination →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 12: Barcelona, Spain -->
+        <div class="dest-card dest-card-item reveal delay-300" data-city="Barcelona" data-country="Spain" data-continent="europe" data-type="beach,cultural" data-budget="mid-range" data-rating="4.86">
+          <div class="dest-img-box">
+            <img src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?q=80&w=800" alt="Barcelona, Spain" loading="lazy" />
+            <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Barcelona')" aria-label="Favorite">🤍</button>
+            <div class="dest-rating-badge">⭐ 4.86 <span style="font-size:0.72rem; color:var(--gray-400);">(14.1k)</span></div>
+          </div>
+          <div class="dest-card-body">
+            <div class="dest-location">Spain • Europe</div>
+            <h3 class="dest-title">Barcelona</h3>
+            <p style="font-size:0.85rem; color:var(--gray-300); margin-bottom:10px; line-height:1.4;">Gaudí’s architectural wonders meets vibrant Mediterranean beaches.</p>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:12px;">📅 Best Time: May – Jun</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(0,194,255,0.12); color:#00C2FF; font-weight:600;">Beach</span>
+              <span style="font-size:0.72rem; padding:3px 10px; border-radius:10px; background:rgba(20,184,166,0.12); color:#14B8A6; font-weight:600;">Culture</span>
+            </div>
+            <div class="dest-footer">
+              <div class="dest-price">
+                <span class="dest-price-label">From</span>
+                <span class="dest-price-val">₹68,000</span>
+              </div>
+              <button class="btn-dest-explore" onclick="TravelApp.openDestModal('barcelona')">Explore Destination →</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== 5. TRENDING DESTINATIONS CAROUSEL ==================== -->
+  <section class="packages-section">
+    <div class="container">
+      
+      <div class="section-header reveal" style="display:flex; align-items:flex-end; justify-content:space-between; max-width:100%; text-align:left; margin-bottom:30px;">
+        <div>
+          <span class="section-tag">🔥 Trending Right Now</span>
+          <h2 class="section-title" style="margin-bottom:0;">Hot Travel <span style="color:var(--color-primary);">Spots</span></h2>
+        </div>
+        <div class="carousel-controls">
+          <button class="carousel-btn" onclick="TravelApp.scrollTrendingCarousel('prev')" aria-label="Previous">❮</button>
+          <button class="carousel-btn" onclick="TravelApp.scrollTrendingCarousel('next')" aria-label="Next">❯</button>
         </div>
       </div>
 
-      <!-- Map Placeholder -->
-      <div class="glass-card" style="padding:1.5rem;">
-        <h5 style="margin-bottom:1rem;color:var(--text-primary);">📍 Location</h5>
-        <div style="border-radius:0.75rem;overflow:hidden;height:180px;background:linear-gradient(135deg,var(--primary-800),var(--primary-700));display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;" onclick="TravelApp.showToast('Opening maps...','info')">
-          <div style="text-align:center;color:rgba(255,255,255,0.6);">
-            <div style="font-size:3rem;margin-bottom:0.5rem;">🗺️</div>
-            <div style="font-size:0.85rem;">Click to open Google Maps</div>
+      <div class="package-carousel-track" id="trendingCarouselTrack">
+        
+        <!-- Trending 1 -->
+        <div class="package-card-slide" style="min-width:320px; max-width:320px;">
+          <div class="pkg-img-box" style="height:200px;">
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600" alt="Bora Bora" />
+            <div class="pkg-discount-badge" style="background:linear-gradient(135deg, #EF4444, #F59E0B);">TRENDING #1</div>
           </div>
-          <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,188,212,0.03) 0px,rgba(0,188,212,0.03) 1px,transparent 1px,transparent 30px),repeating-linear-gradient(90deg,rgba(0,188,212,0.03) 0px,rgba(0,188,212,0.03) 1px,transparent 1px,transparent 30px);pointer-events:none;"></div>
+          <div class="pkg-body" style="padding:18px;">
+            <div class="pkg-meta"><span>French Polynesia</span><span>⭐ 4.98</span></div>
+            <h4 style="color:white; font-size:1.15rem; font-weight:700; margin-bottom:10px;">Bora Bora Atoll</h4>
+            <button class="btn-dest-explore" style="width:100%; text-align:center;" onclick="TravelApp.openDestModal('bali')">Explore Now</button>
+          </div>
         </div>
-        <div style="margin-top:0.75rem;font-size:0.8rem;color:var(--text-muted);text-align:center;">Paris, Île-de-France, France</div>
+
+        <!-- Trending 2 -->
+        <div class="package-card-slide" style="min-width:320px; max-width:320px;">
+          <div class="pkg-img-box" style="height:200px;">
+            <img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=600" alt="Santorini" />
+            <div class="pkg-discount-badge" style="background:linear-gradient(135deg, #10B981, #14B8A6);">HOT PICK</div>
+          </div>
+          <div class="pkg-body" style="padding:18px;">
+            <div class="pkg-meta"><span>Greece</span><span>⭐ 4.95</span></div>
+            <h4 style="color:white; font-size:1.15rem; font-weight:700; margin-bottom:10px;">Santorini Caldera</h4>
+            <button class="btn-dest-explore" style="width:100%; text-align:center;" onclick="TravelApp.openDestModal('santorini')">Explore Now</button>
+          </div>
+        </div>
+
+        <!-- Trending 3 -->
+        <div class="package-card-slide" style="min-width:320px; max-width:320px;">
+          <div class="pkg-img-box" style="height:200px;">
+            <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=600" alt="Tokyo" />
+            <div class="pkg-discount-badge" style="background:linear-gradient(135deg, #00C2FF, #14B8A6);">TOP RATED</div>
+          </div>
+          <div class="pkg-body" style="padding:18px;">
+            <div class="pkg-meta"><span>Japan</span><span>⭐ 4.90</span></div>
+            <h4 style="color:white; font-size:1.15rem; font-weight:700; margin-bottom:10px;">Tokyo Metropolis</h4>
+            <button class="btn-dest-explore" style="width:100%; text-align:center;" onclick="TravelApp.openDestModal('tokyo')">Explore Now</button>
+          </div>
+        </div>
+
+        <!-- Trending 4 -->
+        <div class="package-card-slide" style="min-width:320px; max-width:320px;">
+          <div class="pkg-img-box" style="height:200px;">
+            <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=600" alt="Swiss Alps" />
+            <div class="pkg-discount-badge" style="background:linear-gradient(135deg, #8B5CF6, #EC4899);">ALPINE VIP</div>
+          </div>
+          <div class="pkg-body" style="padding:18px;">
+            <div class="pkg-meta"><span>Switzerland</span><span>⭐ 4.92</span></div>
+            <h4 style="color:white; font-size:1.15rem; font-weight:700; margin-bottom:10px;">Swiss Alps Peak</h4>
+            <button class="btn-dest-explore" style="width:100%; text-align:center;" onclick="TravelApp.openDestModal('swissalps')">Explore Now</button>
+          </div>
+        </div>
+
+        <!-- Trending 5 -->
+        <div class="package-card-slide" style="min-width:320px; max-width:320px;">
+          <div class="pkg-img-box" style="height:200px;">
+            <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=600" alt="Dubai" />
+            <div class="pkg-discount-badge" style="background:linear-gradient(135deg, #F59E0B, #EF4444);">LUXURY #1</div>
+          </div>
+          <div class="pkg-body" style="padding:18px;">
+            <div class="pkg-meta"><span>UAE</span><span>⭐ 4.85</span></div>
+            <h4 style="color:white; font-size:1.15rem; font-weight:700; margin-bottom:10px;">Dubai Marina</h4>
+            <button class="btn-dest-explore" style="width:100%; text-align:center;" onclick="TravelApp.openDestModal('dubai')">Explore Now</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== 6. EXPLORE BY TRAVEL STYLE ==================== -->
+  <section class="destinations-section" style="padding:80px 0;">
+    <div class="container">
+      
+      <div class="section-header reveal">
+        <span class="section-tag">🧭 Curated Experiences</span>
+        <h2 class="section-title">Find Your Perfect <span style="color:var(--color-accent);">Escape</span></h2>
+        <p class="section-subtitle">Choose your preferred travel style to unveil handpicked luxury destinations.</p>
+      </div>
+
+      <div class="travel-style-grid">
+        
+        <!-- Style 1: Beach -->
+        <div class="style-card reveal" onclick="TravelApp.filterByStyle('beach')">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600" alt="Beach" />
+          <div class="style-card-overlay">
+            <h4>🏖️ Beach & Islands</h4>
+          </div>
+        </div>
+
+        <!-- Style 2: Adventure -->
+        <div class="style-card reveal delay-100" onclick="TravelApp.filterByStyle('adventure')">
+          <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600" alt="Adventure" />
+          <div class="style-card-overlay">
+            <h4>🏔️ Adventure</h4>
+          </div>
+        </div>
+
+        <!-- Style 3: Romantic -->
+        <div class="style-card reveal delay-200" onclick="TravelApp.filterByStyle('romantic')">
+          <img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=600" alt="Romantic" />
+          <div class="style-card-overlay">
+            <h4>💑 Romantic</h4>
+          </div>
+        </div>
+
+        <!-- Style 4: Cultural -->
+        <div class="style-card reveal delay-300" onclick="TravelApp.filterByStyle('cultural')">
+          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=600" alt="Cultural" />
+          <div class="style-card-overlay">
+            <h4>🏛️ Cultural</h4>
+          </div>
+        </div>
+
+        <!-- Style 5: Nature -->
+        <div class="style-card reveal" onclick="TravelApp.filterByStyle('nature')">
+          <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=600" alt="Nature" />
+          <div class="style-card-overlay">
+            <h4>🌿 Nature</h4>
+          </div>
+        </div>
+
+        <!-- Style 6: Luxury -->
+        <div class="style-card reveal delay-100" onclick="TravelApp.filterByStyle('luxury')">
+          <img src="https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=600" alt="Luxury" />
+          <div class="style-card-overlay">
+            <h4>💎 Luxury</h4>
+          </div>
+        </div>
+
+        <!-- Style 7: Family -->
+        <div class="style-card reveal delay-200" onclick="TravelApp.filterByStyle('family')">
+          <img src="https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=600" alt="Family" />
+          <div class="style-card-overlay">
+            <h4>👨‍👩‍👧 Family</h4>
+          </div>
+        </div>
+
+        <!-- Style 8: Solo -->
+        <div class="style-card reveal delay-300" onclick="TravelApp.filterByStyle('solo')">
+          <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=600" alt="Solo" />
+          <div class="style-card-overlay">
+            <h4>🎒 Solo Travel</h4>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== 7. FEATURED DESTINATION ==================== -->
+  <section class="destinations-section" style="background:#080D1A; padding:80px 0;">
+    <div class="container">
+      
+      <div class="featured-dest-card reveal">
+        
+        <!-- Left Image -->
+        <div class="featured-dest-img">
+          <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200" alt="Bali Featured" />
+        </div>
+
+        <!-- Right Content -->
+        <div class="featured-dest-info">
+          <span class="featured-dest-badge">👑 Destination of the Month</span>
+          <h2 style="font-family:var(--font-display); font-size:2.2rem; font-weight:800; color:white; margin:0 0 12px;">Bali, Indonesia</h2>
+          <p style="color:var(--gray-300); font-size:0.95rem; line-height:1.6; margin:0;">
+            Immerse yourself in lush emerald rice terraces, sacred cliffside temples, world-class beach clubs, and serene holistic spa retreats.
+          </p>
+
+          <div class="featured-dest-stats">
+            <div class="featured-stat-item">
+              <label>⭐ Rating</label>
+              <strong>4.9 / 5.0</strong>
+            </div>
+            <div class="featured-stat-item">
+              <label>📅 Best Season</label>
+              <strong>Apr – Oct</strong>
+            </div>
+            <div class="featured-stat-item">
+              <label>💰 Avg Cost</label>
+              <strong>₹45,000 / $550</strong>
+            </div>
+          </div>
+
+          <div style="font-size:0.85rem; color:var(--color-accent); font-weight:600; margin-bottom:24px;">
+            📍 Top Attractions: Ubud Monkey Forest, Uluwatu Temple, Nusa Penida Island
+          </div>
+
+          <div style="display:flex; gap:14px; flex-wrap:wrap;">
+            <button class="btn-hero-primary" style="padding:12px 28px; font-size:0.9rem;" onclick="TravelApp.openDestModal('bali')">Explore Bali</button>
+            <a href="trip-planner.html" class="btn-hero-secondary" style="padding:12px 28px; font-size:0.9rem;">Plan This Trip</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== 8. INTERACTIVE DESTINATION MAP ==================== -->
+  <section class="destinations-section" style="padding:90px 0;">
+    <div class="container">
+      
+      <div class="section-header reveal">
+        <span class="section-tag">🗺️ Global Exploration</span>
+        <h2 class="section-title">Explore the <span style="color:var(--color-primary);">World</span></h2>
+        <p class="section-subtitle">Click interactive pins on the map to preview destination costs and details.</p>
+      </div>
+
+      <div class="interactive-map-box reveal">
+        <div class="interactive-map-overlay"></div>
+
+        <!-- Pin 1: Paris -->
+        <div class="map-pin" style="top:32%; left:48%;">
+          📍
+          <div class="map-pin-popup">
+            <h5 style="margin:0; font-size:0.95rem; color:white;">Paris, France</h5>
+            <div style="font-size:0.75rem; color:#F59E0B; margin:4px 0;">⭐ 4.8 • From ₹75,000</div>
+            <button class="btn-dest-explore" style="width:100%; padding:4px; font-size:0.75rem; margin-top:4px;" onclick="TravelApp.openDestModal('paris')">Explore</button>
+          </div>
+        </div>
+
+        <!-- Pin 2: Tokyo -->
+        <div class="map-pin" style="top:42%; left:82%;">
+          📍
+          <div class="map-pin-popup">
+            <h5 style="margin:0; font-size:0.95rem; color:white;">Tokyo, Japan</h5>
+            <div style="font-size:0.75rem; color:#F59E0B; margin:4px 0;">⭐ 4.9 • From ₹85,000</div>
+            <button class="btn-dest-explore" style="width:100%; padding:4px; font-size:0.75rem; margin-top:4px;" onclick="TravelApp.openDestModal('tokyo')">Explore</button>
+          </div>
+        </div>
+
+        <!-- Pin 3: Bali -->
+        <div class="map-pin" style="top:65%; left:78%;">
+          📍
+          <div class="map-pin-popup">
+            <h5 style="margin:0; font-size:0.95rem; color:white;">Bali, Indonesia</h5>
+            <div style="font-size:0.75rem; color:#F59E0B; margin:4px 0;">⭐ 4.9 • From ₹45,000</div>
+            <button class="btn-dest-explore" style="width:100%; padding:4px; font-size:0.75rem; margin-top:4px;" onclick="TravelApp.openDestModal('bali')">Explore</button>
+          </div>
+        </div>
+
+        <!-- Pin 4: New York -->
+        <div class="map-pin" style="top:38%; left:28%;">
+          📍
+          <div class="map-pin-popup">
+            <h5 style="margin:0; font-size:0.95rem; color:white;">New York, USA</h5>
+            <div style="font-size:0.75rem; color:#F59E0B; margin:4px 0;">⭐ 4.8 • From ₹80,000</div>
+            <button class="btn-dest-explore" style="width:100%; padding:4px; font-size:0.75rem; margin-top:4px;" onclick="TravelApp.openDestModal('newyork')">Explore</button>
+          </div>
+        </div>
+
+        <!-- Pin 5: Santorini -->
+        <div class="map-pin" style="top:38%; left:54%;">
+          📍
+          <div class="map-pin-popup">
+            <h5 style="margin:0; font-size:0.95rem; color:white;">Santorini, Greece</h5>
+            <div style="font-size:0.75rem; color:#F59E0B; margin:4px 0;">⭐ 4.95 • From ₹95,000</div>
+            <button class="btn-dest-explore" style="width:100%; padding:4px; font-size:0.75rem; margin-top:4px;" onclick="TravelApp.openDestModal('santorini')">Explore</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== 10. TRAVEL INSPIRATION ("Not Sure Where to Go?") ==================== -->
+  <section class="destinations-section" style="background:#080D1A; padding:80px 0;">
+    <div class="container">
+      
+      <div class="quiz-card-box reveal">
+        <span class="section-tag" style="background:rgba(0,194,255,0.15); color:var(--color-primary); border-color:rgba(0,194,255,0.3);">✨ Recommendation Engine</span>
+        <h2 style="font-family:var(--font-display); font-size:2.2rem; font-weight:800; color:white; margin:14px 0 8px;">Not Sure Where to Go?</h2>
+        <p style="color:rgba(255,255,255,0.85); font-size:1.05rem; max-width:600px; margin:0 auto;">
+          Tell us what kind of experience you're looking for and we'll help you discover the perfect destination.
+        </p>
+
+        <!-- Selectable Experience Tags -->
+        <div class="quiz-tags-wrapper">
+          <button class="quiz-tag-btn active" onclick="TravelApp.toggleQuizTag(this)">🏖️ Beach</button>
+          <button class="quiz-tag-btn" onclick="TravelApp.toggleQuizTag(this)">🏔️ Mountains</button>
+          <button class="quiz-tag-btn" onclick="TravelApp.toggleQuizTag(this)">🧭 Adventure</button>
+          <button class="quiz-tag-btn" onclick="TravelApp.toggleQuizTag(this)">🍲 Food & Wine</button>
+          <button class="quiz-tag-btn" onclick="TravelApp.toggleQuizTag(this)">🏛️ Culture</button>
+          <button class="quiz-tag-btn" onclick="TravelApp.toggleQuizTag(this)">🌃 Nightlife</button>
+          <button class="quiz-tag-btn" onclick="TravelApp.toggleQuizTag(this)">🌿 Nature</button>
+          <button class="quiz-tag-btn" onclick="TravelApp.toggleQuizTag(this)">💎 Luxury</button>
+        </div>
+
+        <button class="btn-hero-primary" onclick="TravelApp.findMyDestination()">Find My Destination</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== 11. NEWSLETTER SECTION ==================== -->
+  <section class="newsletter-section" id="newsletter">
+    <div class="container">
+      <div class="newsletter-card reveal">
+        <div class="newsletter-content">
+          <span class="section-tag" style="background:rgba(255,255,255,0.15); color:white; border-color:rgba(255,255,255,0.3);">💌 VIP Travel Updates</span>
+          <h2 style="font-family:var(--font-display); font-size:clamp(2rem, 3.5vw, 3rem); font-weight:800; color:white; margin:16px 0;">Get Inspired for Your Next Journey</h2>
+          <p style="color:rgba(255,255,255,0.85); font-size:1.05rem; line-height:1.6;">
+            Receive destination guides, travel inspiration and exclusive VIP deals directly in your inbox.
+          </p>
+
+          <form class="newsletter-form" onsubmit="TravelApp.handleNewsletterSubmit(event)">
+            <input type="email" id="newsletterEmail" placeholder="Enter your email address..." required />
+            <button type="submit" class="btn-subscribe">Subscribe Now</button>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </section>
 
-<!-- FOOTER (condensed) -->
-<footer class="footer">
-  <div class="container">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,0.08);">
-      <div class="logo" style="color:white;">
-        <div class="logo-icon">✈️</div>
-        Wander<span class="brand-accent">Lux</span>
+  <!-- ==================== 12. LUXURY FOOTER (PRESERVED MATCHING HOME) ==================== -->
+  <footer class="luxury-footer">
+    <div class="container">
+      
+      <div class="footer-grid">
+        
+        <!-- Col 1: Brand Info -->
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo"><span>✈️</span> Voyger</a>
+          <p>The world's premier luxury travel platform. Delivering bespoke journeys, five-star resorts, and seamless VIP experiences worldwide.</p>
+          <div class="social-links">
+            <a href="#" class="social-icon" aria-label="Instagram">📸</a>
+            <a href="#" class="social-icon" aria-label="Twitter">🐦</a>
+            <a href="#" class="social-icon" aria-label="Facebook">📘</a>
+            <a href="#" class="social-icon" aria-label="YouTube">🎬</a>
+            <a href="#" class="social-icon" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+
+        <!-- Col 2: Quick Links -->
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="destination.html">Destinations</a></li>
+            <li><a href="trip-planner.html">Luxury Packages</a></li>
+            <li><a href="hotels.html">Stays & Hotels</a></li>
+            <li><a href="flights.html">Private Flights</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Popular Destinations -->
+        <div class="footer-col">
+          <h5>Popular Spots</h5>
+          <ul class="footer-links">
+            <li><a href="destination.html">Bora Bora</a></li>
+            <li><a href="destination.html">Santorini, Greece</a></li>
+            <li><a href="destination.html">Swiss Alps</a></li>
+            <li><a href="destination.html">Kyoto, Japan</a></li>
+            <li><a href="destination.html">Maldives</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Resources -->
+        <div class="footer-col">
+          <h5>Resources</h5>
+          <ul class="footer-links">
+            <li><a href="index.html#why-us">AI Planner</a></li>
+            <li><a href="index.html#why-us">VIP Support</a></li>
+            <li><a href="profile.html">My Account</a></li>
+            <li><a href="dashboard.html">Bookings</a></li>
+            <li><a href="#newsletter">Travel Guides</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 5: Contact Details -->
+        <div class="footer-col">
+          <h5>Contact Details</h5>
+          <div class="contact-item"><span>📍</span><div>5th Avenue, Suite 1200, New York, NY 10001</div></div>
+          <div class="contact-item"><span>📞</span><div>+1 (800) 888-VOYGER</div></div>
+          <div class="contact-item"><span>✉️</span><div>vip@voyger-luxury.com</div></div>
+        </div>
+
       </div>
-      <div style="display:flex;gap:2rem;">
-        <a href="index.html" style="color:var(--gray-400);font-size:0.875rem;">Home</a>
-        <a href="hotels.html" style="color:var(--gray-400);font-size:0.875rem;">Hotels</a>
-        <a href="flights.html" style="color:var(--gray-400);font-size:0.875rem;">Flights</a>
-        <a href="contact.html" style="color:var(--gray-400);font-size:0.875rem;">Contact</a>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div>© 2026 Voyger Travel Inc. All rights reserved. Designed for Luxury Explorers.</div>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms & Conditions</a>
+          <a href="#">Security</a>
+        </div>
       </div>
+
     </div>
-    <div class="footer-bottom" style="border:none;padding-top:1.5rem;">
-      <span>© 2025 Voyger. All rights reserved.</span>
-    </div>
-  </div>
-</footer>
+  </footer>
 
-<button class="back-to-top" id="back-to-top">↑</button>
+  <!-- Back to Top Button -->
+  <button class="back-to-top-btn" id="backToTop" aria-label="Back to top">↑</button>
 
-<script src="js/main.js"></script>
-<script>
-function switchDest(el, key, name, imgUrl, country) {
-  document.querySelectorAll('.dest-selector-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('hero-img').style.opacity = 0;
-  document.getElementById('dest-name').textContent = name;
-  setTimeout(() => {
-    document.getElementById('hero-img').src = imgUrl;
-    document.getElementById('hero-img').style.opacity = 1;
-  }, 300);
-}
-document.getElementById('hero-img').style.transition = 'opacity 0.3s';
-
-// Weather day click
-document.querySelectorAll('.weather-day').forEach(day => {
-  day.addEventListener('click', () => {
-    document.querySelectorAll('.weather-day').forEach(d => d.classList.remove('active'));
-    day.classList.add('active');
-  });
-});
-</script>
+  <!-- Main JS -->
+  <script src="js/main.js"></script>
 </body>
 </html>

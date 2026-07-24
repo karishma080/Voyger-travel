@@ -1,721 +1,1084 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Plan your perfect trip with Voyger interactive trip planner — itinerary, budget tracker, calendar, and packing list." />
-  <title>Trip Planner – Voyger</title>
+  <meta name="description" content="Voyger Smart Trip Planner — Generate personalized luxury itineraries, track budgets, manage packing lists, and export PDFs in minutes." />
+  <title>Smart Trip Planner | Voyger</title>
+  
+  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/home.css" />
+
   <style>
-    body { background: var(--bg-primary); }
-    .planner-page { padding-top: 80px; min-height: 100vh; }
-    .planner-header {
-      background: 
-        linear-gradient(to bottom, rgba(10,22,40,0.5) 0%, rgba(10,22,40,0.9) 100%),
-        url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2000') center/cover no-repeat;
-      padding: 3rem 0 2rem;
+    /* Inline navbar & dropdown helper styles matching home.html */
+    .nav-icon-btn {
       position: relative;
-      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
-    .planner-header::before {
-      content:'';position:absolute;inset:0;
-      background: radial-gradient(circle at 80% 50%, rgba(0,188,212,0.15), transparent);
+    .nav-icon-btn:hover {
+      background: rgba(0, 194, 255, 0.2);
+      border-color: var(--color-primary);
+      transform: scale(1.05);
     }
-    .planner-tabs {
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-color);
-      position: sticky;
-      top: 70px;
-      z-index: 40;
+    .badge-count {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #EF4444;
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 2px solid #0F172A;
     }
-    .planner-tabs .tab-list { border-bottom: none; padding: 0 2rem; }
-    .budget-category { display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:0.75rem;transition:background 0.2s; }
-    .budget-category:hover { background:rgba(0,188,212,0.05); }
-    .budget-dot { width:12px;height:12px;border-radius:50%;flex-shrink:0; }
-    .note-area { width:100%;border:1px solid var(--border-color);border-radius:0.75rem;padding:1rem;font-family:var(--font-primary);font-size:0.9rem;resize:vertical;min-height:120px;color:var(--text-primary);background:var(--bg-secondary);outline:none;transition:border-color 0.2s; }
-    .note-area:focus { border-color:var(--teal-500);box-shadow:0 0 0 3px rgba(0,188,212,0.1); }
-    [data-theme="dark"] .note-area { background:rgba(255,255,255,0.05); }
+    .dropdown-wrapper {
+      position: relative;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      width: 260px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    .dropdown-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .dropdown-header {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 8px;
+    }
+    .dropdown-header h5 {
+      margin: 0;
+      color: white;
+      font-size: 0.95rem;
+    }
+    .dropdown-header p {
+      margin: 2px 0 0;
+      color: var(--color-primary);
+      font-size: 0.78rem;
+    }
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 0.88rem;
+      border-radius: 12px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .dropdown-item:hover {
+      background: rgba(0, 194, 255, 0.15);
+      color: var(--color-primary);
+    }
+    .user-avatar-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--color-primary);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .user-avatar-btn:hover {
+      transform: scale(1.08);
+    }
+
+    /* Floating Header Polish */
+    .planner-hero-section {
+      min-height: 42vh;
+      padding: 130px 20px 70px;
+    }
+
+    .planner-overlap-container {
+      margin-top: -50px;
+      position: relative;
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar scrolled" id="navbar">
-  <div class="container">
-    <div class="navbar-inner">
-      <a href="index.html" class="logo">
-        <div class="logo-icon">✈️</div>
-        Voyger
-      </a>
-      <ul class="nav-links">
-        <li><a href="index.html" class="nav-link">Home</a></li>
-        <li><a href="destination.html" class="nav-link">Destinations</a></li>
-        <li><a href="trip-planner.html" class="nav-link active">Plan Trip</a></li>
-        <li><a href="hotels.html" class="nav-link">Hotels</a></li>
-        <li><a href="flights.html" class="nav-link">Flights</a></li>
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="contact.html" class="nav-link">Contact</a></li>
-      </ul>
-      <div class="nav-actions">
-        <button class="theme-toggle" id="theme-toggle">🌙</button>
-        <a href="profile.html" class="btn btn-primary btn-sm">My Profile</a>
+  <!-- ==================== EXISTING NAVBAR (PRESERVED) ==================== -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="container">
+      <div class="navbar-inner" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+        
+        <!-- Logo -->
+        <a href="index.html" class="logo" style="display:flex; align-items:center; gap:10px; font-size:1.6rem; font-weight:800; color:white; text-decoration:none;">
+          <div class="logo-icon" style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #00C2FF, #14B8A6); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow: 0 4px 15px rgba(0,194,255,0.4);">✈️</div>
+          <span style="font-family:var(--font-primary); letter-spacing:-0.03em;">Voyger</span>
+        </a>
+
+        <!-- Links -->
+        <ul class="nav-links" style="display:flex; align-items:center; gap:24px; list-style:none; margin:0; padding:0;">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="destination.html" class="nav-link">Destinations</a></li>
+          <li><a href="trip-planner.html" class="nav-link active">Plan Trip</a></li>
+          <li><a href="hotels.html" class="nav-link">Hotels</a></li>
+          <li><a href="flights.html" class="nav-link">Flights</a></li>
+          <li><a href="index.html#why-us" class="nav-link">About</a></li>
+          <li><a href="#newsletter" class="nav-link">Contact</a></li>
+        </ul>
+
+        <!-- Right Actions -->
+        <div class="nav-actions" style="display:flex; align-items:center; gap:14px;">
+          <button class="nav-icon-btn theme-toggle" aria-label="Toggle dark mode">🌙</button>
+
+          <div class="dropdown-wrapper">
+            <button class="nav-icon-btn" onclick="TravelApp.toggleDropdown('notifDropdown')" aria-label="Notifications">
+              🔔 <span class="badge-count">3</span>
+            </button>
+            <div class="dropdown-menu" id="notifDropdown">
+              <div class="dropdown-header">
+                <h5>Notifications</h5>
+                <p>3 unread updates</p>
+              </div>
+              <a href="#" class="dropdown-item"><span>🌴</span><div><strong>Bora Bora Deal</strong><div style="font-size:0.75rem; opacity:0.7;">20% OFF Luxury Overwater Villa</div></div></a>
+              <a href="#" class="dropdown-item"><span>✈️</span><div><strong>Flight Price Drop</strong><div style="font-size:0.75rem; opacity:0.7;">First Class Tokyo round-trip</div></div></a>
+              <a href="#" class="dropdown-item"><span>✨</span><div><strong>VIP Itinerary Ready</strong><div style="font-size:0.75rem; opacity:0.7;">AI Trip Plan generated</div></div></a>
+            </div>
+          </div>
+
+          <div class="dropdown-wrapper">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150" alt="User Profile" class="user-avatar-btn" onclick="TravelApp.toggleDropdown('userDropdown')" />
+            <div class="dropdown-menu" id="userDropdown">
+              <div class="dropdown-header">
+                <h5>Elena Rostova</h5>
+                <p>VIP Luxury Explorer</p>
+              </div>
+              <a href="profile.html" class="dropdown-item">👤 My Profile</a>
+              <a href="dashboard.html" class="dropdown-item">📅 My Bookings</a>
+              <a href="profile.html" class="dropdown-item">❤️ Saved Trips</a>
+              <a href="profile.html" class="dropdown-item">⚙️ Account Settings</a>
+              <div style="border-top:1px solid rgba(255,255,255,0.1); margin-top:6px; padding-top:6px;">
+                <a href="#" onclick="TravelApp.showToast('Logged out successfully','info')" class="dropdown-item" style="color:#EF4444;">🚪 Sign Out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+
       </div>
-      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
     </div>
+  </nav>
+
+  <!-- Mobile Dropdown Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="destination.html" class="nav-link">🌍 Destinations</a>
+    <a href="trip-planner.html" class="nav-link active">📦 Plan Trip</a>
+    <a href="hotels.html" class="nav-link">🏨 Hotels</a>
+    <a href="flights.html" class="nav-link">✈️ Flights</a>
+    <a href="index.html#why-us" class="nav-link">ℹ️ About Us</a>
+    <a href="#newsletter" class="nav-link">📩 Contact</a>
+    <a href="profile.html" class="nav-link">👤 My Account</a>
   </div>
-</nav>
-<div class="mobile-menu" id="mobile-menu">
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="destination.html" class="nav-link">🌍 Destinations</a>
-  <a href="trip-planner.html" class="nav-link">📅 Plan Trip</a>
-  <a href="hotels.html" class="nav-link">🏨 Hotels</a>
-  <a href="flights.html" class="nav-link">✈️ Flights</a>
-  <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-</div>
 
-<div class="planner-page">
-  <!-- HEADER -->
-  <div class="planner-header">
-    <div class="container" style="position:relative;z-index:1;">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-        <div>
-          <div class="badge badge-teal" style="margin-bottom:0.75rem;">📅 Trip Planner</div>
-          <h2 style="color:white;margin-bottom:0.5rem;font-family:var(--font-display);" id="trip-title">Paris Getaway 2025</h2>
-          <p style="color:rgba(255,255,255,0.7);">📍 Paris, France &nbsp;·&nbsp; 📅 July 15 – July 22 &nbsp;·&nbsp; 👥 2 Travelers</p>
-        </div>
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-          <button class="btn btn-secondary" onclick="TravelApp.showToast('Trip saved!','success')">💾 Save Trip</button>
-          <button class="btn btn-secondary" onclick="TravelApp.showToast('Sharing trip...','info')">🔗 Share</button>
-          <button class="btn btn-primary" onclick="TravelApp.showToast('Exporting PDF...','info')">📄 Export PDF</button>
-        </div>
+  <!-- ==================== 1. PLAN TRIP HERO SECTION ==================== -->
+  <section class="planner-hero-section">
+    <div class="planner-hero-bg"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-content" style="position:relative; z-index:2; text-align:center;">
+      <div class="hero-badge" style="margin-bottom:12px;">
+        <span>✈️</span> SMART TRIP PLANNER
       </div>
 
-      <!-- Stats Bar -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;" class="reveal">
-        <div class="glass" style="padding:1rem;text-align:center;">
-          <div style="font-size:1.5rem;font-weight:800;color:white;">7</div>
-          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Days</div>
-        </div>
-        <div class="glass" style="padding:1rem;text-align:center;">
-          <div style="font-size:1.5rem;font-weight:800;color:var(--teal-400);">18</div>
-          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Activities</div>
-        </div>
-        <div class="glass" style="padding:1rem;text-align:center;">
-          <div style="font-size:1.5rem;font-weight:800;color:var(--sky-400);">$3,200</div>
-          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Budget</div>
-        </div>
-        <div class="glass" style="padding:1rem;text-align:center;">
-          <div style="font-size:1.5rem;font-weight:800;color:var(--success);">68%</div>
-          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Planned</div>
-        </div>
-      </div>
+      <h1 class="hero-title" style="font-size:clamp(2.4rem, 4.5vw, 3.8rem); margin-bottom:12px;">
+        Plan Your Perfect <span class="gradient-text">Journey</span>
+      </h1>
+
+      <p class="hero-subtitle" style="max-width:650px; margin:0 auto;">
+        Tell us where you want to go and we’ll help you build a personalized itinerary in minutes.
+      </p>
     </div>
-  </div>
+  </section>
 
-  <!-- PLANNER TABS -->
-  <div class="planner-tabs">
-    <div data-tabs>
-      <div class="tab-list" style="padding:0 2rem;">
-        <button class="tab-btn active">🗓️ Itinerary</button>
-        <button class="tab-btn">📅 Calendar</button>
-        <button class="tab-btn">💰 Budget</button>
-        <button class="tab-btn">🎒 Packing</button>
-        <button class="tab-btn">📝 Notes</button>
-      </div>
+  <!-- Main Planning Container -->
+  <div class="container planner-overlap-container" style="padding-bottom:80px;">
+    
+    <!-- ==================== 2. TRIP PLANNING FORM ==================== -->
+    <div class="planner-glass-card">
+      <h2 class="planner-section-title">
+        <span>📍</span> Where are you heading?
+      </h2>
 
-      <div class="container" style="padding-top:2rem;padding-bottom:3rem;">
+      <form onsubmit="TravelApp.generateTrip(event)">
+        <div class="planner-form-grid">
+          
+          <!-- Destination -->
+          <div class="planner-form-field">
+            <label>Destination</label>
+            <input type="text" id="plannerDestInput" class="destination-input" placeholder="Search city or country... (e.g. Paris, France)" value="Paris, France" required />
+          </div>
 
-        <!-- TAB 1: ITINERARY -->
-        <div class="tab-content active">
-          <div style="display:grid;grid-template-columns:280px 1fr;gap:1.5rem;">
-            <!-- Calendar Widget -->
-            <div>
-              <div class="calendar-widget">
-                <div class="calendar-header">
-                  <button class="btn btn-ghost btn-sm" onclick="changeMonth(-1)">‹</button>
-                  <strong style="font-size:0.9rem;color:var(--text-primary);" id="cal-month">July 2025</strong>
-                  <button class="btn btn-ghost btn-sm" onclick="changeMonth(1)">›</button>
-                </div>
-                <div class="calendar-grid" id="cal-grid">
-                  <!-- Generated by JS -->
-                </div>
-              </div>
+          <!-- Departure Location -->
+          <div class="planner-form-field">
+            <label>Departure Location</label>
+            <input type="text" id="plannerDepartInput" placeholder="Where are you travelling from?" value="New York (JFK)" required />
+          </div>
 
-              <!-- Day Selector -->
-              <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;" id="day-list">
-                <button class="tag active" onclick="selectDay(this, 'Day 1')">📅 Day 1 – July 15</button>
-                <button class="tag" onclick="selectDay(this, 'Day 2')">📅 Day 2 – July 16</button>
-                <button class="tag" onclick="selectDay(this, 'Day 3')">📅 Day 3 – July 17</button>
-                <button class="tag" onclick="selectDay(this, 'Day 4')">📅 Day 4 – July 18</button>
-                <button class="tag" onclick="selectDay(this, 'Day 5')">📅 Day 5 – July 19</button>
-                <button class="tag" onclick="selectDay(this, 'Day 6')">📅 Day 6 – July 20</button>
-                <button class="tag" onclick="selectDay(this, 'Day 7')">📅 Day 7 – July 21</button>
-              </div>
-            </div>
+          <!-- Start Date -->
+          <div class="planner-form-field">
+            <label>Start Date</label>
+            <input type="date" id="plannerStartDate" value="2026-07-15" required />
+          </div>
 
-            <!-- Timeline -->
-            <div>
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
-                <h4 style="color:var(--text-primary);" id="active-day-title">Day 1 – July 15, Paris</h4>
-                <button class="btn btn-primary btn-sm" onclick="openModal('add-activity-modal')">+ Add Activity</button>
-              </div>
+          <!-- End Date -->
+          <div class="planner-form-field">
+            <label>End Date</label>
+            <input type="date" id="plannerEndDate" value="2026-07-22" required />
+          </div>
 
-              <div class="timeline" id="itinerary-timeline">
-                <div class="timeline-item">
-                  <div class="timeline-dot"></div>
-                  <div class="timeline-time">09:00 AM</div>
-                  <div class="timeline-card">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                      <div>
-                        <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">🛬 Arrival at CDG Airport</div>
-                        <div style="font-size:0.8rem;color:var(--text-muted);">Charles de Gaulle International Airport</div>
-                        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
-                          <span class="badge badge-blue">✈️ Transport</span>
-                        </div>
-                      </div>
-                      <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="timeline-item">
-                  <div class="timeline-dot" style="background:var(--warning);"></div>
-                  <div class="timeline-time">11:30 AM</div>
-                  <div class="timeline-card">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                      <div>
-                        <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">🏨 Hotel Check-in – Le Marais</div>
-                        <div style="font-size:0.8rem;color:var(--text-muted);">3 Rue des Archives, Paris 75004</div>
-                        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
-                          <span class="badge badge-teal">🏨 Hotel</span>
-                          <span class="badge badge-success">✅ Confirmed</span>
-                        </div>
-                      </div>
-                      <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="timeline-item">
-                  <div class="timeline-dot" style="background:var(--success);"></div>
-                  <div class="timeline-time">02:00 PM</div>
-                  <div class="timeline-card">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                      <div>
-                        <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">🗼 Visit Eiffel Tower</div>
-                        <div style="font-size:0.8rem;color:var(--text-muted);">Champ de Mars – Est. 2h · €26 entry</div>
-                        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
-                          <span class="badge badge-teal">🎯 Attraction</span>
-                        </div>
-                      </div>
-                      <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="timeline-item">
-                  <div class="timeline-dot" style="background:var(--sky-400);"></div>
-                  <div class="timeline-time">06:30 PM</div>
-                  <div class="timeline-card">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                      <div>
-                        <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">🍷 Dinner at Café de Flore</div>
-                        <div style="font-size:0.8rem;color:var(--text-muted);">172 Bd Saint-Germain · Reservation at 7pm</div>
-                        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
-                          <span class="badge badge-warning">🍽️ Dining</span>
-                          <span class="badge badge-success">✅ Reserved</span>
-                        </div>
-                      </div>
-                      <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="timeline-item">
-                  <div class="timeline-dot" style="background:var(--primary-400);"></div>
-                  <div class="timeline-time">09:00 PM</div>
-                  <div class="timeline-card">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                      <div>
-                        <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">🌉 Seine River Night Cruise</div>
-                        <div style="font-size:0.8rem;color:var(--text-muted);">Bateaux Mouches · 1h cruise · €15pp</div>
-                        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
-                          <span class="badge badge-blue">🚢 Experience</span>
-                        </div>
-                      </div>
-                      <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <!-- Travelers (Adults / Children) -->
+          <div class="planner-form-field">
+            <label>Travelers</label>
+            <div style="display:flex; gap:10px;">
+              <select id="plannerAdults" style="flex:1;">
+                <option value="1">1 Adult</option>
+                <option value="2" selected>2 Adults</option>
+                <option value="3">3 Adults</option>
+                <option value="4+">4+ Adults</option>
+              </select>
+              <select id="plannerChildren" style="flex:1;">
+                <option value="0" selected>0 Children</option>
+                <option value="1">1 Child</option>
+                <option value="2">2 Children</option>
+              </select>
             </div>
           </div>
-        </div>
 
-        <!-- TAB 2: CALENDAR -->
-        <div class="tab-content">
-          <div style="max-width:700px;margin:0 auto;">
-            <div class="glass-card" style="padding:2rem;">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;">
-                <button class="btn btn-ghost" onclick="changeMonth(-1)">‹ Prev</button>
-                <h4 style="color:var(--text-primary);">July 2025</h4>
-                <button class="btn btn-ghost" onclick="changeMonth(1)">Next ›</button>
-              </div>
-              <div class="calendar-grid" style="gap:0.5rem;" id="big-cal-grid">
-                <!-- Generated by JS -->
-              </div>
-              <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border-color);">
-                <h5 style="color:var(--text-primary);margin-bottom:1rem;">📌 Legend</h5>
-                <div style="display:flex;gap:1.5rem;flex-wrap:wrap;font-size:0.85rem;color:var(--text-secondary);">
-                  <span style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--teal-500);display:inline-block;"></span>Trip Days</span>
-                  <span style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--warning);display:inline-block;"></span>Activities</span>
-                  <span style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--success);display:inline-block;"></span>Today</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 3: BUDGET -->
-        <div class="tab-content">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
-            <!-- Budget Overview -->
-            <div class="glass-card" style="padding:2rem;">
-              <h4 style="color:var(--text-primary);margin-bottom:1.5rem;">💰 Budget Overview</h4>
-              
-              <div style="display:flex;align-items:center;gap:2rem;margin-bottom:2rem;">
-                <!-- Donut Chart (SVG) -->
-                <div class="budget-ring">
-                  <svg viewBox="0 0 150 150">
-                    <defs>
-                      <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:var(--teal-500);" />
-                        <stop offset="100%" style="stop-color:var(--sky-400);" />
-                      </linearGradient>
-                    </defs>
-                    <circle class="budget-ring-bg" cx="75" cy="75" r="60" />
-                    <circle class="budget-ring-fill" cx="75" cy="75" r="60" id="budget-ring" />
-                  </svg>
-                  <div class="budget-ring-text">
-                    <div style="font-size:1.5rem;font-weight:800;color:var(--text-primary);">68%</div>
-                    <div style="font-size:0.7rem;color:var(--text-muted);">Spent</div>
-                  </div>
-                </div>
-
-                <div style="flex:1;">
-                  <div style="margin-bottom:1rem;">
-                    <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.25rem;">
-                      <span style="color:var(--text-secondary);">Total Budget</span>
-                      <span style="font-weight:700;color:var(--text-primary);">$3,200</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.25rem;">
-                      <span style="color:var(--text-secondary);">Spent</span>
-                      <span style="font-weight:700;color:var(--teal-500);">$2,176</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
-                      <span style="color:var(--text-secondary);">Remaining</span>
-                      <span style="font-weight:700;color:var(--success);">$1,024</span>
-                    </div>
-                  </div>
-                  <div class="progress-bar">
-                    <div class="progress-fill" style="width:68%;"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                <div class="budget-category">
-                  <div class="budget-dot" style="background:#00BCD4;"></div>
-                  <div style="flex:1;">
-                    <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">✈️ Flights</div>
-                    <div class="progress-bar" style="margin-top:0.25rem;height:4px;"><div class="progress-fill" style="width:85%;background:linear-gradient(90deg,#00BCD4,#4FC3F7);"></div></div>
-                  </div>
-                  <div style="text-align:right;font-size:0.85rem;font-weight:700;color:var(--text-primary);">$850</div>
-                </div>
-                <div class="budget-category">
-                  <div class="budget-dot" style="background:#4FC3F7;"></div>
-                  <div style="flex:1;">
-                    <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">🏨 Hotels</div>
-                    <div class="progress-bar" style="margin-top:0.25rem;height:4px;"><div class="progress-fill" style="width:70%;background:linear-gradient(90deg,#4FC3F7,#81D4FA);"></div></div>
-                  </div>
-                  <div style="text-align:right;font-size:0.85rem;font-weight:700;color:var(--text-primary);">$700</div>
-                </div>
-                <div class="budget-category">
-                  <div class="budget-dot" style="background:#F59E0B;"></div>
-                  <div style="flex:1;">
-                    <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">🍽️ Dining</div>
-                    <div class="progress-bar" style="margin-top:0.25rem;height:4px;"><div class="progress-fill" style="width:55%;background:linear-gradient(90deg,#F59E0B,#FCD34D);"></div></div>
-                  </div>
-                  <div style="text-align:right;font-size:0.85rem;font-weight:700;color:var(--text-primary);">$350</div>
-                </div>
-                <div class="budget-category">
-                  <div class="budget-dot" style="background:#10B981;"></div>
-                  <div style="flex:1;">
-                    <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">🎯 Activities</div>
-                    <div class="progress-bar" style="margin-top:0.25rem;height:4px;"><div class="progress-fill" style="width:45%;background:linear-gradient(90deg,#10B981,#34D399);"></div></div>
-                  </div>
-                  <div style="text-align:right;font-size:0.85rem;font-weight:700;color:var(--text-primary);">$276</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Add Expense -->
-            <div style="display:flex;flex-direction:column;gap:1.5rem;">
-              <div class="glass-card" style="padding:2rem;">
-                <h4 style="color:var(--text-primary);margin-bottom:1.5rem;">➕ Add Expense</h4>
-                <div style="display:flex;flex-direction:column;gap:1rem;">
-                  <div class="input-group">
-                    <label class="input-label">Category</label>
-                    <select class="input" id="expense-cat">
-                      <option>✈️ Flight</option>
-                      <option>🏨 Hotel</option>
-                      <option>🍽️ Dining</option>
-                      <option>🎯 Activity</option>
-                      <option>🚌 Transport</option>
-                      <option>🛍️ Shopping</option>
-                      <option>📦 Other</option>
-                    </select>
-                  </div>
-                  <div class="input-group">
-                    <label class="input-label">Description</label>
-                    <input class="input" type="text" placeholder="e.g. Eiffel Tower tickets" id="expense-desc" />
-                  </div>
-                  <div class="input-group">
-                    <label class="input-label">Amount ($)</label>
-                    <input class="input" type="number" placeholder="0.00" id="expense-amount" />
-                  </div>
-                  <button class="btn btn-primary" onclick="addExpense()">Add Expense</button>
-                </div>
-              </div>
-
-              <!-- Expense History -->
-              <div class="glass-card" style="padding:1.5rem;">
-                <h5 style="color:var(--text-primary);margin-bottom:1rem;">📋 Recent Expenses</h5>
-                <div id="expense-list" style="display:flex;flex-direction:column;gap:0.5rem;">
-                  <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;border-radius:0.5rem;background:rgba(0,188,212,0.05);">
-                    <div>
-                      <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">✈️ Return Flights</div>
-                      <div style="font-size:0.75rem;color:var(--text-muted);">July 10</div>
-                    </div>
-                    <div style="font-weight:700;color:var(--teal-500);">$850</div>
-                  </div>
-                  <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;border-radius:0.5rem;">
-                    <div>
-                      <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">🏨 Hotel – 7 nights</div>
-                      <div style="font-size:0.75rem;color:var(--text-muted);">July 10</div>
-                    </div>
-                    <div style="font-weight:700;color:var(--teal-500);">$700</div>
-                  </div>
-                  <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;border-radius:0.5rem;background:rgba(0,188,212,0.05);">
-                    <div>
-                      <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">🗼 Eiffel Tower (x2)</div>
-                      <div style="font-size:0.75rem;color:var(--text-muted);">July 11</div>
-                    </div>
-                    <div style="font-weight:700;color:var(--teal-500);">$52</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 4: PACKING -->
-        <div class="tab-content">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;">
-            <!-- Essentials -->
-            <div class="glass-card" style="padding:1.5rem;">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-                <h5 style="color:var(--text-primary);">📋 Essentials</h5>
-                <span class="badge badge-teal" id="essentials-count">4/6</span>
-              </div>
-              <div id="essentials-list" style="display:flex;flex-direction:column;gap:0.25rem;">
-                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">🛂 Passport</span></div>
-                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">💳 Credit Cards</span></div>
-                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">📄 Travel Insurance</span></div>
-                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">✈️ Boarding Passes</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox" onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">🔌 Power Adapter</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox" onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">💊 Medications</span></div>
-              </div>
-              <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:1rem;" onclick="addPackItem('essentials-list')">+ Add Item</button>
-            </div>
-
-            <!-- Clothing -->
-            <div class="glass-card" style="padding:1.5rem;">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-                <h5 style="color:var(--text-primary);">👔 Clothing</h5>
-                <span class="badge badge-warning">3/8</span>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:0.25rem;">
-                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div></label><span class="pack-label">👕 T-shirts (5)</span></div>
-                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div></label><span class="pack-label">👖 Jeans (2)</span></div>
-                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div></label><span class="pack-label">🩲 Underwear (7)</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">🧥 Light Jacket</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">👟 Sneakers</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">👞 Dress Shoes</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">🧤 Socks (7 pairs)</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">👒 Hat / Cap</span></div>
-              </div>
-              <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:1rem;" onclick="TravelApp.showToast('Add clothing item','info')">+ Add Item</button>
-            </div>
-
-            <!-- Electronics & Toiletries -->
-            <div class="glass-card" style="padding:1.5rem;">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-                <h5 style="color:var(--text-primary);">💻 Tech & Care</h5>
-                <span class="badge badge-blue">2/6</span>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:0.25rem;">
-                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div></label><span class="pack-label">📱 Smartphone + Charger</span></div>
-                <div class="pack-item checked"><label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div></label><span class="pack-label">🎧 Earphones</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">📷 Camera</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">🪥 Toothbrush & Paste</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">🧴 Sunscreen SPF50</span></div>
-                <div class="pack-item"><label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div></label><span class="pack-label">🔋 Power Bank</span></div>
-              </div>
-              <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:1rem;" onclick="TravelApp.showToast('Add tech item','info')">+ Add Item</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 5: NOTES -->
-        <div class="tab-content">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
-            <div style="display:flex;flex-direction:column;gap:1rem;">
-              <div class="glass-card" style="padding:1.5rem;">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-                  <h5 style="color:var(--text-primary);">📝 Trip Notes</h5>
-                  <button class="btn btn-primary btn-sm" onclick="saveNote()">💾 Save</button>
-                </div>
-                <textarea class="note-area" id="trip-notes" placeholder="Add your trip notes, reminders, and ideas here...">Key reminders for Paris trip:
-- Book Louvre tickets in advance (skip queues!)
-- Get Navigo weekly metro pass (saves $)
-- Make dinner reservation at Jules Verne (Eiffel Tower restaurant)
-- Download Google Maps offline
-- Exchange $200 USD to EUR at the airport</textarea>
-              </div>
-              <div class="glass-card" style="padding:1.5rem;">
-                <h5 style="color:var(--text-primary);margin-bottom:1rem;">🌐 Useful Contacts</h5>
-                <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.85rem;">
-                  <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-secondary);">🏨 Hotel</span><span style="color:var(--text-primary);font-weight:500;">+33 1 42 72 60 23</span></div>
-                  <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-secondary);">🚑 Emergency</span><span style="color:var(--text-primary);font-weight:500;">112</span></div>
-                  <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-secondary);">✈️ Airline</span><span style="color:var(--text-primary);font-weight:500;">+1-800-AIR-FRANCE</span></div>
-                  <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-secondary);">🏥 Travel Insurance</span><span style="color:var(--text-primary);font-weight:500;">+1-800-INSURE-ME</span></div>
-                </div>
-              </div>
-            </div>
-            <div class="glass-card" style="padding:1.5rem;">
-              <h5 style="color:var(--text-primary);margin-bottom:1rem;">💡 AI Travel Tips</h5>
-              <div style="display:flex;flex-direction:column;gap:0.75rem;">
-                <div style="padding:1rem;border-radius:0.75rem;background:rgba(0,188,212,0.08);border:1px solid rgba(0,188,212,0.2);">
-                  <div style="font-size:0.8rem;font-weight:700;color:var(--teal-500);margin-bottom:0.5rem;">🎟️ Save on Entry Tickets</div>
-                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Buy the Paris Museum Pass (€52/3 days) to access 50+ sites including Louvre, Orsay, and Versailles.</p>
-                </div>
-                <div style="padding:1rem;border-radius:0.75rem;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);">
-                  <div style="font-size:0.8rem;font-weight:700;color:var(--warning);margin-bottom:0.5rem;">🚇 Getting Around</div>
-                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">The Navigo Semaine (weekly pass) covers all metro, bus, and RER zones for ~€22. Much cheaper than individual tickets.</p>
-                </div>
-                <div style="padding:1rem;border-radius:0.75rem;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);">
-                  <div style="font-size:0.8rem;font-weight:700;color:var(--success);margin-bottom:0.5rem;">🍽️ Dining Tips</div>
-                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Lunch "formules" offer 2-3 courses for €15-20. Evening meals are expensive. Make reservations for popular restaurants.</p>
-                </div>
-                <div style="padding:1rem;border-radius:0.75rem;background:rgba(79,195,247,0.08);border:1px solid rgba(79,195,247,0.2);">
-                  <div style="font-size:0.8rem;font-weight:700;color:var(--sky-400);margin-bottom:0.5rem;">📸 Best Photo Spots</div>
-                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Trocadéro Gardens (Eiffel Tower view), Montmartre at sunrise, Pont des Arts bridge, and Seine riverside walks.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /container -->
-    </div><!-- /data-tabs -->
-  </div><!-- /planner-tabs -->
-</div>
-
-<!-- ADD ACTIVITY MODAL -->
-<div class="modal-overlay" id="add-activity-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h4>➕ Add Activity</h4>
-      <button class="btn btn-ghost btn-sm" data-modal-close="add-activity-modal">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="display:flex;flex-direction:column;gap:1rem;">
-        <div class="input-group">
-          <label class="input-label">Activity Name</label>
-          <input class="input" type="text" placeholder="e.g. Visit Louvre Museum" id="act-name" />
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-          <div class="input-group">
-            <label class="input-label">Time</label>
-            <input class="input" type="time" id="act-time" value="10:00" />
-          </div>
-          <div class="input-group">
-            <label class="input-label">Category</label>
-            <select class="input" id="act-category">
-              <option>🎯 Attraction</option>
-              <option>🍽️ Dining</option>
-              <option>🏨 Hotel</option>
-              <option>✈️ Transport</option>
-              <option>🚢 Experience</option>
-              <option>🛍️ Shopping</option>
+          <!-- Trip Type -->
+          <div class="planner-form-field">
+            <label>Trip Type</label>
+            <select id="plannerTripType">
+              <option value="solo">Solo</option>
+              <option value="couple" selected>Couple</option>
+              <option value="family">Family</option>
+              <option value="friends">Friends</option>
+              <option value="business">Business</option>
             </select>
           </div>
+
+          <!-- Budget Preset -->
+          <div class="planner-form-field">
+            <label>Budget Tier</label>
+            <select id="plannerBudgetSelect">
+              <option value="Budget">Budget (&lt; ₹1,00,000)</option>
+              <option value="Moderate">Moderate (₹1,50,000)</option>
+              <option value="Premium" selected>Premium (₹2,50,000)</option>
+              <option value="Luxury">Luxury (₹4,00,000+)</option>
+            </select>
+          </div>
+
+          <!-- Custom Budget Entry -->
+          <div class="planner-form-field">
+            <label>Custom Budget (₹ INR)</label>
+            <input type="number" id="plannerCustomBudget" placeholder="Enter total budget (e.g. 250000)" />
+          </div>
+
+          <!-- Accommodation Preference -->
+          <div class="planner-form-field">
+            <label>Accommodation</label>
+            <select id="plannerAccomType">
+              <option value="hotel" selected>Hotel</option>
+              <option value="resort">Resort</option>
+              <option value="hostel">Hostel</option>
+              <option value="apartment">Apartment</option>
+              <option value="villa">Luxury Villa</option>
+            </select>
+          </div>
+
+          <!-- Transportation Preference -->
+          <div class="planner-form-field">
+            <label>Transportation</label>
+            <select id="plannerTranspType">
+              <option value="flight" selected>Flight</option>
+              <option value="train">Train</option>
+              <option value="bus">Bus</option>
+              <option value="car">Rental Car</option>
+            </select>
+          </div>
+
         </div>
-        <div class="input-group">
-          <label class="input-label">Location</label>
-          <input class="input destination-input" type="text" placeholder="Enter location or address" id="act-location" />
+
+        <!-- ==================== 3. CHOOSE YOUR INTERESTS ==================== -->
+        <div style="margin-top:36px;">
+          <h3 class="planner-section-title" style="font-size:1.3rem;">
+            <span>💖</span> What do you love?
+          </h3>
+          
+          <div class="interest-chips-grid">
+            <button type="button" class="interest-chip-btn active" onclick="TravelApp.toggleInterestChip(this)">🏖️ Beaches</button>
+            <button type="button" class="interest-chip-btn active" onclick="TravelApp.toggleInterestChip(this)">🏔️ Adventure</button>
+            <button type="button" class="interest-chip-btn active" onclick="TravelApp.toggleInterestChip(this)">🏛️ Culture</button>
+            <button type="button" class="interest-chip-btn active" onclick="TravelApp.toggleInterestChip(this)">🍜 Food</button>
+            <button type="button" class="interest-chip-btn" onclick="TravelApp.toggleInterestChip(this)">🌿 Nature</button>
+            <button type="button" class="interest-chip-btn" onclick="TravelApp.toggleInterestChip(this)">🛍️ Shopping</button>
+            <button type="button" class="interest-chip-btn" onclick="TravelApp.toggleInterestChip(this)">🎉 Nightlife</button>
+            <button type="button" class="interest-chip-btn active" onclick="TravelApp.toggleInterestChip(this)">📸 Photography</button>
+            <button type="button" class="interest-chip-btn active" onclick="TravelApp.toggleInterestChip(this)">💎 Luxury</button>
+            <button type="button" class="interest-chip-btn" onclick="TravelApp.toggleInterestChip(this)">🧘 Relaxation</button>
+            <button type="button" class="interest-chip-btn" onclick="TravelApp.toggleInterestChip(this)">🎢 Entertainment</button>
+            <button type="button" class="interest-chip-btn active" onclick="TravelApp.toggleInterestChip(this)">🏰 History</button>
+          </div>
         </div>
-        <div class="input-group">
-          <label class="input-label">Notes (optional)</label>
-          <textarea class="input" placeholder="Any notes about this activity..." style="resize:vertical;height:80px;" id="act-notes"></textarea>
+
+        <!-- ==================== 4. TRAVEL PACE ==================== -->
+        <div style="margin-top:36px;">
+          <h3 class="planner-section-title" style="font-size:1.3rem;">
+            <span>⚡</span> How do you like to travel?
+          </h3>
+
+          <div class="pace-cards-grid">
+            <div class="pace-card" onclick="TravelApp.selectPaceCard(this)">
+              <h4>🧘 Relaxed</h4>
+              <p>Fewer activities with more free time and leisurely meals.</p>
+            </div>
+            <div class="pace-card active" onclick="TravelApp.selectPaceCard(this)">
+              <h4>⚖️ Balanced</h4>
+              <p>A comfortable mix of sightseeing, culture, and relaxation.</p>
+            </div>
+            <div class="pace-card" onclick="TravelApp.selectPaceCard(this)">
+              <h4>🚀 Packed</h4>
+              <p>Experience as much as possible every day with full schedules.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== 5. ADDITIONAL PREFERENCES ==================== -->
+        <div style="margin-top:36px;">
+          <h3 class="planner-section-title" style="font-size:1.3rem;">
+            <span>⚙️</span> Additional Preferences
+          </h3>
+
+          <div class="planner-form-grid" style="grid-template-columns: 1fr 1.5fr 1.5fr;">
+            <div class="planner-form-field">
+              <label>Food Preference</label>
+              <select id="plannerFoodPref">
+                <option value="none" selected>No Preference</option>
+                <option value="veg">Vegetarian</option>
+                <option value="nonveg">Non-Vegetarian</option>
+                <option value="vegan">Vegan</option>
+              </select>
+            </div>
+
+            <div class="planner-form-field">
+              <label>Special Requirements</label>
+              <input type="text" id="plannerSpecialReq" placeholder="Enter accessibility or dietary needs..." />
+            </div>
+
+            <div class="planner-form-field">
+              <label>Notes</label>
+              <input type="text" id="plannerNotes" placeholder="Anything else we should know?" />
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== 6. GENERATE TRIP BUTTON ==================== -->
+        <div style="margin-top:40px; text-align:center;">
+          <button type="submit" class="btn-hero-primary" style="padding:18px 48px; font-size:1.1rem; border-radius:18px;">
+            ✨ Generate My Trip
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- LOADING ANIMATION OVERLAY -->
+    <div class="planner-loading-overlay" id="plannerLoadingOverlay">
+      <div class="loading-spinner-ring"></div>
+      <h3 style="font-family:var(--font-display); font-size:1.8rem; color:white; margin:0 0 8px;">Creating your perfect journey...</h3>
+      <p style="color:var(--color-primary); font-size:0.95rem; margin:0;">Synthesizing flight times, luxury stays & VIP attractions</p>
+    </div>
+
+    <!-- ==================== DYNAMICALLY GENERATED RESULTS SECTION ==================== -->
+    <div id="plannerResultsSection" style="display:none; margin-top:40px;">
+
+      <!-- ==================== 7. GENERATED TRIP OVERVIEW ==================== -->
+      <div class="planner-glass-card" style="background:linear-gradient(135deg, rgba(15,23,42,0.95), rgba(0,77,102,0.7)); border-color:rgba(0,194,255,0.4);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:20px;">
+          <div>
+            <span class="section-tag" style="background:rgba(20,184,166,0.2); color:var(--color-accent); border-color:rgba(20,184,166,0.4);">✨ VIP ITINERARY GENERATED</span>
+            <h1 id="generatedTripTitle" style="font-family:var(--font-display); font-size:2.4rem; font-weight:800; color:white; margin:10px 0 6px;">PARIS GETAWAY</h1>
+            <p id="generatedTripSub" style="color:rgba(255,255,255,0.85); font-size:1rem; margin:0;">
+              📍 Paris, France  •  📅 July 15 – July 22  •  👥 2 Travelers
+            </p>
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-hero-primary" style="padding:10px 20px; font-size:0.88rem;" onclick="TravelApp.saveCurrentTrip()">💾 Save Trip</button>
+            <button class="btn-hero-secondary" style="padding:10px 20px; font-size:0.88rem;" onclick="TravelApp.shareTrip()">🔗 Share</button>
+            <button class="btn-hero-secondary" style="padding:10px 20px; font-size:0.88rem;" onclick="TravelApp.exportTripPDF()">📄 Export PDF</button>
+            <button class="btn-hero-secondary" style="padding:10px 20px; font-size:0.88rem;" onclick="document.querySelector('.planner-glass-card').scrollIntoView({behavior:'smooth'})">✏ Edit Trip</button>
+          </div>
+        </div>
+
+        <!-- Summary Stats Row & 14. TRIP COMPLETION INDICATOR -->
+        <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:16px; margin-top:30px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.12);">
+          <div style="text-align:center;">
+            <div style="font-size:1.6rem; font-weight:800; color:white;">7</div>
+            <div style="font-size:0.75rem; color:var(--gray-400);">Days</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:1.6rem; font-weight:800; color:var(--color-primary);">18</div>
+            <div style="font-size:0.75rem; color:var(--gray-400);">Activities</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:1.6rem; font-weight:800; color:var(--color-accent);" id="generatedBudgetSummary">₹2,50,000</div>
+            <div style="font-size:0.75rem; color:var(--gray-400);">Est. Budget</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:1.6rem; font-weight:800; color:#F59E0B;">68%</div>
+            <div style="font-size:0.75rem; color:var(--gray-400);">Planned</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:1.6rem; font-weight:800; color:#10B981;">12/20</div>
+            <div style="font-size:0.75rem; color:var(--gray-400);">Packed</div>
+          </div>
+        </div>
+
+        <!-- 14. Trip Completion Checklist -->
+        <div style="margin-top:24px; padding:16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:0.85rem; font-weight:700; color:white;">Trip Completion Progress</span>
+            <span style="font-size:0.85rem; font-weight:700; color:var(--color-primary);">68% Complete</span>
+          </div>
+          <div class="budget-progress-bar-bg">
+            <div class="budget-progress-bar-fill" style="width:68%;"></div>
+          </div>
+          <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; font-size:0.78rem; color:rgba(255,255,255,0.8);">
+            <span>✓ Destination selected</span>
+            <span>✓ Dates selected</span>
+            <span>✓ Accommodation planned</span>
+            <span>✓ Activities added</span>
+            <span style="color:var(--gray-400);">○ Transportation pending</span>
+            <span style="color:var(--gray-400);">○ Packing incomplete</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==================== SUB-TABS NAVIGATION BAR ==================== -->
+      <div class="planner-nav-tabs">
+        <button class="planner-tab-btn active" data-tab="itinerary" onclick="TravelApp.switchPlannerTab('itinerary')">📅 Itinerary</button>
+        <button class="planner-tab-btn" data-tab="calendar" onclick="TravelApp.switchPlannerTab('calendar')">🗓️ Calendar View</button>
+        <button class="planner-tab-btn" data-tab="budget" onclick="TravelApp.switchPlannerTab('budget')">💰 Budget Tracker</button>
+        <button class="planner-tab-btn" data-tab="packing" onclick="TravelApp.switchPlannerTab('packing')">🧳 Packing List</button>
+        <button class="planner-tab-btn" data-tab="notes" onclick="TravelApp.switchPlannerTab('notes')">📌 Trip Notes</button>
+      </div>
+
+      <!-- ==================== 8. TAB 1: ITINERARY ==================== -->
+      <div class="planner-tab-pane" id="tabPane-itinerary" style="display:block;">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h3 style="font-family:var(--font-display); color:white; margin:0;">Daily Schedule Timeline</h3>
+          <button class="btn-hero-primary" style="padding:8px 18px; font-size:0.85rem;" onclick="TravelApp.openAddActivityModal()">+ Add Activity</button>
+        </div>
+
+        <!-- Day 1 Timeline -->
+        <div class="planner-glass-card" style="padding:28px; margin-bottom:24px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;">
+            <h4 style="margin:0; font-size:1.2rem; color:var(--color-primary);">DAY 1 – JULY 15  &nbsp;•&nbsp; Arrival & Paris Highlights</h4>
+            <span style="font-size:0.8rem; color:var(--color-accent); font-weight:600;">6 Activities Planned</span>
+          </div>
+
+          <div id="day1ActivityList">
+            
+            <div class="activity-card-item">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <span class="activity-time-badge">09:00 AM</span>
+                <div>
+                  <h4 style="margin:0; font-size:1.05rem; color:white;">✈️ Arrival at Charles de Gaulle Airport</h4>
+                  <div style="font-size:0.8rem; color:var(--gray-400); margin-top:2px;">Location: CDG Terminal 2E • Duration: 1.5 hrs • Cost: ₹0</div>
+                </div>
+              </div>
+              <div class="activity-actions">
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'up')">▲</button>
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'down')">▼</button>
+                <button class="btn-activity-action" onclick="TravelApp.toggleActivityComplete(this)">Check</button>
+                <button class="btn-activity-action danger" onclick="TravelApp.deleteActivity(this)">Delete</button>
+              </div>
+            </div>
+
+            <div class="activity-card-item">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <span class="activity-time-badge">11:00 AM</span>
+                <div>
+                  <h4 style="margin:0; font-size:1.05rem; color:white;">🏨 Hotel Check-in at Shangri-La Paris</h4>
+                  <div style="font-size:0.8rem; color:var(--gray-400); margin-top:2px;">Location: 10 Av. d'Iéna • Duration: 1 hr • Cost: Pre-paid</div>
+                </div>
+              </div>
+              <div class="activity-actions">
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'up')">▲</button>
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'down')">▼</button>
+                <button class="btn-activity-action" onclick="TravelApp.toggleActivityComplete(this)">Check</button>
+                <button class="btn-activity-action danger" onclick="TravelApp.deleteActivity(this)">Delete</button>
+              </div>
+            </div>
+
+            <div class="activity-card-item">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <span class="activity-time-badge">01:00 PM</span>
+                <div>
+                  <h4 style="margin:0; font-size:1.05rem; color:white;">🍽️ Gourmet French Lunch at Le Cafe Marly</h4>
+                  <div style="font-size:0.8rem; color:var(--gray-400); margin-top:2px;">Location: Rue de Rivoli • Duration: 1.5 hrs • Cost: ₹8,500</div>
+                </div>
+              </div>
+              <div class="activity-actions">
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'up')">▲</button>
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'down')">▼</button>
+                <button class="btn-activity-action" onclick="TravelApp.toggleActivityComplete(this)">Check</button>
+                <button class="btn-activity-action danger" onclick="TravelApp.deleteActivity(this)">Delete</button>
+              </div>
+            </div>
+
+            <div class="activity-card-item">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <span class="activity-time-badge">03:00 PM</span>
+                <div>
+                  <h4 style="margin:0; font-size:1.05rem; color:white;">🗼 Eiffel Tower Summit VIP Access</h4>
+                  <div style="font-size:0.8rem; color:var(--gray-400); margin-top:2px;">Location: Champ de Mars • Duration: 2.5 hrs • Cost: ₹6,200</div>
+                </div>
+              </div>
+              <div class="activity-actions">
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'up')">▲</button>
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'down')">▼</button>
+                <button class="btn-activity-action" onclick="TravelApp.toggleActivityComplete(this)">Check</button>
+                <button class="btn-activity-action danger" onclick="TravelApp.deleteActivity(this)">Delete</button>
+              </div>
+            </div>
+
+            <div class="activity-card-item">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <span class="activity-time-badge">06:00 PM</span>
+                <div>
+                  <h4 style="margin:0; font-size:1.05rem; color:white;">🚶 Seine River Sunset Walk & Photography</h4>
+                  <div style="font-size:0.8rem; color:var(--gray-400); margin-top:2px;">Location: Pont Alexandre III • Duration: 1.5 hrs • Cost: ₹0</div>
+                </div>
+              </div>
+              <div class="activity-actions">
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'up')">▲</button>
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'down')">▼</button>
+                <button class="btn-activity-action" onclick="TravelApp.toggleActivityComplete(this)">Check</button>
+                <button class="btn-activity-action danger" onclick="TravelApp.deleteActivity(this)">Delete</button>
+              </div>
+            </div>
+
+            <div class="activity-card-item">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <span class="activity-time-badge">08:00 PM</span>
+                <div>
+                  <h4 style="margin:0; font-size:1.05rem; color:white;">🍽️ Michelin Star Dinner at Le Jules Verne</h4>
+                  <div style="font-size:0.8rem; color:var(--gray-400); margin-top:2px;">Location: Eiffel Tower 2nd Floor • Duration: 2 hrs • Cost: ₹18,000</div>
+                </div>
+              </div>
+              <div class="activity-actions">
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'up')">▲</button>
+                <button class="btn-activity-action" onclick="TravelApp.moveActivity(this, 'down')">▼</button>
+                <button class="btn-activity-action" onclick="TravelApp.toggleActivityComplete(this)">Check</button>
+                <button class="btn-activity-action danger" onclick="TravelApp.deleteActivity(this)">Delete</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Day 2 Timeline Sample -->
+        <div class="planner-glass-card" style="padding:28px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;">
+            <h4 style="margin:0; font-size:1.2rem; color:var(--color-accent);">DAY 2 – JULY 16  &nbsp;•&nbsp; Louvre & Historic Le Marais</h4>
+            <span style="font-size:0.8rem; color:var(--color-primary); font-weight:600;">4 Activities Planned</span>
+          </div>
+
+          <div>
+            <div class="activity-card-item">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <span class="activity-time-badge">10:00 AM</span>
+                <div>
+                  <h4 style="margin:0; font-size:1.05rem; color:white;">🏛️ Guided Tour of Mona Lisa at Louvre Museum</h4>
+                  <div style="font-size:0.8rem; color:var(--gray-400); margin-top:2px;">Location: Rue de Rivoli • Duration: 3 hrs • Cost: ₹7,500</div>
+                </div>
+              </div>
+              <div class="activity-actions">
+                <button class="btn-activity-action" onclick="TravelApp.toggleActivityComplete(this)">Check</button>
+                <button class="btn-activity-action danger" onclick="TravelApp.deleteActivity(this)">Delete</button>
+              </div>
+            </div>
+
+            <div class="activity-card-item">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <span class="activity-time-badge">02:30 PM</span>
+                <div>
+                  <h4 style="margin:0; font-size:1.05rem; color:white;">🥐 Macaron Tasting at Ladurée Paris</h4>
+                  <div style="font-size:0.8rem; color:var(--gray-400); margin-top:2px;">Location: Rue Royale • Duration: 1 hr • Cost: ₹3,200</div>
+                </div>
+              </div>
+              <div class="activity-actions">
+                <button class="btn-activity-action" onclick="TravelApp.toggleActivityComplete(this)">Check</button>
+                <button class="btn-activity-action danger" onclick="TravelApp.deleteActivity(this)">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==================== 9. TAB 2: CALENDAR VIEW ==================== -->
+      <div class="planner-tab-pane" id="tabPane-calendar" style="display:none;">
+        <div class="planner-glass-card" style="padding:32px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+            <h3 style="margin:0; color:white;">🗓️ Trip Calendar Schedule</h3>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-activity-action" onclick="TravelApp.showToast('Previous week schedule','info')">❮ Prev</button>
+              <button class="btn-activity-action" onclick="TravelApp.showToast('Showing Today','info')">Today</button>
+              <button class="btn-activity-action" onclick="TravelApp.showToast('Next week schedule','info')">Next ❯</button>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:12px; min-width:700px; overflow-x:auto;">
+            <div style="text-align:center; padding:10px; background:rgba(0,194,255,0.15); border-radius:12px; color:var(--color-primary); font-weight:700;">JUL 15<br><span style="font-size:0.75rem;">DAY 1</span></div>
+            <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:12px; color:white; font-weight:700;">JUL 16<br><span style="font-size:0.75rem;">DAY 2</span></div>
+            <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:12px; color:white; font-weight:700;">JUL 17<br><span style="font-size:0.75rem;">DAY 3</span></div>
+            <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:12px; color:white; font-weight:700;">JUL 18<br><span style="font-size:0.75rem;">DAY 4</span></div>
+            <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:12px; color:white; font-weight:700;">JUL 19<br><span style="font-size:0.75rem;">DAY 5</span></div>
+            <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:12px; color:white; font-weight:700;">JUL 20<br><span style="font-size:0.75rem;">DAY 6</span></div>
+            <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:12px; color:white; font-weight:700;">JUL 21<br><span style="font-size:0.75rem;">DAY 7</span></div>
+          </div>
+
+          <div style="margin-top:20px; padding:20px; background:rgba(255,255,255,0.03); border-radius:16px;">
+            <h4 style="margin:0 0 12px; color:var(--color-primary);">July 15 Calendar Events:</h4>
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:0.88rem; color:white;">
+              <div style="padding:10px; background:rgba(0,194,255,0.1); border-left:4px solid var(--color-primary); border-radius:8px;">09:00 AM – ✈️ Flight CDG Arrival</div>
+              <div style="padding:10px; background:rgba(20,184,166,0.1); border-left:4px solid var(--color-accent); border-radius:8px;">11:00 AM – 🏨 Shangri-La Hotel Check-in</div>
+              <div style="padding:10px; background:rgba(245,158,11,0.1); border-left:4px solid #F59E0B; border-radius:8px;">03:00 PM – 🗼 Eiffel Tower VIP Summit Tour</div>
+            </div>
+          </div>
+
         </div>
       </div>
+
+      <!-- ==================== 10. TAB 3: BUDGET TRACKER ==================== -->
+      <div class="planner-tab-pane" id="tabPane-budget" style="display:none;">
+        <div class="planner-glass-card" style="padding:32px;">
+          <h3 style="font-family:var(--font-display); color:white; margin:0 0 24px;">📊 Visual Budget Dashboard</h3>
+
+          <!-- Summary Cards -->
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-bottom:28px;">
+            <div style="background:rgba(0,194,255,0.1); border:1px solid rgba(0,194,255,0.3); border-radius:18px; padding:20px; text-align:center;">
+              <span style="font-size:0.8rem; color:var(--gray-400);">Total Budget</span>
+              <h2 style="margin:6px 0 0; color:var(--color-primary); font-size:1.8rem;">₹2,50,000</h2>
+            </div>
+            <div style="background:rgba(20,184,166,0.1); border:1px solid rgba(20,184,166,0.3); border-radius:18px; padding:20px; text-align:center;">
+              <span style="font-size:0.8rem; color:var(--gray-400);">Estimated Spending</span>
+              <h2 style="margin:6px 0 0; color:var(--color-accent); font-size:1.8rem;">₹1,80,000</h2>
+            </div>
+            <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:18px; padding:20px; text-align:center;">
+              <span style="font-size:0.8rem; color:var(--gray-400);">Remaining Balance</span>
+              <h2 style="margin:6px 0 0; color:#10B981; font-size:1.8rem;">₹70,000</h2>
+            </div>
+          </div>
+
+          <!-- Overall Progress -->
+          <div style="margin-bottom:32px; padding:20px; background:rgba(255,255,255,0.03); border-radius:18px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-weight:700; color:white; font-size:0.95rem;">
+              <span>Budget Used Progress</span>
+              <span style="color:var(--color-primary);">72% Used</span>
+            </div>
+            <div class="budget-progress-bar-bg" style="height:16px;">
+              <div class="budget-progress-bar-fill" style="width:72%;"></div>
+            </div>
+          </div>
+
+          <!-- Categories Breakdown -->
+          <h4 style="color:white; font-size:1.1rem; margin-bottom:16px;">Allocation by Category:</h4>
+          
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div>
+              <div style="display:flex; justify-content:space-between; color:white; font-size:0.88rem;">
+                <span>✈️ Flights & Transit</span>
+                <span>Spent: ₹65,000 / ₹80,000</span>
+              </div>
+              <div class="budget-progress-bar-bg"><div class="budget-progress-bar-fill" style="width:81%;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; color:white; font-size:0.88rem;">
+                <span>🏨 Luxury Stays & Hotels</span>
+                <span>Spent: ₹70,000 / ₹90,000</span>
+              </div>
+              <div class="budget-progress-bar-bg"><div class="budget-progress-bar-fill" style="width:77%;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; color:white; font-size:0.88rem;">
+                <span>🍽️ Food & Fine Dining</span>
+                <span>Spent: ₹25,000 / ₹40,000</span>
+              </div>
+              <div class="budget-progress-bar-bg"><div class="budget-progress-bar-fill" style="width:62%;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; color:white; font-size:0.88rem;">
+                <span>🎟️ VIP Tours & Activities</span>
+                <span>Spent: ₹20,000 / ₹40,000</span>
+              </div>
+              <div class="budget-progress-bar-bg"><div class="budget-progress-bar-fill" style="width:50%;"></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== 11. TAB 4: PACKING LIST ==================== -->
+      <div class="planner-tab-pane" id="tabPane-packing" style="display:none;">
+        <div class="planner-glass-card" style="padding:32px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+            <h3 style="margin:0; color:white;">🧳 Interactive Packing Checklist</h3>
+            <span id="packingProgressBadge" style="background:rgba(0,194,255,0.15); color:var(--color-primary); padding:6px 14px; border-radius:20px; font-weight:700; font-size:0.85rem;">12 of 20 items packed</span>
+          </div>
+
+          <!-- Add Item Form -->
+          <div style="display:flex; gap:10px; margin-bottom:24px;">
+            <input type="text" id="newPackingInput" placeholder="Add custom item (e.g. Universal Adapter)..." style="flex:1; padding:12px; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:white;" />
+            <button class="btn-hero-primary" style="padding:10px 24px; font-size:0.88rem;" onclick="TravelApp.addNewPackingItem()">+ Add Item</button>
+          </div>
+
+          <!-- Checklist Items -->
+          <div id="packingChecklistContainer">
+            <div class="packing-item-row completed">
+              <label style="display:flex; align-items:center; gap:12px; cursor:pointer; color:white; font-size:0.92rem;">
+                <input type="checkbox" checked onchange="TravelApp.togglePackingItem(this)" />
+                <span>📄 Passport & Visa Copies</span>
+              </label>
+              <button class="btn-activity-action danger" onclick="TravelApp.deletePackingItem(this)" style="padding:4px 8px; font-size:0.75rem;">&times;</button>
+            </div>
+            <div class="packing-item-row completed">
+              <label style="display:flex; align-items:center; gap:12px; cursor:pointer; color:white; font-size:0.92rem;">
+                <input type="checkbox" checked onchange="TravelApp.togglePackingItem(this)" />
+                <span>✈️ Flight Tickets & Boarding Passes</span>
+              </label>
+              <button class="btn-activity-action danger" onclick="TravelApp.deletePackingItem(this)" style="padding:4px 8px; font-size:0.75rem;">&times;</button>
+            </div>
+            <div class="packing-item-row completed">
+              <label style="display:flex; align-items:center; gap:12px; cursor:pointer; color:white; font-size:0.92rem;">
+                <input type="checkbox" checked onchange="TravelApp.togglePackingItem(this)" />
+                <span>🏨 Shangri-La Hotel Reservation Confirmation</span>
+              </label>
+              <button class="btn-activity-action danger" onclick="TravelApp.deletePackingItem(this)" style="padding:4px 8px; font-size:0.75rem;">&times;</button>
+            </div>
+            <div class="packing-item-row">
+              <label style="display:flex; align-items:center; gap:12px; cursor:pointer; color:white; font-size:0.92rem;">
+                <input type="checkbox" onchange="TravelApp.togglePackingItem(this)" />
+                <span>🔌 Universal Travel Adapter & Power Bank</span>
+              </label>
+              <button class="btn-activity-action danger" onclick="TravelApp.deletePackingItem(this)" style="padding:4px 8px; font-size:0.75rem;">&times;</button>
+            </div>
+            <div class="packing-item-row">
+              <label style="display:flex; align-items:center; gap:12px; cursor:pointer; color:white; font-size:0.92rem;">
+                <input type="checkbox" onchange="TravelApp.togglePackingItem(this)" />
+                <span>📸 DSLR Camera & Extra SD Cards</span>
+              </label>
+              <button class="btn-activity-action danger" onclick="TravelApp.deletePackingItem(this)" style="padding:4px 8px; font-size:0.75rem;">&times;</button>
+            </div>
+            <div class="packing-item-row">
+              <label style="display:flex; align-items:center; gap:12px; cursor:pointer; color:white; font-size:0.92rem;">
+                <input type="checkbox" onchange="TravelApp.togglePackingItem(this)" />
+                <span>🕶️ Designer Sunglasses & Sunscreen</span>
+              </label>
+              <button class="btn-activity-action danger" onclick="TravelApp.deletePackingItem(this)" style="padding:4px 8px; font-size:0.75rem;">&times;</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== 12. TAB 5: TRIP NOTES ==================== -->
+      <div class="planner-tab-pane" id="tabPane-notes" style="display:none;">
+        <div class="planner-glass-card" style="padding:32px;">
+          <h3 style="font-family:var(--font-display); color:white; margin:0 0 20px;">📌 Personal Travel Notes</h3>
+
+          <!-- Form to add note -->
+          <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:28px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:18px; padding:20px;">
+            <input type="text" id="newNoteTitle" placeholder="Note Title (e.g. Eiffel Tower Reservation Code)..." style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:white;" />
+            <textarea id="newNoteDesc" placeholder="Description or reminder notes..." style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:white; min-height:80px;"></textarea>
+            <button class="btn-hero-primary" style="padding:10px 24px; font-size:0.88rem; align-self:flex-start;" onclick="TravelApp.addTripNote()">+ Add Note</button>
+          </div>
+
+          <!-- Notes Grid -->
+          <div id="tripNotesGrid" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:20px;">
+            <div class="feature-glass-card" style="padding:24px;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                <h4 style="margin:0; font-size:1.1rem; color:white;">📌 Louvre Museum Ticket Code</h4>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn-activity-action" onclick="TravelApp.pinTripNote(this)">Pin</button>
+                  <button class="btn-activity-action danger" onclick="TravelApp.deleteTripNote(this)">Delete</button>
+                </div>
+              </div>
+              <p style="margin:0; font-size:0.88rem; color:var(--gray-300); line-height:1.5;">Confirmation #PAR-99201. Entry time is strictly 10:00 AM via Pyramid entrance.</p>
+            </div>
+
+            <div class="feature-glass-card" style="padding:24px;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                <h4 style="margin:0; font-size:1.1rem; color:white;">📌 Seine Cruise Departure Dock</h4>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn-activity-action" onclick="TravelApp.pinTripNote(this)">Pin</button>
+                  <button class="btn-activity-action danger" onclick="TravelApp.deleteTripNote(this)">Delete</button>
+                </div>
+              </div>
+              <p style="margin:0; font-size:0.88rem; color:var(--gray-300); line-height:1.5;">Bateaux Parisiens dock at Port de la Bourdonnais at the foot of Eiffel Tower.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== 13. RECOMMENDED PLACES FOR YOUR TRIP ==================== -->
+      <section style="margin-top:40px;">
+        <div class="section-header" style="text-align:left; max-width:100%; margin-bottom:30px;">
+          <span class="section-tag">🌟 Tailored Recommendations</span>
+          <h2 class="section-title">Recommended for Your <span style="color:var(--color-primary);">Trip</span></h2>
+          <p class="section-subtitle">Top attractions, fine dining, and hidden gems matched to your Paris preferences.</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:20px;">
+          
+          <div class="dest-card">
+            <div class="dest-img-box" style="height:180px;">
+              <img src="https://images.unsplash.com/photo-1543349689-9a4d426bee8e?q=80&w=600" alt="Palace of Versailles" />
+              <div class="dest-rating-badge">⭐ 4.9</div>
+            </div>
+            <div class="dest-card-body" style="padding:18px;">
+              <div class="dest-location">Attraction • 18 km away</div>
+              <h4 style="color:white; font-size:1.1rem; font-weight:700; margin:4px 0 8px;">Palace of Versailles</h4>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+                <span style="font-size:1.05rem; font-weight:800; color:var(--color-primary);">₹4,500</span>
+                <button class="btn-dest-explore" onclick="TravelApp.addRecommendedToTrip('Palace of Versailles', '₹4,500', 'Attraction')">+ Add to Trip</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dest-card">
+            <div class="dest-img-box" style="height:180px;">
+              <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=600" alt="Le Marais Dining" />
+              <div class="dest-rating-badge">⭐ 4.95</div>
+            </div>
+            <div class="dest-card-body" style="padding:18px;">
+              <div class="dest-location">Restaurant • 2 km away</div>
+              <h4 style="color:white; font-size:1.1rem; font-weight:700; margin:4px 0 8px;">Le Marais Bistro</h4>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+                <span style="font-size:1.05rem; font-weight:800; color:var(--color-primary);">₹5,200</span>
+                <button class="btn-dest-explore" onclick="TravelApp.addRecommendedToTrip('Le Marais Bistro', '₹5,200', 'Restaurant')">+ Add to Trip</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dest-card">
+            <div class="dest-img-box" style="height:180px;">
+              <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600" alt="Montmartre Walk" />
+              <div class="dest-rating-badge">⭐ 4.88</div>
+            </div>
+            <div class="dest-card-body" style="padding:18px;">
+              <div class="dest-location">Hidden Gem • 4 km away</div>
+              <h4 style="color:white; font-size:1.1rem; font-weight:700; margin:4px 0 8px;">Montmartre Art Walk</h4>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+                <span style="font-size:1.05rem; font-weight:800; color:var(--color-primary);">₹0</span>
+                <button class="btn-dest-explore" onclick="TravelApp.addRecommendedToTrip('Montmartre Art Walk', '₹0', 'Hidden Gem')">+ Add to Trip</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dest-card">
+            <div class="dest-img-box" style="height:180px;">
+              <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=600" alt="Seine Cruise" />
+              <div class="dest-rating-badge">⭐ 4.92</div>
+            </div>
+            <div class="dest-card-body" style="padding:18px;">
+              <div class="dest-location">Activity • 1.2 km away</div>
+              <h4 style="color:white; font-size:1.1rem; font-weight:700; margin:4px 0 8px;">VIP Champagne Cruise</h4>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+                <span style="font-size:1.05rem; font-weight:800; color:var(--color-primary);">₹8,900</span>
+                <button class="btn-dest-explore" onclick="TravelApp.addRecommendedToTrip('VIP Champagne Cruise', '₹8,900', 'Activity')">+ Add to Trip</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" data-modal-close="add-activity-modal">Cancel</button>
-      <button class="btn btn-primary" onclick="addActivity()">Add to Itinerary</button>
+
+  </div>
+
+  <!-- Mobile Sticky Bottom Generate Button -->
+  <button class="mobile-sticky-generate-btn" onclick="TravelApp.generateTrip()">
+    ✨ Generate Trip
+  </button>
+
+  <!-- Add Activity Modal -->
+  <div class="dest-modal-wrapper" id="addActivityModal">
+    <div class="dest-modal-card" style="max-width:500px; padding:32px;">
+      <button class="dest-modal-close-btn" onclick="TravelApp.closeAddActivityModal()">&times;</button>
+      <h3 style="margin:0 0 20px; color:white;">+ Add Activity to Itinerary</h3>
+      
+      <form onsubmit="TravelApp.submitNewActivity(event)">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="planner-form-field">
+            <label>Activity Title</label>
+            <input type="text" id="newActivityTitle" placeholder="e.g. Visit Louvre Museum" required />
+          </div>
+          <div class="planner-form-field">
+            <label>Time</label>
+            <input type="text" id="newActivityTime" placeholder="e.g. 02:00 PM" value="02:00 PM" required />
+          </div>
+          <div class="planner-form-field">
+            <label>Location</label>
+            <input type="text" id="newActivityLocation" placeholder="e.g. Rue de Rivoli, Paris" required />
+          </div>
+          <div class="planner-form-field">
+            <label>Estimated Cost</label>
+            <input type="text" id="newActivityCost" placeholder="e.g. ₹2,500" value="₹2,500" required />
+          </div>
+          <button type="submit" class="btn-hero-primary" style="margin-top:10px;">Add Activity</button>
+        </div>
+      </form>
     </div>
   </div>
-</div>
 
-<button class="back-to-top" id="back-to-top">↑</button>
+  <!-- ==================== NEWSLETTER SECTION ==================== -->
+  <section class="newsletter-section" id="newsletter">
+    <div class="container">
+      <div class="newsletter-card">
+        <div class="newsletter-content">
+          <span class="section-tag" style="background:rgba(255,255,255,0.15); color:white; border-color:rgba(255,255,255,0.3);">💌 VIP Smart Alerts</span>
+          <h2 style="font-family:var(--font-display); font-size:clamp(2rem, 3.5vw, 3rem); font-weight:800; color:white; margin:16px 0;">Never Miss a VIP Travel Deal</h2>
+          <p style="color:rgba(255,255,255,0.85); font-size:1.05rem; line-height:1.6;">
+            Subscribe to receive AI travel recommendations, flight price drops, and secret resort rates.
+          </p>
 
-<script src="js/main.js"></script>
-<script>
-// Calendar rendering
-const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-let currentMonth = 6; // July (0-indexed)
-let currentYear = 2025;
-
-function renderCalendar(gridId, compact = true) {
-  const grid = document.getElementById(gridId);
-  if (!grid) return;
-
-  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const tripDays = [15,16,17,18,19,20,21];
-  const today = new Date();
-
-  const dayNames = ['Su','Mo','Tu','We','Th','Fr','Sa'];
-  let html = dayNames.map(d => `<div class="calendar-day-label">${d}</div>`).join('');
-
-  for (let i = 0; i < firstDay; i++) {
-    html += `<div class="calendar-day other-month">${new Date(currentYear, currentMonth, -firstDay + i + 1).getDate()}</div>`;
-  }
-
-  for (let d = 1; d <= daysInMonth; d++) {
-    const isToday = today.getFullYear() === currentYear && today.getMonth() === currentMonth && today.getDate() === d;
-    const isTrip = tripDays.includes(d);
-    let cls = 'calendar-day';
-    if (isToday) cls += ' today';
-    if (isTrip) cls += ' selected has-event';
-    const size = compact ? '' : 'font-size:1rem;padding:0.75rem;';
-    html += `<div class="${cls}" style="${size}" onclick="selectCalDay(${d})">${d}</div>`;
-  }
-
-  grid.innerHTML = html;
-}
-
-function changeMonth(dir) {
-  currentMonth += dir;
-  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-  document.querySelectorAll('#cal-month').forEach(el => el.textContent = `${months[currentMonth]} ${currentYear}`);
-  renderCalendar('cal-grid', true);
-  renderCalendar('big-cal-grid', false);
-}
-
-function selectCalDay(day) {
-  TravelApp.showToast(`Selected ${months[currentMonth]} ${day}, ${currentYear}`, 'info');
-}
-
-renderCalendar('cal-grid', true);
-renderCalendar('big-cal-grid', false);
-
-// Day selection
-function selectDay(el, label) {
-  document.querySelectorAll('#day-list button').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('active-day-title').textContent = `${label} – Paris`;
-}
-
-// Add activity
-function addActivity() {
-  const name = document.getElementById('act-name').value;
-  const time = document.getElementById('act-time').value;
-  const cat = document.getElementById('act-category').value;
-  const loc = document.getElementById('act-location').value;
-  if (!name) { TravelApp.showToast('Please enter an activity name', 'warning'); return; }
-
-  const timeline = document.getElementById('itinerary-timeline');
-  const item = document.createElement('div');
-  item.className = 'timeline-item';
-  item.innerHTML = `
-    <div class="timeline-dot"></div>
-    <div class="timeline-time">${time}</div>
-    <div class="timeline-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-        <div>
-          <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">${cat.split(' ')[0]} ${name}</div>
-          <div style="font-size:0.8rem;color:var(--text-muted);">${loc || 'Location TBD'}</div>
-          <div style="margin-top:0.5rem;"><span class="badge badge-teal">${cat}</span></div>
+          <form class="newsletter-form" onsubmit="TravelApp.handleNewsletterSubmit(event)">
+            <input type="email" id="newsletterEmail" placeholder="Enter your email address..." required />
+            <button type="submit" class="btn-subscribe">Subscribe Now</button>
+          </form>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="removeActivity(this)">✕</button>
       </div>
-    </div>`;
+    </div>
+  </section>
 
-  timeline.appendChild(item);
-  closeModal('add-activity-modal');
-  TravelApp.showToast(`${name} added to itinerary!`, 'success');
-  document.getElementById('act-name').value = '';
-  document.getElementById('act-location').value = '';
-}
+  <!-- ==================== LUXURY FOOTER (PRESERVED) ==================== -->
+  <footer class="luxury-footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo"><span>✈️</span> Voyger</a>
+          <p>The world's premier luxury travel platform. Delivering bespoke journeys, five-star resorts, and seamless VIP experiences worldwide.</p>
+          <div class="social-links">
+            <a href="#" class="social-icon" aria-label="Instagram">📸</a>
+            <a href="#" class="social-icon" aria-label="Twitter">🐦</a>
+            <a href="#" class="social-icon" aria-label="Facebook">📘</a>
+            <a href="#" class="social-icon" aria-label="YouTube">🎬</a>
+            <a href="#" class="social-icon" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
 
-function removeActivity(btn) {
-  const item = btn.closest('.timeline-item');
-  item.style.opacity = '0';
-  item.style.transform = 'translateX(30px)';
-  item.style.transition = 'all 0.3s';
-  setTimeout(() => item.remove(), 300);
-  TravelApp.showToast('Activity removed', 'info');
-}
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="destination.html">Destinations</a></li>
+            <li><a href="trip-planner.html">Luxury Packages</a></li>
+            <li><a href="hotels.html">Stays & Hotels</a></li>
+            <li><a href="flights.html">Private Flights</a></li>
+          </ul>
+        </div>
 
-// Add expense
-function addExpense() {
-  const cat = document.getElementById('expense-cat').value;
-  const desc = document.getElementById('expense-desc').value;
-  const amount = document.getElementById('expense-amount').value;
-  if (!desc || !amount) { TravelApp.showToast('Fill in all fields', 'warning'); return; }
-  
-  const list = document.getElementById('expense-list');
-  const entry = document.createElement('div');
-  entry.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:0.75rem;border-radius:0.5rem;animation:fadeInUp 0.3s ease;';
-  entry.innerHTML = `<div><div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">${cat.split(' ')[0]} ${desc}</div><div style="font-size:0.75rem;color:var(--text-muted);">Today</div></div><div style="font-weight:700;color:var(--teal-500);">$${parseFloat(amount).toFixed(2)}</div>`;
-  list.insertBefore(entry, list.firstChild);
-  document.getElementById('expense-desc').value = '';
-  document.getElementById('expense-amount').value = '';
-  TravelApp.showToast('Expense added!', 'success');
-}
+        <div class="footer-col">
+          <h5>Popular Spots</h5>
+          <ul class="footer-links">
+            <li><a href="destination.html">Bora Bora</a></li>
+            <li><a href="destination.html">Santorini, Greece</a></li>
+            <li><a href="destination.html">Swiss Alps</a></li>
+            <li><a href="destination.html">Kyoto, Japan</a></li>
+            <li><a href="destination.html">Maldives</a></li>
+          </ul>
+        </div>
 
-function saveNote() { TravelApp.showToast('Notes saved!', 'success'); }
+        <div class="footer-col">
+          <h5>Resources</h5>
+          <ul class="footer-links">
+            <li><a href="index.html#why-us">AI Planner</a></li>
+            <li><a href="index.html#why-us">VIP Support</a></li>
+            <li><a href="profile.html">My Account</a></li>
+            <li><a href="dashboard.html">Bookings</a></li>
+            <li><a href="#newsletter">Travel Guides</a></li>
+          </ul>
+        </div>
 
-function addPackItem(listId) {
-  const name = prompt('New item name:');
-  if (!name) return;
-  const list = document.getElementById(listId);
-  if (!list) return;
-  const item = document.createElement('div');
-  item.className = 'pack-item';
-  item.innerHTML = `<label class="checkbox-custom"><input type="checkbox" onchange="updatePackCount()"><div class="checkbox-box"></div></label><span class="pack-label">${name}</span>`;
-  list.appendChild(item);
-}
+        <div class="footer-col">
+          <h5>Contact Details</h5>
+          <div class="contact-item"><span>📍</span><div>5th Avenue, Suite 1200, New York, NY 10001</div></div>
+          <div class="contact-item"><span>📞</span><div>+1 (800) 888-VOYGER</div></div>
+          <div class="contact-item"><span>✉️</span><div>vip@voyger-luxury.com</div></div>
+        </div>
 
-// Packing count update
-function updatePackCount() { /* Visual feedback */ }
-</script>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Voyger Travel Inc. All rights reserved. Designed for Luxury Explorers.</div>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms & Conditions</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top-btn" id="backToTop" aria-label="Back to top">↑</button>
+
+  <!-- Main JS -->
+  <script src="js/main.js"></script>
 </body>
 </html>

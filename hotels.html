@@ -1,485 +1,886 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Browse and book premium hotels worldwide with Voyger. Filter by price, rating, amenities, and availability." />
-  <title>Hotels – Voyger</title>
+  <meta name="description" content="Search and book 5-star luxury hotels, boutique resorts, and unique stays worldwide with Voyger. Best price guarantee and VIP amenities." />
+  <title>Luxury Hotels & Resorts | Voyger</title>
+  
+  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <link rel="stylesheet" href="css/components.css" />
-</head>
-<body>
+  <link rel="stylesheet" href="css/home.css" />
 
-<!-- NAVBAR -->
-<nav class="navbar scrolled" id="navbar">
-  <div class="container">
-    <div class="navbar-inner">
-      <a href="index.html" class="logo"><div class="logo-icon">✈️</div>Voyger</a>
-      <ul class="nav-links">
+  <style>
+    /* Inline navbar & dropdown helper styles matching Voyger visual identity */
+    .nav-icon-btn {
+      position: relative;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-icon-btn:hover {
+      background: rgba(0, 194, 255, 0.2);
+      border-color: var(--color-primary);
+      transform: scale(1.05);
+    }
+    .badge-count {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #EF4444;
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 2px solid #0F172A;
+    }
+    .dropdown-wrapper {
+      position: relative;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      width: 260px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    .dropdown-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .dropdown-header {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 8px;
+    }
+    .dropdown-header h5 {
+      margin: 0;
+      color: white;
+      font-size: 0.95rem;
+    }
+    .dropdown-header p {
+      margin: 2px 0 0;
+      color: var(--color-primary);
+      font-size: 0.78rem;
+    }
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 0.88rem;
+      border-radius: 12px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .dropdown-item:hover {
+      background: rgba(0, 194, 255, 0.15);
+      color: var(--color-primary);
+    }
+    .user-avatar-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--color-primary);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .user-avatar-btn:hover {
+      transform: scale(1.08);
+    }
+  </style>
+</head>
+<body class="hotels-page">
+
+  <!-- ==================== EXISTING NAVBAR (PRESERVED) ==================== -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="hotel-container" style="display:flex; align-items:center; justify-content:space-between; width:100%; padding-top:0; padding-bottom:0;">
+      
+      <!-- Logo -->
+      <a href="index.html" class="logo" style="display:flex; align-items:center; gap:10px; font-size:1.6rem; font-weight:800; color:white; text-decoration:none;">
+        <div class="logo-icon" style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #00C2FF, #14B8A6); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow: 0 4px 15px rgba(0,194,255,0.4);">✈️</div>
+        <span style="font-family:var(--font-primary); letter-spacing:-0.03em;">Voyger</span>
+      </a>
+
+      <!-- Links -->
+      <ul class="nav-links" style="display:flex; align-items:center; gap:24px; list-style:none; margin:0; padding:0;">
         <li><a href="index.html" class="nav-link">Home</a></li>
         <li><a href="destination.html" class="nav-link">Destinations</a></li>
         <li><a href="trip-planner.html" class="nav-link">Plan Trip</a></li>
         <li><a href="hotels.html" class="nav-link active">Hotels</a></li>
         <li><a href="flights.html" class="nav-link">Flights</a></li>
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="contact.html" class="nav-link">Contact</a></li>
+        <li><a href="index.html#why-us" class="nav-link">About</a></li>
+        <li><a href="#newsletter" class="nav-link">Contact</a></li>
       </ul>
-      <div class="nav-actions">
-        <button class="theme-toggle" id="theme-toggle">🌙</button>
-        <a href="profile.html" class="btn btn-primary btn-sm">My Profile</a>
-      </div>
-      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
-    </div>
-  </div>
-</nav>
-<div class="mobile-menu" id="mobile-menu">
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="destination.html" class="nav-link">🌍 Destinations</a>
-  <a href="hotels.html" class="nav-link">🏨 Hotels</a>
-  <a href="flights.html" class="nav-link">✈️ Flights</a>
-</div>
 
-<!-- PAGE HERO -->
-<div class="page-hero">
-  <div class="container" style="position:relative;z-index:1;">
-    <div class="badge badge-teal" style="margin-bottom:1rem;">🏨 Hotels</div>
-    <h1 style="color:white;margin-bottom:0.75rem;">Find Your Perfect Stay</h1>
-    <p style="color:rgba(255,255,255,0.75);font-size:1.1rem;max-width:500px;">Browse 10,000+ curated hotels worldwide with best price guarantee.</p>
-  </div>
-</div>
+      <!-- Right Actions -->
+      <div class="nav-actions" style="display:flex; align-items:center; gap:14px;">
+        <button class="nav-icon-btn theme-toggle" aria-label="Toggle dark mode">🌙</button>
 
-<!-- HOTEL SEARCH BAR -->
-<div style="background:var(--bg-secondary);border-bottom:1px solid var(--border-color);padding:1.25rem 0;position:sticky;top:70px;z-index:40;">
-  <div class="container">
-    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:1rem;align-items:end;">
-      <div class="input-group">
-        <label class="input-label">📍 Destination</label>
-        <input type="text" class="input destination-input" placeholder="Where are you going?" id="hotel-dest" value="Paris, France" />
-      </div>
-      <div class="input-group">
-        <label class="input-label">📅 Check-In</label>
-        <input type="date" class="input" id="hotel-checkin" />
-      </div>
-      <div class="input-group">
-        <label class="input-label">📅 Check-Out</label>
-        <input type="date" class="input" id="hotel-checkout" />
-      </div>
-      <div class="input-group">
-        <label class="input-label">👥 Guests & Rooms</label>
-        <select class="input">
-          <option>1 Adult, 1 Room</option>
-          <option selected>2 Adults, 1 Room</option>
-          <option>3 Adults, 1 Room</option>
-          <option>4 Adults, 2 Rooms</option>
-          <option>5 Adults, 2 Rooms</option>
-          <option>6 Adults, 3 Rooms</option>
-          <option>8 Adults, 4 Rooms</option>
-          <option>10 Adults, 5 Rooms</option>
-          <option>Family (2 Adults, 2 Kids), 1 Room</option>
-          <option>Family (4 Adults, 2 Kids), 2 Rooms</option>
-        </select>
-      </div>
-      <button class="btn btn-primary" onclick="TravelApp.showToast('Searching hotels...','info')">🔍 Search</button>
-    </div>
-  </div>
-</div>
+        <div class="dropdown-wrapper">
+          <button class="nav-icon-btn" onclick="TravelApp.toggleDropdown('notifDropdown')" aria-label="Notifications">
+            🔔 <span class="badge-count">3</span>
+          </button>
+          <div class="dropdown-menu" id="notifDropdown">
+            <div class="dropdown-header">
+              <h5>Notifications</h5>
+              <p>3 unread updates</p>
+            </div>
+            <a href="#" class="dropdown-item"><span>🌴</span><div><strong>Bora Bora Deal</strong><div style="font-size:0.75rem; opacity:0.7;">20% OFF Luxury Overwater Villa</div></div></a>
+            <a href="#" class="dropdown-item"><span>✈️</span><div><strong>Flight Price Drop</strong><div style="font-size:0.75rem; opacity:0.7;">First Class Tokyo round-trip</div></div></a>
+            <a href="#" class="dropdown-item"><span>✨</span><div><strong>VIP Itinerary Ready</strong><div style="font-size:0.75rem; opacity:0.7;">AI Trip Plan generated</div></div></a>
+          </div>
+        </div>
 
-<!-- MAIN CONTENT -->
-<div class="container" style="padding-top:2rem;padding-bottom:3rem;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
-    <div>
-      <h4 style="color:var(--text-primary);">Paris Hotels</h4>
-      <p style="font-size:0.875rem;color:var(--text-muted);">Showing <strong id="hotel-count">8</strong> hotels · July 15–22 · 2 Guests</p>
-    </div>
-    <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
-      <span style="font-size:0.875rem;color:var(--text-secondary);">Sort by:</span>
-      <select class="input" style="width:auto;padding:0.5rem 1rem;" onchange="TravelApp.showToast('Sorting hotels','info')">
-        <option>⭐ Top Rated</option>
-        <option>💰 Price: Low to High</option>
-        <option>💰 Price: High to Low</option>
-        <option>📏 Distance: Nearest</option>
-        <option>🔥 Most Popular</option>
-      </select>
-      <div style="display:flex;border:1px solid var(--border-color);border-radius:0.5rem;overflow:hidden;">
-        <button class="btn btn-ghost btn-sm" id="list-view-btn" onclick="setView('list')" style="border-radius:0;border:none;background:var(--teal-500);color:white;">☰ List</button>
-        <button class="btn btn-ghost btn-sm" id="grid-view-btn" onclick="setView('grid')" style="border-radius:0;border:none;">⊞ Grid</button>
+        <div class="dropdown-wrapper">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150" alt="User Profile" class="user-avatar-btn" onclick="TravelApp.toggleDropdown('userDropdown')" />
+          <div class="dropdown-menu" id="userDropdown">
+            <div class="dropdown-header">
+              <h5>Elena Rostova</h5>
+              <p>VIP Luxury Explorer</p>
+            </div>
+            <a href="profile.html" class="dropdown-item">👤 My Profile</a>
+            <a href="dashboard.html" class="dropdown-item">📅 My Bookings</a>
+            <a href="profile.html" class="dropdown-item">❤️ Saved Trips</a>
+            <a href="profile.html" class="dropdown-item">⚙️ Account Settings</a>
+            <div style="border-top:1px solid rgba(255,255,255,0.1); margin-top:6px; padding-top:6px;">
+              <a href="#" onclick="TravelApp.showToast('Logged out successfully','info')" class="dropdown-item" style="color:#EF4444;">🚪 Sign Out</a>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+
     </div>
+  </nav>
+
+  <!-- Mobile Dropdown Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="destination.html" class="nav-link">🌍 Destinations</a>
+    <a href="trip-planner.html" class="nav-link">📦 Plan Trip</a>
+    <a href="hotels.html" class="nav-link active">🏨 Hotels</a>
+    <a href="flights.html" class="nav-link">✈️ Flights</a>
+    <a href="index.html#why-us" class="nav-link">ℹ️ About Us</a>
+    <a href="#newsletter" class="nav-link">📩 Contact</a>
+    <a href="profile.html" class="nav-link">👤 My Account</a>
   </div>
 
-  <div class="hotels-layout">
-    <!-- FILTER SIDEBAR -->
-    <div class="filter-panel">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
-        <h5 style="color:var(--text-primary);">🔧 Filters</h5>
-        <button class="btn btn-ghost btn-sm" onclick="clearFilters()">Clear All</button>
+  <!-- ==================== 1. HOTEL HERO SECTION ==================== -->
+  <section class="hotels-hero-section">
+    <div class="hotels-hero-bg"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="hotel-container hero-content" style="position:relative; z-index:2; text-align:center; padding-top:0; padding-bottom:0;">
+      <div class="hero-badge" style="margin-bottom:12px; display:inline-flex;">
+        <span>🏨</span> FIND YOUR PERFECT STAY
       </div>
 
-      <!-- Price Range -->
-      <div class="filter-section">
-        <div class="filter-title">💰 Price Range (per night)</div>
-        <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem;">
-          <span>₹<span id="price-min">4,250</span></span>
-          <span>₹<span id="price-max">68,000</span></span>
+      <h1 class="hotels-hero-title">
+        Stay Somewhere <span class="gradient-text">Extraordinary</span>
+      </h1>
+
+      <p class="hotels-hero-subtitle">
+        Discover handpicked luxury hotels, boutique resorts, hostels and unique stays for every journey.
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================== MAIN CONTENT CONTAINER (.hotel-container) ==================== -->
+  <div class="hotel-container">
+    
+    <!-- ==================== 2. HOTEL SEARCH BAR ==================== -->
+    <div class="hotels-search-card">
+      <form onsubmit="TravelApp.searchHotels(event)">
+        <div class="hotels-search-grid">
+          
+          <!-- Destination -->
+          <div class="planner-form-field">
+            <label>📍 Destination</label>
+            <input type="text" id="hotelDestInput" placeholder="Where are you going? (e.g. Paris, France)" value="Paris, France" required />
+          </div>
+
+          <!-- Check-in -->
+          <div class="planner-form-field">
+            <label>📅 Check-in</label>
+            <input type="date" id="hotelCheckinDate" value="2026-07-15" required />
+          </div>
+
+          <!-- Check-out -->
+          <div class="planner-form-field">
+            <label>📅 Check-out</label>
+            <input type="date" id="hotelCheckoutDate" value="2026-07-18" required />
+          </div>
+
+          <!-- Guests & Rooms -->
+          <div class="planner-form-field">
+            <label>👥 Guests & Rooms</label>
+            <select id="hotelGuestsSelect">
+              <option value="1">1 Adult · 1 Room</option>
+              <option value="2" selected>2 Adults · 1 Room</option>
+              <option value="3">3 Adults · 1 Room</option>
+              <option value="4">4 Adults · 2 Rooms</option>
+              <option value="family">Family (2 Adults, 2 Kids) · 1 Room</option>
+            </select>
+          </div>
+
+          <!-- Search Button -->
+          <button type="submit" class="btn-hero-primary">
+            🔍 Search Hotels
+          </button>
+
         </div>
-        <input type="range" class="range-slider" min="4250" max="127500" value="68000" id="price-range" oninput="updatePrice(this.value)" />
-        <div style="text-align:center;margin-top:0.5rem;font-size:0.8rem;color:var(--teal-500);font-weight:600;">Up to ₹<span id="price-display">68,000</span>/night</div>
-      </div>
-
-      <!-- Star Rating -->
-      <div class="filter-section">
-        <div class="filter-title">⭐ Star Rating</div>
-        <div style="display:flex;flex-direction:column;gap:0.5rem;">
-          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>⭐⭐⭐⭐⭐ 5 Stars</label>
-          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>⭐⭐⭐⭐ 4 Stars</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>⭐⭐⭐ 3 Stars</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>⭐⭐ 2 Stars</label>
-        </div>
-      </div>
-
-      <!-- Guest Rating -->
-      <div class="filter-section">
-        <div class="filter-title">👍 Guest Rating</div>
-        <div style="display:flex;flex-direction:column;gap:0.5rem;">
-          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>4.8+ Exceptional</label>
-          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>4.5+ Excellent</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>4.0+ Very Good</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>3.5+ Good</label>
-        </div>
-      </div>
-
-      <!-- Amenities -->
-      <div class="filter-section">
-        <div class="filter-title">🛎️ Amenities</div>
-        <div style="display:flex;flex-direction:column;gap:0.5rem;">
-          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>📶 Free WiFi</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>🏊 Swimming Pool</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>🅿️ Free Parking</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>🍳 Breakfast Included</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>💆 Spa & Wellness</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>🐶 Pet Friendly</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>♿ Accessible</label>
-        </div>
-      </div>
-
-      <!-- Hotel Type -->
-      <div class="filter-section">
-        <div class="filter-title">🏢 Property Type</div>
-        <div style="display:flex;flex-direction:column;gap:0.5rem;">
-          <label class="checkbox-custom"><input type="checkbox" checked><div class="checkbox-box"></div>🏨 Hotel</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>🏠 Boutique</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>🏖️ Resort</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>🏡 Villa</label>
-          <label class="checkbox-custom"><input type="checkbox"><div class="checkbox-box"></div>🛖 Hostel</label>
-        </div>
-      </div>
-
-      <button class="btn btn-primary" style="width:100%;" onclick="applyFilters()">Apply Filters</button>
+      </form>
     </div>
 
-    <!-- HOTEL RESULTS -->
-    <div id="hotels-list">
-      <!-- Hotel 1 -->
-      <div class="hotel-card" style="margin-bottom:1.25rem;" data-price="24565">
-        <div class="hotel-card-img">
-          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80" alt="Azure Palace" />
-          <div style="position:absolute;top:0.75rem;left:0.75rem;background:linear-gradient(135deg,#00BCD4,#4FC3F7);color:white;padding:0.2rem 0.75rem;border-radius:999px;font-size:0.7rem;font-weight:700;">🔥 Top Pick</div>
+    <!-- ==================== 3. ACCOMMODATION TYPE CATEGORIES ==================== -->
+    <div style="margin-bottom:40px;">
+      <h3 style="font-family:var(--font-display); font-size:1.3rem; color:white; margin-bottom:16px; font-weight:700;">
+        Find Your Perfect Stay
+      </h3>
+      <div class="accom-categories-wrapper">
+        <button class="accom-category-btn active" data-category="all" onclick="TravelApp.filterHotelsByCategory(this, 'all')">All Accommodations</button>
+        <button class="accom-category-btn" data-category="hotel" onclick="TravelApp.filterHotelsByCategory(this, 'hotel')">Luxury Hotels</button>
+        <button class="accom-category-btn" data-category="resort" onclick="TravelApp.filterHotelsByCategory(this, 'resort')">Beach Resorts</button>
+        <button class="accom-category-btn" data-category="hostel" onclick="TravelApp.filterHotelsByCategory(this, 'hostel')">Boutique Hostels</button>
+        <button class="accom-category-btn" data-category="apartment" onclick="TravelApp.filterHotelsByCategory(this, 'apartment')">Serviced Apartments</button>
+        <button class="accom-category-btn" data-category="villa" onclick="TravelApp.filterHotelsByCategory(this, 'villa')">Vacation Villas</button>
+        <button class="accom-category-btn" data-category="luxury" onclick="TravelApp.filterHotelsByCategory(this, 'luxury')">5-Star Palaces</button>
+        <button class="accom-category-btn" data-category="camping" onclick="TravelApp.filterHotelsByCategory(this, 'camping')">Glamping</button>
+      </div>
+    </div>
+
+    <!-- ==================== 4. SEARCH RESULTS + FILTERS (.hotel-content) ==================== -->
+    <div class="hotel-content">
+      
+      <!-- LEFT SIDEBAR: FILTERS CARD -->
+      <aside class="hotels-filter-sidebar">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h3 style="margin:0; font-size:1.2rem; color:white; font-weight:700;">Filter Stays</h3>
+          <button class="btn-activity-action" style="font-size:0.78rem; padding:4px 10px;" onclick="TravelApp.clearHotelFilters()">Clear All</button>
         </div>
-        <div class="hotel-card-body">
+
+        <!-- Filter Block 1: Price Range -->
+        <div class="filter-group">
+          <h4>Price Per Night</h4>
+          <div style="margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:var(--gray-300); margin-bottom:6px;">
+              <span>₹0</span>
+              <span id="priceRangeVal" style="color:var(--color-primary); font-weight:700;">₹50,000+</span>
+            </div>
+            <input type="range" id="priceRangeSlider" min="5000" max="50000" step="2500" value="50000" style="width:100%; accent-color:var(--color-primary); cursor:pointer;" oninput="TravelApp.updatePriceSliderVal(this.value)" />
+          </div>
+        </div>
+
+        <!-- Filter Block 2: Property Type -->
+        <div class="filter-group">
+          <h4>Property Type</h4>
+          <label class="filter-option">
+            <span><input type="checkbox" class="filter-type-checkbox" value="hotel" onchange="TravelApp.applyHotelFilters()" /> Hotel</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(84)</span>
+          </label>
+          <label class="filter-option">
+            <span><input type="checkbox" class="filter-type-checkbox" value="resort" onchange="TravelApp.applyHotelFilters()" /> Resort</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(26)</span>
+          </label>
+          <label class="filter-option">
+            <span><input type="checkbox" class="filter-type-checkbox" value="apartment" onchange="TravelApp.applyHotelFilters()" /> Apartment</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(18)</span>
+          </label>
+          <label class="filter-option">
+            <span><input type="checkbox" class="filter-type-checkbox" value="villa" onchange="TravelApp.applyHotelFilters()" /> Luxury Villa</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(12)</span>
+          </label>
+          <label class="filter-option">
+            <span><input type="checkbox" class="filter-type-checkbox" value="hostel" onchange="TravelApp.applyHotelFilters()" /> Hostel</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(8)</span>
+          </label>
+        </div>
+
+        <!-- Filter Block 3: Star Rating -->
+        <div class="filter-group">
+          <h4>Star Rating</h4>
+          <label class="filter-option">
+            <span><input type="checkbox" class="filter-star-checkbox" value="5" onchange="TravelApp.applyHotelFilters()" /> 5 Stars ★★★★★</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(45)</span>
+          </label>
+          <label class="filter-option">
+            <span><input type="checkbox" class="filter-star-checkbox" value="4" onchange="TravelApp.applyHotelFilters()" /> 4 Stars ★★★★</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(62)</span>
+          </label>
+          <label class="filter-option">
+            <span><input type="checkbox" class="filter-star-checkbox" value="3" onchange="TravelApp.applyHotelFilters()" /> 3 Stars ★★★</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(17)</span>
+          </label>
+        </div>
+
+        <!-- Filter Block 4: Guest Rating -->
+        <div class="filter-group">
+          <h4>Guest Rating</h4>
+          <label class="filter-option">
+            <span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> Wonderful 9+</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(58)</span>
+          </label>
+          <label class="filter-option">
+            <span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> Very Good 8+</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(92)</span>
+          </label>
+          <label class="filter-option">
+            <span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> Good 7+</span>
+            <span style="font-size:0.75rem; opacity:0.6;">(118)</span>
+          </label>
+        </div>
+
+        <!-- Filter Block 5: Amenities (2-Column Grid) -->
+        <div class="filter-group">
+          <h4>Amenities</h4>
+          <div class="amenities-options">
+            <label class="filter-option"><span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> 📶 Wi-Fi</span></label>
+            <label class="filter-option"><span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> 🏊 Pool</span></label>
+            <label class="filter-option"><span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> 🍳 Breakfast</span></label>
+            <label class="filter-option"><span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> 🚗 Parking</span></label>
+            <label class="filter-option"><span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> 💆 Spa</span></label>
+            <label class="filter-option"><span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> ✈ Shuttle</span></label>
+          </div>
+        </div>
+
+        <!-- Filter Block 6: Popular Policies -->
+        <div class="filter-group">
+          <h4>Popular Policies</h4>
+          <label class="filter-option"><span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> ✓ Free Cancellation</span></label>
+          <label class="filter-option"><span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> ✓ Pay at Property</span></label>
+          <label class="filter-option"><span><input type="checkbox" onchange="TravelApp.applyHotelFilters()" /> ✓ No Prepayment</span></label>
+        </div>
+
+      </aside>
+
+      <!-- RIGHT COLUMN: RESULTS AREA -->
+      <main class="hotels-results-col">
+        
+        <!-- ==================== 5. RESULTS TOOLBAR CARD (.results-toolbar) ==================== -->
+        <div class="results-toolbar">
+          
           <div>
-            <div class="hotel-card-meta">
-              <span class="stars">★★★★★</span>
-              <span class="badge badge-success">4.9</span>
-              <span style="font-size:0.75rem;color:var(--text-muted);">1,247 reviews · 📍 8th Arrondissement</span>
+            <h4 id="hotelsResultCount" style="margin:0; font-size:1.1rem; color:white; font-weight:700;">124 properties found in Paris</h4>
+            <div style="font-size:0.78rem; color:var(--gray-400); margin-top:2px;">Prices include taxes & fees for 3 nights</div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+            
+            <!-- Sort Dropdown -->
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:0.85rem; color:var(--gray-400);">Sort:</span>
+              <select style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:white; padding:8px 14px; border-radius:10px; font-size:0.85rem; outline:none;" onchange="TravelApp.sortHotels(this.value)">
+                <option value="recommended">Recommended</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Guest Rating</option>
+              </select>
             </div>
-            <div class="hotel-card-name">The Parisian Grand Palace</div>
-            <p class="card-desc" style="font-size:0.8rem;margin-bottom:0.75rem;">Elegant 5-star hotel steps from the Champs-Élysées with panoramic rooftop views and Michelin-star dining.</p>
-            <div class="hotel-card-amenities">
-              <span class="amenity-tag">📶 WiFi</span>
-              <span class="amenity-tag">🏊 Pool</span>
-              <span class="amenity-tag">🍳 Breakfast</span>
-              <span class="amenity-tag">💆 Spa</span>
-              <span class="amenity-tag">🏋️ Gym</span>
-              <span class="amenity-tag">🚖 Airport Transfer</span>
+
+            <!-- View Toggle Buttons -->
+            <div style="display:flex; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:3px;">
+              <button class="planner-tab-btn active" id="btnListView" style="padding:6px 14px; font-size:0.8rem;" onclick="TravelApp.switchHotelViewMode('list')">List View</button>
+              <button class="planner-tab-btn" id="btnMapView" style="padding:6px 14px; font-size:0.8rem;" onclick="TravelApp.switchHotelViewMode('map')">Map View</button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ==================== MAP VIEW CANVAS (TOGGLEABLE) ==================== -->
+        <div id="hotelMapViewContainer" style="display:none;">
+          <div class="map-view-canvas">
+            <div class="interactive-map-overlay"></div>
+            
+            <!-- Price Markers -->
+            <div class="map-price-marker" style="top:25%; left:35%;" onclick="TravelApp.openHotelDetailsModal('Grand Hôtel Paris')">
+              ₹12,499
+            </div>
+            <div class="map-price-marker" style="top:45%; left:60%;" onclick="TravelApp.openHotelDetailsModal('The Ritz Paris')">
+              ₹42,000
+            </div>
+            <div class="map-price-marker" style="top:60%; left:25%;" onclick="TravelApp.openHotelDetailsModal('Shangri-La Paris')">
+              ₹34,500
+            </div>
+            <div class="map-price-marker" style="top:30%; left:75%;" onclick="TravelApp.openHotelDetailsModal('Four Seasons George V')">
+              ₹48,000
             </div>
           </div>
-          <div class="hotel-card-price">
-            <div class="hotel-price-info">
-              <div style="font-size:0.75rem;text-decoration:line-through;color:var(--text-muted);">₹29,665</div>
-              <div class="price">₹24,565</div>
-              <div class="night">per night · 7 nights = ₹1,71,955</div>
+        </div>
+
+        <!-- ==================== NO RESULTS STATE ==================== -->
+        <div id="noHotelsState" style="display:none; text-align:center; padding:60px 20px; background:rgba(15,23,42,0.85); border:1px solid rgba(255,255,255,0.12); border-radius:24px; margin-bottom:30px;">
+          <div style="font-size:3rem; margin-bottom:12px;">🏨</div>
+          <h3 style="color:white; font-size:1.5rem; margin:0 0 8px;">No stays found</h3>
+          <p style="color:var(--gray-400); max-width:400px; margin:0 auto 20px;">Try changing your dates, destination or relaxing your search filters.</p>
+          <button class="btn-hero-primary" onclick="TravelApp.clearHotelFilters()">Clear All Filters</button>
+        </div>
+
+        <!-- ==================== 6. HOTEL RESULT CARDS LIST (.hotel-card) ==================== -->
+        <div id="hotelListViewContainer">
+          
+          <!-- Card 1: Grand Hôtel Paris -->
+          <div class="hotel-card" data-price="12499" data-stars="5" data-category="hotel,luxury" data-rating="9.2">
+            <!-- Col 1: Image -->
+            <div class="hotel-card-img-wrapper">
+              <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800" alt="Grand Hôtel Paris" />
+              <div class="hotel-badge-tag badge-bestseller">🔥 Best Seller</div>
+              <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Grand Hôtel Paris')" aria-label="Favorite">🤍</button>
             </div>
-            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-              <button class="btn btn-ghost btn-sm" onclick="openHotelModal('The Parisian Grand Palace','https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=700&q=80','₹24,565','4.9')">Details</button>
-              <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Booking The Parisian Grand Palace!','success')">Book Now</button>
+
+            <!-- Col 2: Info -->
+            <div class="hotel-card-info-col">
+              <div>
+                <div style="color:var(--color-primary); font-size:0.78rem; font-weight:700; margin-bottom:2px;">★★★★★ 5-Star Luxury Hotel</div>
+                <h3 class="hotel-card-title">Grand Hôtel Paris</h3>
+                <div style="font-size:0.82rem; color:var(--gray-300); margin-bottom:8px;">📍 Paris, France • 1.2 km from city center</div>
+                
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                  <span style="background:rgba(0,194,255,0.15); border:1px solid rgba(0,194,255,0.3); color:var(--color-primary); font-weight:800; padding:2px 8px; border-radius:8px; font-size:0.82rem;">9.2</span>
+                  <span style="font-size:0.82rem; color:white; font-weight:600;">Wonderful</span>
+                  <span style="font-size:0.75rem; color:var(--gray-400);">(2,341 reviews)</span>
+                </div>
+
+                <div style="display:flex; gap:8px; flex-wrap:wrap; font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:8px;">
+                  <span>✓ Free Wi-Fi</span>
+                  <span>✓ Pool</span>
+                  <span>✓ Gourmet Breakfast</span>
+                </div>
+              </div>
+
+              <div style="font-size:0.8rem; color:#10B981; font-weight:600;">
+                🛏️ Deluxe King Room &nbsp;•&nbsp; ✓ Free Cancellation
+              </div>
             </div>
+
+            <!-- Col 3: Price & Actions -->
+            <div class="hotel-card-price-col">
+              <div>
+                <div style="font-size:1.4rem; font-weight:800; color:white; line-height:1.1;">₹12,499</div>
+                <div style="font-size:0.75rem; color:var(--gray-400);">per night</div>
+                <div style="font-size:0.78rem; color:var(--color-primary); font-weight:700; margin-top:4px;">₹37,497 total</div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:8px; width:100%; margin-top:14px;">
+                <button class="btn-hero-secondary" style="padding:8px 12px; font-size:0.82rem; text-align:center;" onclick="TravelApp.openHotelDetailsModal('Grand Hôtel Paris')">View Details</button>
+                <button class="btn-hero-primary" style="padding:8px 12px; font-size:0.82rem; text-align:center;" onclick="TravelApp.openHotelDetailsModal('Grand Hôtel Paris')">Select Room</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: The Ritz Paris -->
+          <div class="hotel-card" data-price="42000" data-stars="5" data-category="hotel,luxury" data-rating="9.8">
+            <div class="hotel-card-img-wrapper">
+              <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800" alt="The Ritz Paris" />
+              <div class="hotel-badge-tag badge-discount">💎 20% OFF</div>
+              <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'The Ritz Paris')" aria-label="Favorite">🤍</button>
+            </div>
+
+            <div class="hotel-card-info-col">
+              <div>
+                <div style="color:var(--color-primary); font-size:0.78rem; font-weight:700; margin-bottom:2px;">★★★★★ Palace Category</div>
+                <h3 class="hotel-card-title">The Ritz Paris</h3>
+                <div style="font-size:0.82rem; color:var(--gray-300); margin-bottom:8px;">📍 Paris, France • Place Vendôme</div>
+                
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                  <span style="background:rgba(0,194,255,0.15); border:1px solid rgba(0,194,255,0.3); color:var(--color-primary); font-weight:800; padding:2px 8px; border-radius:8px; font-size:0.82rem;">9.8</span>
+                  <span style="font-size:0.82rem; color:white; font-weight:600;">Exceptional</span>
+                  <span style="font-size:0.75rem; color:var(--gray-400);">(1,890 reviews)</span>
+                </div>
+
+                <div style="display:flex; gap:8px; flex-wrap:wrap; font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:8px;">
+                  <span>✓ Butler</span>
+                  <span>✓ Chanel Spa</span>
+                  <span>✓ Michelin Dining</span>
+                </div>
+              </div>
+
+              <div style="font-size:0.8rem; color:#10B981; font-weight:600;">
+                🛏️ Executive Suite &nbsp;•&nbsp; ✓ Free Breakfast Included
+              </div>
+            </div>
+
+            <div class="hotel-card-price-col">
+              <div>
+                <div style="font-size:1.4rem; font-weight:800; color:white; line-height:1.1;">₹42,000</div>
+                <div style="font-size:0.75rem; color:var(--gray-400);">per night</div>
+                <div style="font-size:0.78rem; color:var(--color-primary); font-weight:700; margin-top:4px;">₹1,26,000 total</div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:8px; width:100%; margin-top:14px;">
+                <button class="btn-hero-secondary" style="padding:8px 12px; font-size:0.82rem; text-align:center;" onclick="TravelApp.openHotelDetailsModal('The Ritz Paris')">View Details</button>
+                <button class="btn-hero-primary" style="padding:8px 12px; font-size:0.82rem; text-align:center;" onclick="TravelApp.openHotelDetailsModal('The Ritz Paris')">Select Room</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Shangri-La Paris -->
+          <div class="hotel-card" data-price="34500" data-stars="5" data-category="hotel,resort,luxury" data-rating="9.6">
+            <div class="hotel-card-img-wrapper">
+              <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800" alt="Shangri-La Paris" />
+              <div class="hotel-badge-tag badge-location">🗼 Eiffel View</div>
+              <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Shangri-La Paris')" aria-label="Favorite">🤍</button>
+            </div>
+
+            <div class="hotel-card-info-col">
+              <div>
+                <div style="color:var(--color-primary); font-size:0.78rem; font-weight:700; margin-bottom:2px;">★★★★★ Prince Residence</div>
+                <h3 class="hotel-card-title">Shangri-La Paris</h3>
+                <div style="font-size:0.82rem; color:var(--gray-300); margin-bottom:8px;">📍 Paris, France • 600m from Eiffel Tower</div>
+                
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                  <span style="background:rgba(0,194,255,0.15); border:1px solid rgba(0,194,255,0.3); color:var(--color-primary); font-weight:800; padding:2px 8px; border-radius:8px; font-size:0.82rem;">9.6</span>
+                  <span style="font-size:0.82rem; color:white; font-weight:600;">Wonderful</span>
+                  <span style="font-size:0.75rem; color:var(--gray-400);">(3,120 reviews)</span>
+                </div>
+
+                <div style="display:flex; gap:8px; flex-wrap:wrap; font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:8px;">
+                  <span>✓ Eiffel Balcony</span>
+                  <span>✓ CHI Spa</span>
+                  <span>✓ Pool</span>
+                </div>
+              </div>
+
+              <div style="font-size:0.8rem; color:#10B981; font-weight:600;">
+                🛏️ Eiffel Balcony Suite &nbsp;•&nbsp; ✓ Free Airport VIP Transfer
+              </div>
+            </div>
+
+            <div class="hotel-card-price-col">
+              <div>
+                <div style="font-size:1.4rem; font-weight:800; color:white; line-height:1.1;">₹34,500</div>
+                <div style="font-size:0.75rem; color:var(--gray-400);">per night</div>
+                <div style="font-size:0.78rem; color:var(--color-primary); font-weight:700; margin-top:4px;">₹1,03,500 total</div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:8px; width:100%; margin-top:14px;">
+                <button class="btn-hero-secondary" style="padding:8px 12px; font-size:0.82rem; text-align:center;" onclick="TravelApp.openHotelDetailsModal('Shangri-La Paris')">View Details</button>
+                <button class="btn-hero-primary" style="padding:8px 12px; font-size:0.82rem; text-align:center;" onclick="TravelApp.openHotelDetailsModal('Shangri-La Paris')">Select Room</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Hôtel Plaza Athénée -->
+          <div class="hotel-card" data-price="38900" data-stars="5" data-category="hotel,luxury" data-rating="9.5">
+            <div class="hotel-card-img-wrapper">
+              <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800" alt="Hôtel Plaza Athénée" />
+              <div class="hotel-badge-tag badge-limited">⚡ Only 2 Left</div>
+              <button class="dest-favorite-btn" onclick="TravelApp.toggleFavorite(this, 'Hôtel Plaza Athénée')" aria-label="Favorite">🤍</button>
+            </div>
+
+            <div class="hotel-card-info-col">
+              <div>
+                <div style="color:var(--color-primary); font-size:0.78rem; font-weight:700; margin-bottom:2px;">★★★★★ Haute Couture Luxury</div>
+                <h3 class="hotel-card-title">Hôtel Plaza Athénée</h3>
+                <div style="font-size:0.82rem; color:var(--gray-300); margin-bottom:8px;">📍 Paris, France • Avenue Montaigne</div>
+                
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                  <span style="background:rgba(0,194,255,0.15); border:1px solid rgba(0,194,255,0.3); color:var(--color-primary); font-weight:800; padding:2px 8px; border-radius:8px; font-size:0.82rem;">9.5</span>
+                  <span style="font-size:0.82rem; color:white; font-weight:600;">Exceptional</span>
+                  <span style="font-size:0.75rem; color:var(--gray-400);">(2,740 reviews)</span>
+                </div>
+
+                <div style="display:flex; gap:8px; flex-wrap:wrap; font-size:0.78rem; color:var(--color-accent); font-weight:600; margin-bottom:8px;">
+                  <span>✓ Dior Spa</span>
+                  <span>✓ Red Geranium Balconies</span>
+                  <span>✓ Fine Dining</span>
+                </div>
+              </div>
+
+              <div style="font-size:0.8rem; color:#10B981; font-weight:600;">
+                🛏️ Prestige King Room &nbsp;•&nbsp; ✓ Free Cancellation
+              </div>
+            </div>
+
+            <div class="hotel-card-price-col">
+              <div>
+                <div style="font-size:1.4rem; font-weight:800; color:white; line-height:1.1;">₹38,900</div>
+                <div style="font-size:0.75rem; color:var(--gray-400);">per night</div>
+                <div style="font-size:0.78rem; color:var(--color-primary); font-weight:700; margin-top:4px;">₹1,16,700 total</div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:8px; width:100%; margin-top:14px;">
+                <button class="btn-hero-secondary" style="padding:8px 12px; font-size:0.82rem; text-align:center;" onclick="TravelApp.openHotelDetailsModal('Hôtel Plaza Athénée')">View Details</button>
+                <button class="btn-hero-primary" style="padding:8px 12px; font-size:0.82rem; text-align:center;" onclick="TravelApp.openHotelDetailsModal('Hôtel Plaza Athénée')">Select Room</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- ==================== HOTEL DETAILS & ROOM SELECTOR MODAL ==================== -->
+  <div class="dest-modal-wrapper" id="hotelDetailsModal">
+    <div class="dest-modal-card" style="max-width:960px; padding:36px; max-height:90vh; overflow-y:auto;">
+      <button class="dest-modal-close-btn" onclick="TravelApp.closeHotelDetailsModal()">&times;</button>
+      
+      <!-- Hotel Header -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:14px;">
+        <div>
+          <span style="font-size:0.8rem; color:var(--color-primary); font-weight:700;">★★★★★ 5-STAR LUXURY PALACE</span>
+          <h2 id="modalHotelName" style="font-family:var(--font-display); font-size:2.2rem; color:white; margin:6px 0;">Grand Hôtel Paris</h2>
+          <div style="font-size:0.88rem; color:var(--gray-300);">📍 10 Place de l'Opéra, 75009 Paris, France • 1.2 km from city centre</div>
+        </div>
+
+        <div class="guest-score-badge" style="padding:10px 18px;">
+          <strong style="font-size:1.4rem;">9.2 / 10</strong>
+          <span>Wonderful (2,341 reviews)</span>
+        </div>
+      </div>
+
+      <!-- IMAGE GALLERY -->
+      <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:24px; border-radius:20px; overflow:hidden;">
+        <div style="height:320px;">
+          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200" alt="Main Hotel Photo" style="width:100%; height:100%; object-fit:cover;" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; height:320px;">
+          <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600" alt="Room" style="width:100%; height:100%; object-fit:cover;" />
+          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600" alt="Pool" style="width:100%; height:100%; object-fit:cover;" />
+          <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=600" alt="Dining" style="width:100%; height:100%; object-fit:cover;" />
+          <div style="position:relative; cursor:pointer;" onclick="TravelApp.openLightbox('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200')">
+            <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=600" alt="Spa" style="width:100%; height:100%; object-fit:cover;" />
+            <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:0.88rem;">+ 24 Photos</div>
           </div>
         </div>
       </div>
 
-      <!-- Hotel 2 -->
-      <div class="hotel-card" style="margin-bottom:1.25rem;" data-price="39015">
-        <div class="hotel-card-img">
-          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=80" alt="Boutique" />
-        </div>
-        <div class="hotel-card-body">
-          <div>
-            <div class="hotel-card-meta">
-              <span class="stars">★★★★★</span>
-              <span class="badge badge-success">4.8</span>
-              <span style="font-size:0.75rem;color:var(--text-muted);">892 reviews · 📍 Saint-Germain</span>
-            </div>
-            <div class="hotel-card-name">Hôtel de la Paix Boutique</div>
-            <p class="card-desc" style="font-size:0.8rem;margin-bottom:0.75rem;">Hidden gem boutique hotel in Saint-Germain with artist-designed rooms and a secret garden courtyard.</p>
-            <div class="hotel-card-amenities">
-              <span class="amenity-tag">📶 WiFi</span>
-              <span class="amenity-tag">🌿 Garden</span>
-              <span class="amenity-tag">🍷 Bar</span>
-              <span class="amenity-tag">🍳 Breakfast</span>
-            </div>
-          </div>
-          <div class="hotel-card-price">
-            <div class="hotel-price-info">
-              <div class="price">₹39,015</div>
-              <div class="night">per night · 7 nights = ₹2,73,105</div>
-            </div>
-            <div style="display:flex;gap:0.5rem;">
-              <button class="btn btn-ghost btn-sm" onclick="openHotelModal('Hôtel de la Paix','https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700&q=80','₹39,015','4.8')">Details</button>
-              <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Booking Hôtel de la Paix!','success')">Book Now</button>
-            </div>
-          </div>
+      <!-- ICON AMENITIES GRID -->
+      <div style="margin-bottom:30px;">
+        <h4 style="color:white; font-size:1.1rem; margin-bottom:14px;">Popular Amenities & Facilities</h4>
+        <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; text-align:center;">
+          <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:14px; color:white; font-size:0.85rem;">📶 Free High-Speed Wi-Fi</div>
+          <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:14px; color:white; font-size:0.85rem;">🏊 Heated Swimming Pool</div>
+          <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:14px; color:white; font-size:0.85rem;">🍳 Gourmet Breakfast</div>
+          <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:14px; color:white; font-size:0.85rem;">🚗 Valet Parking</div>
+          <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:14px; color:white; font-size:0.85rem;">💆 Luxury Wellness Spa</div>
         </div>
       </div>
 
-      <!-- Hotel 3 -->
-      <div class="hotel-card" style="margin-bottom:1.25rem;" data-price="16915">
-        <div class="hotel-card-img">
-          <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&q=80" alt="Budget" />
-          <div style="position:absolute;top:0.75rem;left:0.75rem;background:var(--success);color:white;padding:0.2rem 0.75rem;border-radius:999px;font-size:0.7rem;font-weight:700;">💰 Best Value</div>
-        </div>
-        <div class="hotel-card-body">
+      <!-- AVAILABLE ROOMS SECTION -->
+      <div style="margin-bottom:30px;">
+        <h3 style="font-family:var(--font-display); color:white; margin-bottom:16px;">Choose Your Room</h3>
+        
+        <!-- Room 1 -->
+        <div class="room-card-box">
+          <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=400" alt="Deluxe King Room" style="width:100%; height:130px; object-fit:cover; border-radius:14px;" />
           <div>
-            <div class="hotel-card-meta">
-              <span class="stars">★★★★☆</span>
-              <span class="badge badge-teal">4.6</span>
-              <span style="font-size:0.75rem;color:var(--text-muted);">2,134 reviews · 📍 Le Marais</span>
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:4px;">
+              <h4 style="margin:0; font-size:1.15rem; color:white;">Deluxe King Room</h4>
+              <span style="font-size:0.72rem; padding:2px 8px; border-radius:8px; background:rgba(239,68,68,0.2); color:#EF4444; font-weight:700;">Only 2 rooms left</span>
             </div>
-            <div class="hotel-card-name">Le Marais Prestige Inn</div>
-            <p class="card-desc" style="font-size:0.8rem;margin-bottom:0.75rem;">Well-located 4-star hotel in the trendy Le Marais district, walking distance to the Louvre and Notre-Dame.</p>
-            <div class="hotel-card-amenities">
-              <span class="amenity-tag">📶 WiFi</span>
-              <span class="amenity-tag">🏋️ Gym</span>
-              <span class="amenity-tag">🍽️ Restaurant</span>
-              <span class="amenity-tag">🅿️ Parking</span>
-            </div>
+            <div style="font-size:0.82rem; color:var(--gray-300); margin-bottom:8px;">👥 2 Guests · 🛏️ 1 King Bed · 📐 32 m² · 🌆 City View</div>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600;">✓ Free Wi-Fi · ✓ Breakfast Included · ✓ Free Cancellation</div>
           </div>
-          <div class="hotel-card-price">
-            <div class="hotel-price-info">
-              <div class="price">₹16,915</div>
-              <div class="night">per night · 7 nights = ₹1,18,405</div>
-            </div>
-            <div style="display:flex;gap:0.5rem;">
-              <button class="btn btn-ghost btn-sm" onclick="openHotelModal('Le Marais Prestige Inn','https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=700&q=80','₹16,915','4.6')">Details</button>
-              <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Booking Le Marais Inn!','success')">Book Now</button>
-            </div>
+          <div style="text-align:right;">
+            <div style="font-size:1.3rem; font-weight:800; color:white;">₹12,499 <span style="font-size:0.75rem; font-weight:400; color:var(--gray-400);">/ night</span></div>
+            <button class="btn-hero-primary" style="padding:8px 18px; font-size:0.85rem; margin-top:8px;" onclick="TravelApp.selectHotelRoom('Deluxe King Room', 12499)">Select Room</button>
           </div>
         </div>
+
+        <!-- Room 2 -->
+        <div class="room-card-box">
+          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=400" alt="Executive Eiffel Suite" style="width:100%; height:130px; object-fit:cover; border-radius:14px;" />
+          <div>
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:4px;">
+              <h4 style="margin:0; font-size:1.15rem; color:white;">Executive Eiffel Suite</h4>
+              <span style="font-size:0.72rem; padding:2px 8px; border-radius:8px; background:rgba(139,92,246,0.2); color:#8B5CF6; font-weight:700;">VIP Eiffel Balcony</span>
+            </div>
+            <div style="font-size:0.82rem; color:var(--gray-300); margin-bottom:8px;">👥 2 Guests · 🛏️ 1 Super King Bed · 📐 55 m² · 🗼 Eiffel View</div>
+            <div style="font-size:0.78rem; color:var(--color-accent); font-weight:600;">✓ Champagne Service · ✓ Butler Service · ✓ Free Airport Transfer</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:1.3rem; font-weight:800; color:white;">₹24,999 <span style="font-size:0.75rem; font-weight:400; color:var(--gray-400);">/ night</span></div>
+            <button class="btn-hero-primary" style="padding:8px 18px; font-size:0.85rem; margin-top:8px;" onclick="TravelApp.selectHotelRoom('Executive Eiffel Suite', 24999)">Select Room</button>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Hotel 4 -->
-      <div class="hotel-card" style="margin-bottom:1.25rem;" data-price="55165">
-        <div class="hotel-card-img">
-          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&q=80" alt="Luxury" />
-          <div style="position:absolute;top:0.75rem;left:0.75rem;background:linear-gradient(135deg,#FFD700,#FFA500);color:#333;padding:0.2rem 0.75rem;border-radius:999px;font-size:0.7rem;font-weight:700;">👑 Ultra Luxury</div>
-        </div>
-        <div class="hotel-card-body">
-          <div>
-            <div class="hotel-card-meta">
-              <span class="stars">★★★★★</span>
-              <span class="badge badge-success">5.0</span>
-              <span style="font-size:0.75rem;color:var(--text-muted);">567 reviews · 📍 Trocadéro</span>
-            </div>
-            <div class="hotel-card-name">Shangri-La Hotel Paris</div>
-            <p class="card-desc" style="font-size:0.8rem;margin-bottom:0.75rem;">Napoleon III mansion turned ultra-luxury hotel with the most spectacular Eiffel Tower view in Paris.</p>
-            <div class="hotel-card-amenities">
-              <span class="amenity-tag">🗼 Tower View</span>
-              <span class="amenity-tag">🏊 Indoor Pool</span>
-              <span class="amenity-tag">💆 Shiseido Spa</span>
-              <span class="amenity-tag">🍽️ 3 Restaurants</span>
-              <span class="amenity-tag">🚗 Rolls Royce Transfer</span>
-            </div>
-          </div>
-          <div class="hotel-card-price">
-            <div class="hotel-price-info">
-              <div class="price">₹55,165</div>
-              <div class="night">per night · 7 nights = ₹3,86,155</div>
-            </div>
-            <div style="display:flex;gap:0.5rem;">
-              <button class="btn btn-ghost btn-sm" onclick="openHotelModal('Shangri-La Paris','https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=700&q=80','₹55,165','5.0')">Details</button>
-              <button class="btn btn-primary btn-sm" onclick="TravelApp.showToast('Booking Shangri-La Paris!','success')">Book Now</button>
-            </div>
+      <!-- STICKY BOOKING SUMMARY SIDEBAR -->
+      <div class="sticky-booking-summary" id="bookingSummarySidebar">
+        <h4 style="margin:0 0 16px; font-size:1.2rem; color:white; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+          Booking Summary
+        </h4>
+
+        <div style="display:flex; flex-direction:column; gap:10px; font-size:0.88rem; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between;"><span style="color:var(--gray-300);">Room Type:</span><strong id="selectedRoomName" style="color:var(--color-primary);">Deluxe King Room</strong></div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:var(--gray-300);">Dates:</span><span>July 15 – July 18 (3 Nights)</span></div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:var(--gray-300);">Guests:</span><span>2 Adults</span></div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:var(--gray-300);">Room Subtotal (3 Nights):</span><span id="selectedRoomPrice">₹37,497</span></div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:var(--gray-300);">Taxes & Resort Fees:</span><span>₹4,500</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:1.1rem; font-weight:800; color:white; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+            <span>Total Price:</span><span id="selectedRoomTotal" style="color:var(--color-primary);">₹41,997</span>
           </div>
         </div>
+
+        <button class="btn-hero-primary" style="width:100%; padding:14px; font-size:1rem; text-align:center;" onclick="TravelApp.reserveHotelNow()">
+          Reserve Now (No Charge Yet)
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOOKING CONFIRMATION MODAL -->
+  <div class="dest-modal-wrapper" id="bookingConfirmModal">
+    <div class="dest-modal-card" style="max-width:540px; padding:36px; text-align:center;">
+      <div style="width:70px; height:70px; border-radius:50%; background:rgba(16,185,129,0.2); border:2px solid #10B981; color:#10B981; font-size:32px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">✓</div>
+      
+      <h2 style="font-family:var(--font-display); color:white; font-size:1.8rem; margin:0 0 6px;">Booking Confirmed!</h2>
+      <p style="color:var(--gray-300); font-size:0.9rem; margin-bottom:20px;">Your reservation code is <strong style="color:var(--color-primary);">#VOY-HTL-98214</strong></p>
+
+      <div style="background:rgba(255,255,255,0.05); border-radius:16px; padding:20px; text-align:left; font-size:0.88rem; color:white; margin-bottom:24px; line-height:1.6;">
+        <div><strong>Hotel:</strong> Grand Hôtel Paris</div>
+        <div><strong>Room:</strong> Deluxe King Room</div>
+        <div><strong>Dates:</strong> 15 July 2026 – 18 July 2026 (3 Nights)</div>
+        <div><strong>Guests:</strong> 2 Adults</div>
+        <div><strong>Total Paid:</strong> ₹41,997 (Pay at Property)</div>
+      </div>
+
+      <div style="display:flex; gap:12px;">
+        <a href="dashboard.html" class="btn-hero-primary" style="flex:1; text-align:center; font-size:0.88rem;">View Booking</a>
+        <button class="btn-hero-secondary" style="flex:1; font-size:0.88rem;" onclick="TravelApp.closeBookingConfirmModal()">Back to Hotels</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- HOTEL DETAIL MODAL -->
-<div class="modal-overlay" id="hotel-detail-modal">
-  <div class="modal" style="max-width:750px;">
-    <div class="modal-header">
-      <h4 id="modal-hotel-name">Hotel Details</h4>
-      <button class="btn btn-ghost btn-sm" data-modal-close="hotel-detail-modal">✕</button>
-    </div>
-    <div class="modal-body">
-      <img id="modal-hotel-img" src="" alt="Hotel" style="width:100%;height:280px;object-fit:cover;border-radius:1rem;margin-bottom:1.5rem;" />
-
-      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
-        <span class="badge badge-success" id="modal-hotel-rating">4.9 Exceptional</span>
-        <span class="badge badge-teal">📶 Free WiFi</span>
-        <span class="badge badge-blue">🏊 Pool</span>
-        <span class="badge badge-teal">💆 Spa</span>
-        <span class="badge badge-warning">🍳 Breakfast</span>
-      </div>
-
-      <div data-tabs>
-        <div class="tab-list">
-          <button class="tab-btn active">Overview</button>
-          <button class="tab-btn">Rooms</button>
-          <button class="tab-btn">Amenities</button>
-          <button class="tab-btn">Reviews</button>
-        </div>
-
-        <div class="tab-content active">
-          <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.7;margin-bottom:1rem;">
-            This magnificent 5-star property offers an unparalleled luxury experience in the heart of Paris. Each suite is individually designed with period furnishings, marble bathrooms, and butler service.
+  <!-- ==================== NEWSLETTER SECTION ==================== -->
+  <section class="newsletter-section" id="newsletter">
+    <div class="hotel-container">
+      <div class="newsletter-card">
+        <div class="newsletter-content">
+          <span class="section-tag" style="background:rgba(255,255,255,0.15); color:white; border-color:rgba(255,255,255,0.3);">💌 VIP Hotel Deals</span>
+          <h2 style="font-family:var(--font-display); font-size:clamp(2rem, 3.5vw, 3rem); font-weight:800; color:white; margin:16px 0;">Get Secret Hotel Rates & Upgrades</h2>
+          <p style="color:rgba(255,255,255,0.85); font-size:1.05rem; line-height:1.6;">
+            Subscribe to receive private 5-star hotel discounts, free room upgrades, and complimentary breakfast perks.
           </p>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
-            <div class="stat-card" style="text-align:center;">
-              <div class="stat-value" style="font-size:1.5rem;" id="modal-hotel-price">$289</div>
-              <div class="stat-label">Per Night</div>
-            </div>
-            <div class="stat-card" style="text-align:center;">
-              <div class="stat-value" style="font-size:1.5rem;">50m²</div>
-              <div class="stat-label">Min Room Size</div>
-            </div>
-            <div class="stat-card" style="text-align:center;">
-              <div class="stat-value" style="font-size:1.5rem;">Free</div>
-              <div class="stat-label">Cancellation</div>
-            </div>
-          </div>
-        </div>
 
-        <div class="tab-content">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-            <div class="card" style="overflow:hidden;">
-              <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=300&q=80" alt="Room" style="width:100%;height:140px;object-fit:cover;" />
-              <div class="card-body">
-                <div class="card-title" style="font-size:0.9rem;">Deluxe Suite</div>
-                <div style="color:var(--teal-500);font-weight:700;">$289/night</div>
-                <button class="btn btn-primary btn-sm" style="margin-top:0.75rem;width:100%;" onclick="TravelApp.showToast('Room selected!','success')">Select</button>
-              </div>
-            </div>
-            <div class="card" style="overflow:hidden;">
-              <img src="https://images.unsplash.com/photo-1591088398332-8a7791972843?w=300&q=80" alt="Room" style="width:100%;height:140px;object-fit:cover;" />
-              <div class="card-body">
-                <div class="card-title" style="font-size:0.9rem;">Presidential Suite</div>
-                <div style="color:var(--teal-500);font-weight:700;">$649/night</div>
-                <button class="btn btn-primary btn-sm" style="margin-top:0.75rem;width:100%;" onclick="TravelApp.showToast('Room selected!','success')">Select</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="tab-content">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
-            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:0.75rem;background:rgba(0,188,212,0.05);font-size:0.85rem;color:var(--text-primary);">🏊 Outdoor Pool</div>
-            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:0.75rem;background:rgba(0,188,212,0.05);font-size:0.85rem;color:var(--text-primary);">💆 Full Spa</div>
-            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:0.75rem;background:rgba(0,188,212,0.05);font-size:0.85rem;color:var(--text-primary);">🍽️ 3 Restaurants</div>
-            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:0.75rem;background:rgba(0,188,212,0.05);font-size:0.85rem;color:var(--text-primary);">📶 High-Speed WiFi</div>
-            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:0.75rem;background:rgba(0,188,212,0.05);font-size:0.85rem;color:var(--text-primary);">🏋️ 24h Fitness Center</div>
-            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:0.75rem;background:rgba(0,188,212,0.05);font-size:0.85rem;color:var(--text-primary);">🚗 Valet Parking</div>
-            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:0.75rem;background:rgba(0,188,212,0.05);font-size:0.85rem;color:var(--text-primary);">🍳 Breakfast Included</div>
-            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:0.75rem;background:rgba(0,188,212,0.05);font-size:0.85rem;color:var(--text-primary);">🛎️ 24h Room Service</div>
-          </div>
-        </div>
-
-        <div class="tab-content">
-          <div style="display:flex;flex-direction:column;gap:1rem;">
-            <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Absolute perfection. The service, the rooms, the dining — everything was beyond 5-star."</p><div class="reviewer"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&q=80" class="reviewer-avatar" alt=""/><div><div class="reviewer-name">Sophie M.</div><div class="reviewer-location">Paris, July 2025</div></div></div></div>
-            <div class="review-card"><div class="stars">★★★★★</div><p class="review-text">"Best hotel I've ever stayed in. The Eiffel Tower view from the rooftop restaurant was unforgettable!"</p><div class="reviewer"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&q=80" class="reviewer-avatar" alt=""/><div><div class="reviewer-name">James K.</div><div class="reviewer-location">New York, June 2025</div></div></div></div>
-          </div>
+          <form class="newsletter-form" onsubmit="TravelApp.handleNewsletterSubmit(event)">
+            <input type="email" id="newsletterEmail" placeholder="Enter your email address..." required />
+            <button type="submit" class="btn-subscribe">Subscribe Now</button>
+          </form>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" data-modal-close="hotel-detail-modal">Close</button>
-      <button class="btn btn-primary" onclick="TravelApp.showToast('Proceeding to checkout!','success');closeModal('hotel-detail-modal')">Book This Hotel →</button>
+  </section>
+
+  <!-- ==================== LUXURY FOOTER (PRESERVED) ==================== -->
+  <footer class="luxury-footer">
+    <div class="hotel-container">
+      <div class="footer-grid">
+        
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo"><span>✈️</span> Voyger</a>
+          <p>The world's premier luxury travel platform. Delivering bespoke journeys, five-star resorts, and seamless VIP experiences worldwide.</p>
+          <div class="social-links">
+            <a href="#" class="social-icon" aria-label="Instagram">📸</a>
+            <a href="#" class="social-icon" aria-label="Twitter">🐦</a>
+            <a href="#" class="social-icon" aria-label="Facebook">📘</a>
+            <a href="#" class="social-icon" aria-label="YouTube">🎬</a>
+            <a href="#" class="social-icon" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="destination.html">Destinations</a></li>
+            <li><a href="trip-planner.html">Luxury Packages</a></li>
+            <li><a href="hotels.html">Stays & Hotels</a></li>
+            <li><a href="flights.html">Private Flights</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Popular Spots</h5>
+          <ul class="footer-links">
+            <li><a href="destination.html">Bora Bora</a></li>
+            <li><a href="destination.html">Santorini, Greece</a></li>
+            <li><a href="destination.html">Swiss Alps</a></li>
+            <li><a href="destination.html">Kyoto, Japan</a></li>
+            <li><a href="destination.html">Maldives</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Resources</h5>
+          <ul class="footer-links">
+            <li><a href="index.html#why-us">AI Planner</a></li>
+            <li><a href="index.html#why-us">VIP Support</a></li>
+            <li><a href="profile.html">My Account</a></li>
+            <li><a href="dashboard.html">Bookings</a></li>
+            <li><a href="#newsletter">Travel Guides</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Contact Details</h5>
+          <div class="contact-item"><span>📍</span><div>5th Avenue, Suite 1200, New York, NY 10001</div></div>
+          <div class="contact-item"><span>📞</span><div>+1 (800) 888-VOYGER</div></div>
+          <div class="contact-item"><span>✉️</span><div>vip@voyger-luxury.com</div></div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Voyger Travel Inc. All rights reserved. Designed for Luxury Explorers.</div>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms & Conditions</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+
     </div>
-  </div>
-</div>
+  </footer>
 
-<button class="back-to-top" id="back-to-top">↑</button>
+  <!-- Back to Top Button -->
+  <button class="back-to-top-btn" id="backToTop" aria-label="Back to top">↑</button>
 
-<script src="js/main.js"></script>
-<script>
-function updatePrice(val) {
-  document.getElementById('price-max').textContent = val;
-  document.getElementById('price-display').textContent = val;
-}
-
-function clearFilters() {
-  document.querySelectorAll('.filter-panel input[type="checkbox"]').forEach(cb => cb.checked = false);
-  document.getElementById('price-range').value = 800;
-  updatePrice(800);
-  TravelApp.showToast('Filters cleared', 'info');
-}
-
-function applyFilters() {
-  TravelApp.showToast('Filters applied! Refreshing results...', 'success');
-}
-
-function setView(type) {
-  const list = document.getElementById('hotels-list');
-  if (type === 'grid') {
-    list.style.display = 'grid';
-    list.style.gridTemplateColumns = 'repeat(2, 1fr)';
-    list.style.gap = '1rem';
-    list.querySelectorAll('.hotel-card').forEach(c => { c.style.flexDirection = 'column'; c.style.marginBottom = '0'; });
-    list.querySelectorAll('.hotel-card-img').forEach(c => { c.style.width = '100%'; c.style.height = '180px'; });
-    document.getElementById('grid-view-btn').style.background = 'var(--teal-500)';
-    document.getElementById('grid-view-btn').style.color = 'white';
-    document.getElementById('list-view-btn').style.background = '';
-    document.getElementById('list-view-btn').style.color = '';
-  } else {
-    list.style.display = 'flex';
-    list.style.flexDirection = 'column';
-    list.querySelectorAll('.hotel-card').forEach(c => { c.style.flexDirection = ''; c.style.marginBottom = '1.25rem'; });
-    list.querySelectorAll('.hotel-card-img').forEach(c => { c.style.width = '220px'; c.style.height = ''; });
-    document.getElementById('list-view-btn').style.background = 'var(--teal-500)';
-    document.getElementById('list-view-btn').style.color = 'white';
-    document.getElementById('grid-view-btn').style.background = '';
-    document.getElementById('grid-view-btn').style.color = '';
-  }
-}
-
-function openHotelModal(name, img, price, rating) {
-  document.getElementById('modal-hotel-name').textContent = '🏨 ' + name;
-  document.getElementById('modal-hotel-img').src = img;
-  document.getElementById('modal-hotel-price').textContent = price;
-  document.getElementById('modal-hotel-rating').textContent = rating + ' Exceptional';
-  openModal('hotel-detail-modal');
-  initTabs('.modal .tab-list');
-}
-
-// Set dates
-const today = new Date().toISOString().split('T')[0];
-document.getElementById('hotel-checkin').value = today;
-const checkout = new Date(); checkout.setDate(checkout.getDate() + 7);
-document.getElementById('hotel-checkout').value = checkout.toISOString().split('T')[0];
-</script>
+  <!-- Main JS -->
+  <script src="js/main.js"></script>
 </body>
 </html>
